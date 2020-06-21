@@ -27,6 +27,7 @@
 #include <QNetworkReply>
 #include <QOperatingSystemVersion>
 #include <QSettings>
+#include <QStyle>
 #include <QSysInfo>
 #include <QTimer>
 #include <QTranslator>
@@ -158,7 +159,10 @@ Application::Application(int &argc, char **argv, bool haltOnParseError)
   setStyle(mTheme->style());
   setStyleSheet(mTheme->styleSheet());
 
-  if (!parser.isSet("no-translation")) {
+  // Read translation settings
+  QSettings settings;
+  if ((!settings.value("translation/disable", false).toBool()) &&
+      (!parser.isSet("no-translation"))) {
     // Load translation files.
     QLocale locale;
     QDir l10n = Settings::l10nDir();
@@ -186,6 +190,9 @@ Application::Application(int &argc, char **argv, bool haltOnParseError)
 
   // Enable system proxy auto-detection.
   QNetworkProxyFactory::setUseSystemConfiguration(true);
+
+  // Set default pallete. Pre Qt 5.15.0 this should be the same as the default
+  QApplication::setPalette(QApplication::style()->standardPalette());
 
   // Do platform-specific initialization.
 #if defined(Q_OS_MAC)
@@ -227,7 +234,6 @@ Application::Application(int &argc, char **argv, bool haltOnParseError)
   });
 
   // Read tracking settings.
-  QSettings settings;
   settings.beginGroup("tracking");
   QByteArray tid(GITAHEAD_TRACKING_ID);
   if (!tid.isEmpty() && settings.value("enabled", true).toBool()) {

@@ -440,6 +440,8 @@ RepoView::RepoView(const git::Repository &repo, MainWindow *parent)
   connect(&mFetchTimer, &QTimer::timeout, [this] {
     fetch(git::Remote(), false, false);
   });
+
+  setLogVisible(true);
 }
 
 RepoView::~RepoView()
