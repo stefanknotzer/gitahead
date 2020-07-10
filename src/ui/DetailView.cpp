@@ -651,9 +651,9 @@ private:
           break;
       }
 
-      //setMessage(msg);
-      //if (yieldFocus && !mMessage->toPlainText().isEmpty())
-      //  mMessage->setFocus();
+      //sk/build: setMessage(msg);
+      //sk/build: if (yieldFocus && !mMessage->toPlainText().isEmpty())
+      //sk/build:   mMessage->setFocus();
     }
 
     int total = staged + partial + conflicted;

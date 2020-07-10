@@ -305,7 +305,7 @@ bool Application::restoreWindows()
       return true;
     }
 
-    return false;
+    //sk/build: return false;
   }
 
   // Save on exit.
