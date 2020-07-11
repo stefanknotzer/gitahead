@@ -569,8 +569,8 @@ public:
 
   void setMessage(const QString &message)
   {
-    mMessage->setPlainText(message);
-    mMessage->selectAll();
+    //sk/build: mMessage->setPlainText(message);
+    //sk/build: mMessage->selectAll();
   }
 
   void setDiff(const git::Diff &diff)
@@ -580,8 +580,11 @@ public:
 
     // Pre-populate commit editor with the merge message.
     QString msg = RepoView::parentView(this)->repo().message();
-    if (!msg.isEmpty())
-      mMessage->setPlainText(msg);
+    if (!msg.isEmpty()) {
+      //sk/build: mMessage->setPlainText(msg);
+      QStringList msgList = msg.split('\n');
+      mMessage->setPlainText(msgList.at(0));
+    }
   }
 
 private:
@@ -651,9 +654,9 @@ private:
           break;
       }
 
-      //sk/build: setMessage(msg);
-      //sk/build: if (yieldFocus && !mMessage->toPlainText().isEmpty())
-      //sk/build:   mMessage->setFocus();
+      setMessage(msg);
+      if (yieldFocus && !mMessage->toPlainText().isEmpty())
+        mMessage->setFocus();
     }
 
     int total = staged + partial + conflicted;
