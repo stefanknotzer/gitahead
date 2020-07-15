@@ -504,7 +504,7 @@ void MainWindow::updateWindowTitle(int ahead, int behind)
   git::Repository repo = view->repo();
   QDir dir = repo.workdir();
   git::Reference head = repo.head();
-  QString path = mFullPath ? dir.path() : dir.dirName();
+  QString path = dir.path();
   QString name = head.isValid() ? head.name() : repo.unbornHeadName();
   QString title = tr("%1 - %2").arg(path, name);
 

@@ -813,7 +813,7 @@ public:
 
         if (mOldMode) {
           // Draw old mode
-          QString oMode = fm.elidedText("changed " + QString::number(mOldMode, 8), Qt::ElideLeft, rect.width());
+          QString oMode = fm.elidedText(QString::number(mOldMode, 8), Qt::ElideLeft, rect.width());
           painter.drawText(rect, Qt::AlignLeft | Qt::AlignVCenter, oMode);
           rect.adjust(fm.boundingRect(oMode).width(), 0, 0, 0);
 
