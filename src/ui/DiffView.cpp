@@ -90,6 +90,18 @@ const QString kButtonStyleFmt =
   "  background: %2"
   "}";
 
+// Filesize and filemode changes are always displayed.
+// The display for untracked and deleted files is configurable:
+const bool kFileStatsShowUntracked = true;
+const bool kFileStatsShowDeleted = false;
+const QString kfileStatsStypeFmt =
+  "QLabel {"
+  " margin-left: 4px;"
+  " margin-right: 4px;"
+  " border-radius: 4px;"
+  " background: %1"
+  "}";
+
 const QDir::Filters kFilters =
   QDir::Files |
   QDir::Dirs |
@@ -466,11 +478,11 @@ public:
     int beforeSize = 0;
     QPixmap before = loadPixmap(git::Diff::OldFile, beforeSize, lfs);
     if (!before.isNull()) {
-      layout->addLayout(imageLayout(before, beforeSize), 1);
+      layout->addLayout(imageLayout(before), 1);
       layout->addWidget(new Arrow(this));
     }
 
-    layout->addLayout(imageLayout(pixmap, size), 1);
+    layout->addLayout(imageLayout(pixmap), 1);
     layout->addStretch();
   }
 
@@ -581,15 +593,9 @@ private:
     return icon.pixmap(windowHandle(), QSize(64, 64));
   }
 
-  QVBoxLayout *imageLayout(const QPixmap pixmap, int size)
+  QVBoxLayout *imageLayout(const QPixmap pixmap)
   {
-    QString arg = locale().formattedDataSize(size);
-    QLabel *label = new QLabel(tr("<b>Size:</b> %1").arg(arg));
-    label->setAlignment(Qt::AlignCenter);
-
     QVBoxLayout *layout = new QVBoxLayout;
-    layout->addWidget(label);
-    layout->addStretch();
     layout->addWidget(new Image(pixmap, this));
     layout->addStretch();
 
@@ -613,7 +619,6 @@ public:
       int index,
       bool lfs,
       bool submodule,
-      bool filemode,
       QWidget *parent = nullptr)
       : QFrame(parent)
     {
@@ -622,9 +627,9 @@ public:
 
       QString header = (index >= 0) ? patch.header(index) : QString();
       QString escaped = header.trimmed().toHtmlEscaped();
-      mLabel = new QLabel(kHunkFmt.arg(escaped), this);
+      QLabel *label = new QLabel(kHunkFmt.arg(escaped), this);
 
-      if (patch.isConflicted() && !filemode) {
+      if (patch.isConflicted()) {
         mSave = new QToolButton(this);
         mSave->setObjectName("ConflictSave");
         mSave->setText(HunkWidget::tr("Save"));
@@ -667,7 +672,7 @@ public:
 
       // Add discard button.
       DiscardButton *discard = nullptr;
-      if (diff.isStatusDiff() && !submodule && !patch.isConflicted() && !filemode) {
+      if (diff.isStatusDiff() && !submodule && !patch.isConflicted()) {
         discard = new DiscardButton(this);
         discard->setToolTip(HunkWidget::tr("Discard Hunk"));
         connect(discard, &DiscardButton::clicked, [this, patch, index] {
@@ -725,55 +730,35 @@ public:
           mButton->isChecked() ? HunkWidget::tr("Collapse Hunk") : HunkWidget::tr("Expand Hunk"));
       });
 
-      mButtons = new QHBoxLayout;
-      mButtons->setContentsMargins(0,0,0,0);
-      mButtons->setSpacing(4);
+      QHBoxLayout *buttons = new QHBoxLayout;
+      buttons->setContentsMargins(0,0,0,0);
+      buttons->setSpacing(4);
       if (mSave && mUndo && mOurs && mTheirs) {
         mSave->setVisible(false);
         mUndo->setVisible(false);
-        mButtons->addWidget(mSave);
-        mButtons->addWidget(mUndo);
-        mButtons->addWidget(mOurs);
-        mButtons->addWidget(mTheirs);
-        mButtons->addSpacing(8);
+        buttons->addWidget(mSave);
+        buttons->addWidget(mUndo);
+        buttons->addWidget(mOurs);
+        buttons->addWidget(mTheirs);
+        buttons->addSpacing(8);
       }
 
-      mButtons->addWidget(edit);
+      buttons->addWidget(edit);
       if (discard)
-        mButtons->addWidget(discard);
-      mButtons->addWidget(mButton);
+        buttons->addWidget(discard);
+      buttons->addWidget(mButton);
 
       QHBoxLayout *layout = new QHBoxLayout(this);
       layout->setContentsMargins(4,4,4,4);
       layout->addWidget(mCheck);
-      layout->addWidget(mLabel);
+      layout->addWidget(label);
       layout->addStretch();
-      layout->addLayout(mButtons);
+      layout->addLayout(buttons);
 
       // Collapse on check.
       connect(mCheck, &QCheckBox::clicked, [this](bool staged) {
         mButton->setChecked(!staged);
       });
-
-      // Show file mode diff
-      if (filemode || header.isEmpty()) {
-        mOldMode = diff.old_mode(index);
-        mNewMode = diff.new_mode(index);
-
-        if ((mOldMode != mNewMode) && (mNewMode)) {
-          QString header = "Filemode";
-          QString escaped = header.trimmed().toHtmlEscaped();
-          mLabel->setText(kHunkFmt.arg(escaped));
-
-          // Hide buttons
-          if (filemode) {
-            edit->setVisible(false);
-            if (discard)
-              discard->setVisible(false);
-            mButton->setVisible(false);
-          }
-        }
-      }
     }
 
     QCheckBox *check() const { return mCheck; }
@@ -792,67 +777,13 @@ public:
         mButton->toggle();
     }
 
-    void paintEvent(QPaintEvent *event) override
-    {
-      if (mOldMode != mNewMode) {
-        QFont font = this->font();
-        font.setBold(true);
-
-        QColor color = mLabel->palette().text().color();
-
-        QPainter painter(this);
-        painter.setRenderHint(QPainter::Antialiasing);
-        painter.setFont(font);
-        painter.setPen(color);
-
-        QRect rect = this->rect();
-        QFontMetrics fm = painter.fontMetrics();
-
-        rect.adjust(mLabel->geometry().right(), 0, -mButtons->geometry().width(), 0);
-        rect.adjust(fm.width(" "), 0, 0, 0);
-
-        if (mOldMode) {
-          // Draw old mode
-          QString oMode = fm.elidedText(QString::number(mOldMode, 8), Qt::ElideLeft, rect.width());
-          painter.drawText(rect, Qt::AlignLeft | Qt::AlignVCenter, oMode);
-          rect.adjust(fm.boundingRect(oMode).width(), 0, 0, 0);
-
-          // Draw arrow.
-          int x1 = rect.x() + kArrowMargin;
-          int x2 = rect.x() + kArrowWidth - kArrowMargin;
-          int y = rect.height() / 2;
-          QPainterPath path;
-          path.moveTo(x1, y);
-          path.lineTo(x2, y);
-          path.moveTo(x2 - 3, y - 3);
-          path.lineTo(x2, y);
-          path.lineTo(x2 - 3, y + 3);
-          QPen pen = painter.pen();
-          pen.setWidthF(1.5);
-          painter.setPen(pen);
-          painter.drawPath(path);
-          rect.adjust(kArrowWidth, 0, 0, 0);
-        }
-
-        // Draw new mode
-        QString nMode = fm.elidedText(QString::number(mNewMode, 8), Qt::ElideLeft, rect.width());
-        painter.drawText(rect, Qt::AlignLeft | Qt::AlignVCenter, nMode);
-      }
-      QFrame::paintEvent(event);
-    }
-
   private:
     QCheckBox *mCheck;
-    QLabel *mLabel;
     DisclosureButton *mButton;
-    QHBoxLayout *mButtons;
     QToolButton *mSave = nullptr;
     QToolButton *mUndo = nullptr;
     QToolButton *mOurs = nullptr;
     QToolButton *mTheirs = nullptr;
-
-    uint16_t mOldMode = 0;
-    uint16_t mNewMode = 0;
   };
 
   HunkWidget(
@@ -862,7 +793,6 @@ public:
     int index,
     bool lfs,
     bool submodule,
-    bool filemode = false,
     QWidget *parent = nullptr)
     : QFrame(parent), mView(view), mPatch(patch), mIndex(index)
   {
@@ -871,41 +801,35 @@ public:
     layout->setContentsMargins(0,0,0,0);
     layout->setSpacing(0);
 
-    mHeader = new Header(diff, patch, index, lfs, submodule, filemode, this);
+    mHeader = new Header(diff, patch, index, lfs, submodule, this);
     layout->addWidget(mHeader);
 
     mEditor = new Editor(this);
+    mEditor->setLexer(patch.name());
+    mEditor->setCaretStyle(CARETSTYLE_INVISIBLE);
+    mEditor->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    if (index >= 0)
+      mEditor->setLineCount(patch.lineCount(index));
 
-    if (!filemode) {
-      mEditor->setLexer(patch.name());
-      mEditor->setCaretStyle(CARETSTYLE_INVISIBLE);
-      mEditor->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-      if (index >= 0)
-        mEditor->setLineCount(patch.lineCount(index));
+    connect(mEditor, &TextEditor::updateUi,
+            MenuBar::instance(this), &MenuBar::updateCutCopyPaste);
 
-      connect(mEditor, &TextEditor::updateUi,
-              MenuBar::instance(this), &MenuBar::updateCutCopyPaste);
+    // Ensure that text margin reacts to settings changes.
+    connect(mEditor, &TextEditor::settingsChanged, [this] {
+      int width = mEditor->textWidth(STYLE_LINENUMBER, mEditor->marginText(0));
+      mEditor->setMarginWidthN(TextEditor::LineNumbers, width);
+    });
 
-      // Ensure that text margin reacts to settings changes.
-      connect(mEditor, &TextEditor::settingsChanged, [this] {
-        int width = mEditor->textWidth(STYLE_LINENUMBER, mEditor->marginText(0));
-        mEditor->setMarginWidthN(TextEditor::LineNumbers, width);
-      });
+    // Darken background when find highlight is active.
+    connect(mEditor, &TextEditor::highlightActivated,
+            this, &HunkWidget::setDisabled);
 
-      // Darken background when find highlight is active.
-      connect(mEditor, &TextEditor::highlightActivated,
-              this, &HunkWidget::setDisabled);
+    // Disable vertical resize.
+    mEditor->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
-      // Disable vertical resize.
-      mEditor->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-
-      layout->addWidget(mEditor);
-      connect(mHeader->button(), &DisclosureButton::toggled,
-              mEditor, &TextEditor::setVisible);
-    } else {
-      mEditor->setVisible(false);
-      return;
-    }
+    layout->addWidget(mEditor);
+    connect(mHeader->button(), &DisclosureButton::toggled,
+            mEditor, &TextEditor::setVisible);
 
     // Handle conflict resolution.
     if (QToolButton *save = mHeader->saveButton()) {
@@ -1886,6 +1810,142 @@ public:
     DisclosureButton *mDisclosureButton;
   };
 
+  class Footer : public QFrame
+  {
+  public:
+    Footer(
+      git_diff_file oldfile,
+      git_diff_file newfile,
+      QWidget *parent = nullptr)
+      : QFrame(parent)
+    {
+      // ther are no filestats changes to dislay.
+      if ((oldfile.mode == newfile.mode) && (oldfile.size == newfile.size))
+        return;
+
+      // Display filesize changes with sign.
+      if ((newfile.size || kFileStatsShowDeleted) &&
+          (oldfile.size > newfile.size)) {
+        mSizeLabel = new QLabel(this);
+        mSizeLabel->setStyleSheet(kfileStatsStypeFmt.arg(Application::theme()->diff(Theme::Diff::Deletion).name()));
+        mSizeLabel->setText("-" + locale().formattedDataSize(oldfile.size - newfile.size));
+        if (newfile.size)
+          mSizeLabel->setToolTip("New Filesize: " + QString::number(newfile.size) + " Bytes");
+        else
+          mSizeLabel->setToolTip("Old Filesize: " + QString::number(oldfile.size) + " Bytes");
+
+        mIsValid = true;
+      }
+      else if ((oldfile.size || kFileStatsShowUntracked) &&
+          (oldfile.size < newfile.size)) {
+        mSizeLabel = new QLabel(this);
+        mSizeLabel->setStyleSheet(kfileStatsStypeFmt.arg(Application::theme()->diff(Theme::Diff::Addition).name()));
+        mSizeLabel->setText("+" + locale().formattedDataSize(newfile.size - oldfile.size));
+        mSizeLabel->setToolTip("New Filesize: " + QString::number(newfile.size) + " Bytes");
+
+        mIsValid = true;
+      }
+
+      // Display filemode changes.
+      git_filemode_t oldmode = static_cast<git_filemode_t>(oldfile.mode);
+      git_filemode_t newmode = static_cast<git_filemode_t>(newfile.mode);
+
+      if (((newmode != GIT_FILEMODE_UNREADABLE) || kFileStatsShowDeleted) &&
+           (oldmode != GIT_FILEMODE_UNREADABLE) && (oldmode != newmode)) {
+        mOldLabel = new QLabel(this);
+        mOldLabel->setStyleSheet(kfileStatsStypeFmt.arg(Application::theme()->diff(Theme::Diff::Deletion).name()));
+        mOldLabel->setText(fromFileMode(oldmode));
+        mOldLabel->setToolTip("Old Filemode: " + QString::number(oldmode, 8));
+
+        mIsValid = true;
+      }
+      if (((oldmode != GIT_FILEMODE_UNREADABLE) || kFileStatsShowUntracked) &&
+           (newmode != GIT_FILEMODE_UNREADABLE) && (oldmode != newmode)) {
+        mNewLabel = new QLabel(this);
+        mNewLabel->setStyleSheet(kfileStatsStypeFmt.arg(Application::theme()->diff(Theme::Diff::Addition).name()));
+        mNewLabel->setText(fromFileMode(newmode));
+        mNewLabel->setToolTip("New Filemode: " + QString::number(newmode, 8));
+
+        mIsValid = true;
+      }
+
+      // The filestats changed.
+      if (mIsValid) {
+        QHBoxLayout *layout = new QHBoxLayout(this);
+        layout->setContentsMargins(4, 4, 4, 4);
+
+        if (mSizeLabel)
+          layout->addWidget(mSizeLabel);
+
+        layout->addStretch();
+
+        if (mOldLabel)
+          layout->addWidget(mOldLabel);
+        if (mOldLabel && mNewLabel)
+          layout->addSpacing(kArrowWidth - 8);
+        if (mNewLabel)
+          layout->addWidget(mNewLabel);
+      }
+    }
+
+    bool isValid() const { return mIsValid; }
+
+  protected:
+    void paintEvent(QPaintEvent *event) override
+    {
+      if (mOldLabel && mNewLabel) {
+        // Draw arrow between mOldLabel and mNewLabel.
+        QPainter painter(this);
+        QRect rect = this->rect();
+        rect.adjust(mOldLabel->geometry().right(), 0, 0, 0);
+
+        int x1 = rect.x() + kArrowMargin;
+        int x2 = rect.x() + kArrowWidth - kArrowMargin;
+        int y = rect.height() / 2;
+
+        QPainterPath path;
+        path.moveTo(x1, y);
+        path.lineTo(x2, y);
+        path.moveTo(x2 - 3, y - 3);
+        path.lineTo(x2, y);
+        path.lineTo(x2 - 3, y + 3);
+
+        QPen pen = painter.pen();
+        pen.setWidthF(1.5);
+        painter.setPen(pen);
+        painter.drawPath(path);
+      }
+    }
+
+  private:
+    QString fromFileMode(const git_filemode_t mode)
+    {
+      switch (mode) {
+        case GIT_FILEMODE_UNREADABLE:
+          return QString("missing");
+        case GIT_FILEMODE_TREE:
+          return QString("tree");
+        case GIT_FILEMODE_BLOB:
+          return QString("blob");
+        case GIT_FILEMODE_BLOB_EXECUTABLE:
+          return QString("executable");
+        case GIT_FILEMODE_LINK:
+          return QString("link");
+        case GIT_FILEMODE_COMMIT:
+          return QString("submodul");
+        default:
+          // New (unknown) enum value added
+          return QString("unknown");
+        }
+    }
+
+    QLabel *mSizeLabel = nullptr;
+    QLabel *mOldLabel = nullptr;
+    QLabel *mNewLabel = nullptr;
+
+    bool mIsValid = false;
+  };
+
   FileWidget(
     DiffView *view,
     const git::Diff &diff,
@@ -1953,76 +2013,68 @@ public:
       });
     }
 
-    // Try to load an image from the file.
     if (binary) {
+      // Try to load an image from the file.
       layout->addWidget(addImage(disclosureButton, mPatch));
-      return;
     }
+    else if (patch.isUntracked()) {
+      // Add untracked file content.
+      if (!QFileInfo(path).isDir()) {
+        layout->addWidget(addHunk(diff, patch, -1, lfs, submodule));
+      }
+    } else {
+      // Generate a diff between the head tree and index.
+      QSet<int> stagedHunks;
+      if (staged.isValid()) {
+        for (int i = 0; i < staged.count(); ++i)
+          stagedHunks.insert(staged.lineNumber(i, 0, git::Diff::OldFile));
+      }
 
-    // Add filemode hunk
-    int midx = mDiff.indexOf(name);
-    if (midx >= 0) {
-      uint16_t old_mode = mDiff.old_mode(midx);
-      uint16_t new_mode = mDiff.new_mode(midx);
-      if (old_mode && new_mode && (old_mode != new_mode)) {
-        HunkWidget *hunk = addHunk(diff, patch, midx, lfs, submodule, true);
+      // Add diff hunks.
+      int hunkCount = patch.count();
+      for (int hidx = 0; hidx < hunkCount; ++hidx) {
+        HunkWidget *hunk = addHunk(diff, patch, hidx, lfs, submodule);
+        int startLine = patch.lineNumber(hidx, 0, git::Diff::OldFile);
+        hunk->header()->check()->setChecked(stagedHunks.contains(startLine));
         layout->addWidget(hunk);
       }
+
+      // LFS
+      if (QToolButton *lfsButton = mHeader->lfsButton()) {
+        connect(lfsButton, &QToolButton::clicked,
+        [this, layout, disclosureButton, lfsButton](bool checked) {
+          lfsButton->setText(checked ? tr("Show Pointer") : tr("Show Object"));
+          mHunks.first()->setVisible(!checked);
+
+          // Image already loaded.
+          if (!mImages.isEmpty()) {
+            mImages.first()->setVisible(checked);
+            return;
+          }
+
+          // Load image.
+          layout->addWidget(addImage(disclosureButton, mPatch, true));
+        });
+      }
+
+      // Start hidden when the file is checked.
+      bool expand = (mHeader->check()->checkState() == Qt::Unchecked);
+
+      if (Settings::instance()->value("collapse/added").toBool() == true &&
+          patch.status() == GIT_DELTA_ADDED)
+        expand = false;
+
+      if (Settings::instance()->value("collapse/deleted").toBool() == true &&
+          patch.status() == GIT_DELTA_DELETED)
+        expand = false;
+
+      disclosureButton->setChecked(expand);
     }
 
-    // Add untracked file content.
-    if (patch.isUntracked()) {
-      if (!QFileInfo(path).isDir())
-        layout->addWidget(addHunk(diff, patch, -1, lfs, submodule));
-      return;
-    }
-
-    // Generate a diff between the head tree and index.
-    QSet<int> stagedHunks;
-    if (staged.isValid()) {
-      for (int i = 0; i < staged.count(); ++i)
-        stagedHunks.insert(staged.lineNumber(i, 0, git::Diff::OldFile));
-    }
-
-    // Add diff hunks.
-    int hunkCount = patch.count();
-    for (int hidx = 0; hidx < hunkCount; ++hidx) {
-      HunkWidget *hunk = addHunk(diff, patch, hidx, lfs, submodule);
-      int startLine = patch.lineNumber(hidx, 0, git::Diff::OldFile);
-      hunk->header()->check()->setChecked(stagedHunks.contains(startLine));
-      layout->addWidget(hunk);
-    }
-
-    // LFS
-    if (QToolButton *lfsButton = mHeader->lfsButton()) {
-      connect(lfsButton, &QToolButton::clicked,
-      [this, layout, disclosureButton, lfsButton](bool checked) {
-        lfsButton->setText(checked ? tr("Show Pointer") : tr("Show Object"));
-        mHunks.first()->setVisible(!checked);
-
-        // Image already loaded.
-        if (!mImages.isEmpty()) {
-          mImages.first()->setVisible(checked);
-          return;
-        }
-
-        // Load image.
-        layout->addWidget(addImage(disclosureButton, mPatch, true));
-      });
-    }
-
-    // Start hidden when the file is checked.
-    bool expand = (mHeader->check()->checkState() == Qt::Unchecked);
-
-    if (Settings::instance()->value("collapse/added").toBool() == true &&
-        patch.status() == GIT_DELTA_ADDED)
-      expand = false;
-
-    if (Settings::instance()->value("collapse/deleted").toBool() == true &&
-        patch.status() == GIT_DELTA_DELETED)
-      expand = false;
-
-    disclosureButton->setChecked(expand);
+    // Add footer for file stats.
+    mFooter = new Footer(diff.oldFile(diff.indexOf(name)), diff.newFile(diff.indexOf(name)));
+    connect(disclosureButton, &DisclosureButton::toggled, mFooter, &QLabel::setVisible);
+    layout->addWidget(mFooter);
   }
 
   bool isEmpty()
@@ -2031,6 +2083,7 @@ public:
   }
 
   Header *header() const { return mHeader; }
+  Footer *footer() const { return mFooter; }
 
   QString name() const { return mPatch.name(); }
 
@@ -2058,11 +2111,10 @@ public:
     const git::Patch &patch,
     int index,
     bool lfs,
-    bool submodule,
-    bool filemode = false)
+    bool submodule)
   {
     HunkWidget *hunk =
-      new HunkWidget(mView, diff, patch, index, lfs, submodule, filemode, this);
+      new HunkWidget(mView, diff, patch, index, lfs, submodule, this);
 
     // Respond to check box click.
     QCheckBox *check = hunk->header()->check();
@@ -2118,6 +2170,7 @@ private:
   Header *mHeader;
   QList<QWidget *> mImages;
   QList<HunkWidget *> mHunks;
+  Footer *mFooter;
 };
 
 } // anon. namespace
@@ -2389,9 +2442,12 @@ void DiffView::fetchMore()
     mFiles.append(file);
 
     if (file->isEmpty()) {
-      DisclosureButton *button = file->header()->disclosureButton();
-      button->setChecked(false);
-      button->setEnabled(false);
+      bool fileFooter = file->footer()->isValid();
+      if (!fileFooter) {
+        DisclosureButton *button = file->header()->disclosureButton();
+        button->setChecked(false);
+        button->setEnabled(false);
+      }
     }
 
     // Respond to diagnostic signal.

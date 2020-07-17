@@ -60,8 +60,8 @@ public:
   bool isStatusDiff() const;
   Index index() const { return d->index; }
 
-  uint16_t old_mode(int index) const { return d->delta(index)->old_file.mode; }
-  uint16_t new_mode(int index) const { return d->delta(index)->new_file.mode; }
+  git_diff_file oldFile(int index) const { return d->delta(index)->old_file; }
+  git_diff_file newFile(int index) const { return d->delta(index)->new_file; }
 
   int count() const;
   Patch patch(int index) const;
