@@ -191,7 +191,7 @@ Application::Application(int &argc, char **argv, bool haltOnParseError)
   // Enable system proxy auto-detection.
   QNetworkProxyFactory::setUseSystemConfiguration(true);
 
-  // Set default pallete. Pre Qt 5.15.0 this should be the same as the default
+  //sk/build: Set default pallete. Pre Qt 5.15.0 this should be the same as the default
   QApplication::setPalette(QApplication::style()->standardPalette());
 
   // Do platform-specific initialization.

@@ -90,10 +90,18 @@ const QString kButtonStyleFmt =
   "  background: %2"
   "}";
 
-// Filesize and filemode changes are always displayed.
-// The display for untracked and deleted files is configurable:
+// Modified binarys are always displayed.
+// Binary preview for untracked, added and deleted files:
+const bool kBinaryShowUntracked = true;
+const bool kBinaryShowAdded = true;
+const bool kBinaryShowDeleted = true;
+const QSize kBinaryIconSize = QSize(64, 64);
+
+// Filesize and filemode changes for modified files are always displayed.
+// The display for untracked, added and deleted files is configurable:
 const bool kFileStatsShowUntracked = true;
-const bool kFileStatsShowDeleted = false;
+const bool kFileStatsShowAdded = true;
+const bool kFileStatsShowDeleted = true;
 const QString kfileStatsStypeFmt =
   "QLabel {"
   " margin-left: 4px;"
@@ -461,28 +469,43 @@ public:
     QWidget *parent = nullptr)
     : QWidget(parent), mPatch(patch)
   {
-    int size = 0;
-    QPixmap pixmap = loadPixmap(git::Diff::NewFile, size, lfs);
-    if (pixmap.isNull()) {
-      QString path = mPatch.repo().workdir().filePath(mPatch.name());
-      size = QFileInfo(path).size();
-      pixmap.load(path);
-    }
+    QPixmap oldfile;
+    QPixmap newfile;
 
-    if (pixmap.isNull())
-      return;
+    switch (mPatch.status())
+    {
+      case GIT_DELTA_UNTRACKED:
+        if (kBinaryShowUntracked)
+          newfile = loadPixmap(git::Diff::NewFile, lfs);
+        break;
+      case GIT_DELTA_ADDED:
+        if (kBinaryShowAdded)
+          newfile = loadPixmap(git::Diff::NewFile, lfs);
+        break;
+      case GIT_DELTA_DELETED:
+      case GIT_DELTA_UNREADABLE:
+        if (kBinaryShowDeleted)
+          oldfile = loadPixmap(git::Diff::OldFile, lfs);
+        break;
+      case GIT_DELTA_UNMODIFIED:
+      case GIT_DELTA_IGNORED:
+        return;
+      default:
+        oldfile = loadPixmap(git::Diff::OldFile, lfs);
+        newfile = loadPixmap(git::Diff::NewFile, lfs);
+        break;
+    }
 
     QHBoxLayout *layout = new QHBoxLayout(this);
-    layout->setContentsMargins(6, 4, 8, 4);
+    layout->setContentsMargins(8, 4, 8, 4);
 
-    int beforeSize = 0;
-    QPixmap before = loadPixmap(git::Diff::OldFile, beforeSize, lfs);
-    if (!before.isNull()) {
-      layout->addLayout(imageLayout(before), 1);
+    if (!oldfile.isNull())
+      layout->addWidget(new Image(oldfile, this));
+    if (!oldfile.isNull() && !newfile.isNull())
       layout->addWidget(new Arrow(this));
-    }
+    if (!newfile.isNull())
+      layout->addWidget(new Image(newfile, this));
 
-    layout->addLayout(imageLayout(pixmap), 1);
     layout->addStretch();
   }
 
@@ -536,7 +559,7 @@ private:
 
     QSize sizeHint() const override
     {
-      return QSize(100, 100);
+      return kBinaryIconSize;
     }
 
   protected:
@@ -569,37 +592,37 @@ private:
     }
   };
 
-  QPixmap loadPixmap(git::Diff::File type, int &size, bool lfs)
+  QPixmap loadPixmap(git::Diff::File type, bool lfs)
   {
     git::Blob blob = mPatch.blob(type);
-    if (!blob.isValid())
-      return QPixmap();
-
-    QByteArray data = blob.content();
-
-    if (lfs)
-      data = mPatch.repo().lfsSmudge(data, mPatch.name());
-
-    size = data.length();
-
     QPixmap pixmap;
-    pixmap.loadFromData(data);
-    if (!pixmap.isNull())
-      return pixmap;
 
-    QFileIconProvider provider;
+    if (blob.isValid()) {
+      QByteArray data = blob.content();
+
+      if (lfs)
+        data = mPatch.repo().lfsSmudge(data, mPatch.name());
+
+      // Load pixmap from blob data.
+      pixmap.loadFromData(data);
+      if (!pixmap.isNull()) {
+        return pixmap.scaledToHeight(kBinaryIconSize.height(), Qt::SmoothTransformation);
+        return pixmap;
+      }
+    }
+
+    // Load pixmap from file.
     QString path = mPatch.repo().workdir().filePath(mPatch.name());
+    pixmap.load(path);
+    if (!pixmap.isNull()) {
+      return pixmap.scaledToHeight(kBinaryIconSize.height(), Qt::SmoothTransformation);
+      return pixmap;
+    }
+
+    // Load icon for file.
+    QFileIconProvider provider;
     QIcon icon = provider.icon(QFileInfo(path));
-    return icon.pixmap(windowHandle(), QSize(64, 64));
-  }
-
-  QVBoxLayout *imageLayout(const QPixmap pixmap)
-  {
-    QVBoxLayout *layout = new QVBoxLayout;
-    layout->addWidget(new Image(pixmap, this));
-    layout->addStretch();
-
-    return layout;
+    return icon.pixmap(windowHandle(), kBinaryIconSize);
   }
 
   git::Patch mPatch;
@@ -1032,6 +1055,10 @@ public:
       table->move(mEditor->mapToGlobal(point));
       table->show();
     });
+
+    //sk/build: Collapse untracked.
+    if (patch.isUntracked())
+      mHeader->button()->setChecked(false);
   }
 
   Header *header() const { return mHeader; }
@@ -1814,34 +1841,49 @@ public:
   {
   public:
     Footer(
-      git_diff_file oldfile,
-      git_diff_file newfile,
+      DisclosureButton *button,
+      const git::Diff &diff,
+      const git::Patch &patch,
+      const int index,
       QWidget *parent = nullptr)
       : QFrame(parent)
     {
-      // ther are no filestats changes to dislay.
-      if ((oldfile.mode == newfile.mode) && (oldfile.size == newfile.size))
+      git_diff_file oldfile = diff.oldFile(index);
+      git_diff_file newfile = diff.newFile(index);
+
+      // Ignore untracked and unchanged files: exit here.
+      if ((patch.isUntracked() && !kFileStatsShowUntracked) ||
+         ((oldfile.mode == newfile.mode) && (oldfile.size == newfile.size)))
         return;
 
       // Display filesize changes with sign.
-      if ((newfile.size || kFileStatsShowDeleted) &&
-          (oldfile.size > newfile.size)) {
+      uint64_t oldsize = oldfile.size;
+      uint64_t newsize = newfile.size;
+
+      // WORKAROUND: filesize of modified binary is not set.
+      if ((newfile.mode != GIT_FILEMODE_UNREADABLE) && (newsize == 0)) {
+        if (patch.isValid() && patch.blob(git::Diff::NewFile).isValid())
+          newsize = patch.blob(git::Diff::NewFile).content().size();
+      }
+
+      if ((newsize || kFileStatsShowDeleted) &&
+          (oldsize > newsize)) {
         mSizeLabel = new QLabel(this);
         mSizeLabel->setStyleSheet(kfileStatsStypeFmt.arg(Application::theme()->diff(Theme::Diff::Deletion).name()));
-        mSizeLabel->setText("-" + locale().formattedDataSize(oldfile.size - newfile.size));
-        if (newfile.size)
-          mSizeLabel->setToolTip("New Filesize: " + QString::number(newfile.size) + " Bytes");
+        mSizeLabel->setText("-" + locale().formattedDataSize(oldsize - newsize));
+        if (newsize)
+          mSizeLabel->setToolTip("New Filesize: " + QString::number(newsize) + " Bytes");
         else
-          mSizeLabel->setToolTip("Old Filesize: " + QString::number(oldfile.size) + " Bytes");
+          mSizeLabel->setToolTip("Old Filesize: " + QString::number(oldsize) + " Bytes");
 
         mIsValid = true;
       }
-      else if ((oldfile.size || kFileStatsShowUntracked) &&
-          (oldfile.size < newfile.size)) {
+      else if ((oldsize || kFileStatsShowAdded || (patch.isUntracked() && kFileStatsShowUntracked)) &&
+               (oldsize < newsize)) {
         mSizeLabel = new QLabel(this);
         mSizeLabel->setStyleSheet(kfileStatsStypeFmt.arg(Application::theme()->diff(Theme::Diff::Addition).name()));
-        mSizeLabel->setText("+" + locale().formattedDataSize(newfile.size - oldfile.size));
-        mSizeLabel->setToolTip("New Filesize: " + QString::number(newfile.size) + " Bytes");
+        mSizeLabel->setText("+" + locale().formattedDataSize(newsize - oldsize));
+        mSizeLabel->setToolTip("New Filesize: " + QString::number(newsize) + " Bytes");
 
         mIsValid = true;
       }
@@ -1859,7 +1901,7 @@ public:
 
         mIsValid = true;
       }
-      if (((oldmode != GIT_FILEMODE_UNREADABLE) || kFileStatsShowUntracked) &&
+      if (((oldmode != GIT_FILEMODE_UNREADABLE) || kFileStatsShowAdded || (patch.isUntracked() && kFileStatsShowUntracked)) &&
            (newmode != GIT_FILEMODE_UNREADABLE) && (oldmode != newmode)) {
         mNewLabel = new QLabel(this);
         mNewLabel->setStyleSheet(kfileStatsStypeFmt.arg(Application::theme()->diff(Theme::Diff::Addition).name()));
@@ -1885,6 +1927,8 @@ public:
           layout->addSpacing(kArrowWidth - 8);
         if (mNewLabel)
           layout->addWidget(mNewLabel);
+
+        connect(button, &DisclosureButton::toggled, this, &QLabel::setVisible);
       }
     }
 
@@ -2056,25 +2100,24 @@ public:
           layout->addWidget(addImage(disclosureButton, mPatch, true));
         });
       }
-
-      // Start hidden when the file is checked.
-      bool expand = (mHeader->check()->checkState() == Qt::Unchecked);
-
-      if (Settings::instance()->value("collapse/added").toBool() == true &&
-          patch.status() == GIT_DELTA_ADDED)
-        expand = false;
-
-      if (Settings::instance()->value("collapse/deleted").toBool() == true &&
-          patch.status() == GIT_DELTA_DELETED)
-        expand = false;
-
-      disclosureButton->setChecked(expand);
     }
 
-    // Add footer for file stats.
-    mFooter = new Footer(diff.oldFile(diff.indexOf(name)), diff.newFile(diff.indexOf(name)));
-    connect(disclosureButton, &DisclosureButton::toggled, mFooter, &QLabel::setVisible);
+    // Add footer for filestats.
+    mFooter = new Footer(disclosureButton, diff, patch, diff.indexOf(name));
     layout->addWidget(mFooter);
+
+    // Start hidden when the file is checked.
+    bool expand = (mHeader->check()->checkState() == Qt::Unchecked);
+
+    if (Settings::instance()->value("collapse/added").toBool() == true &&
+        patch.status() == GIT_DELTA_ADDED)
+      expand = false;
+
+    if (Settings::instance()->value("collapse/deleted").toBool() == true &&
+        patch.status() == GIT_DELTA_DELETED)
+      expand = false;
+
+    disclosureButton->setChecked(expand);
   }
 
   bool isEmpty()

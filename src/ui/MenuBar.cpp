@@ -123,7 +123,7 @@ MenuBar::MenuBar(QWidget *parent)
     RecentRepositories *repos = RecentRepositories::instance();
     for (int i = 0; i < repos->count(); ++i) {
       RecentRepository *repo = repos->repository(i);
-      QAction *action = openRecent->addAction(repo->name() + " (" + repo->path() + ")");
+      QAction *action = openRecent->addAction(repo->name() /*sk/build:*/ + " (" + repo->path() + ")");
       connect(action, &QAction::triggered, [repo] {
         MainWindow::open(repo->path());
       });
