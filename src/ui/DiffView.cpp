@@ -95,14 +95,15 @@ const QString kButtonStyleFmt =
 const bool kBinaryShowUntracked = true;
 const bool kBinaryShowAdded = true;
 const bool kBinaryShowDeleted = true;
-const QSize kBinaryIconSize = QSize(64, 64);
+const QSize kBinaryIconsize = QSize(64, 64);
+const QSize kBinaryPicturesize = QSize(128, 128);
 
 // Filesize and filemode changes for modified files are always displayed.
-// The display for untracked, added and deleted files is configurable:
-const bool kFileStatsShowUntracked = true;
-const bool kFileStatsShowAdded = true;
-const bool kFileStatsShowDeleted = true;
-const QString kfileStatsStypeFmt =
+// Filestats for untracked, added and deleted files:
+const bool kFilestatsShowUntracked = true;
+const bool kFilestatsShowAdded = true;
+const bool kFilestatsShowDeleted = true;
+const QString kFilestatsStyleFmt =
   "QLabel {"
   " margin-left: 4px;"
   " margin-right: 4px;"
@@ -475,25 +476,36 @@ public:
     switch (mPatch.status())
     {
       case GIT_DELTA_UNTRACKED:
-        if (kBinaryShowUntracked)
-          newfile = loadPixmap(git::Diff::NewFile, lfs);
+        if (!kBinaryShowUntracked)
+          return;
+        newfile = loadPixmap(git::Diff::NewFile, lfs);
         break;
       case GIT_DELTA_ADDED:
-        if (kBinaryShowAdded)
-          newfile = loadPixmap(git::Diff::NewFile, lfs);
+        if (!kBinaryShowAdded)
+          return;
+        newfile = loadPixmap(git::Diff::NewFile, lfs);
         break;
       case GIT_DELTA_DELETED:
       case GIT_DELTA_UNREADABLE:
-        if (kBinaryShowDeleted)
-          oldfile = loadPixmap(git::Diff::OldFile, lfs);
+        if (!kBinaryShowDeleted)
+          return;
+        oldfile = loadPixmap(git::Diff::OldFile, lfs);
         break;
-      case GIT_DELTA_UNMODIFIED:
-      case GIT_DELTA_IGNORED:
-        return;
-      default:
+      case GIT_DELTA_MODIFIED:
         oldfile = loadPixmap(git::Diff::OldFile, lfs);
         newfile = loadPixmap(git::Diff::NewFile, lfs);
         break;
+      case GIT_DELTA_UNMODIFIED:
+      case GIT_DELTA_RENAMED:
+      case GIT_DELTA_COPIED:
+      case GIT_DELTA_IGNORED:
+      case GIT_DELTA_TYPECHANGE:
+      case GIT_DELTA_CONFLICTED:
+        // Suppress picture and binary icon.
+        return;
+      default:
+        // New enum added.
+        return;
     }
 
     QHBoxLayout *layout = new QHBoxLayout(this);
@@ -559,7 +571,7 @@ private:
 
     QSize sizeHint() const override
     {
-      return kBinaryIconSize;
+      return kBinaryIconsize;
     }
 
   protected:
@@ -606,7 +618,10 @@ private:
       // Load pixmap from blob data.
       pixmap.loadFromData(data);
       if (!pixmap.isNull()) {
-        return pixmap.scaledToHeight(kBinaryIconSize.height(), Qt::SmoothTransformation);
+        if ((pixmap.size().height() > kBinaryPicturesize.height()) ||
+            (pixmap.size().width() > kBinaryPicturesize.width()))
+          return pixmap.scaled(kBinaryPicturesize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+
         return pixmap;
       }
     }
@@ -615,14 +630,17 @@ private:
     QString path = mPatch.repo().workdir().filePath(mPatch.name());
     pixmap.load(path);
     if (!pixmap.isNull()) {
-      return pixmap.scaledToHeight(kBinaryIconSize.height(), Qt::SmoothTransformation);
+        if ((pixmap.size().height() > kBinaryPicturesize.height()) ||
+            (pixmap.size().width() > kBinaryPicturesize.width()))
+          return pixmap.scaled(kBinaryPicturesize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+
       return pixmap;
     }
 
     // Load icon for file.
     QFileIconProvider provider;
     QIcon icon = provider.icon(QFileInfo(path));
-    return icon.pixmap(windowHandle(), kBinaryIconSize);
+    return icon.pixmap(windowHandle(), kBinaryIconsize);
   }
 
   git::Patch mPatch;
@@ -1845,68 +1863,109 @@ public:
       const git::Diff &diff,
       const git::Patch &patch,
       const int index,
+      const bool lfs,
       QWidget *parent = nullptr)
       : QFrame(parent)
     {
       git_diff_file oldfile = diff.oldFile(index);
       git_diff_file newfile = diff.newFile(index);
 
-      // Ignore untracked and unchanged files: exit here.
-      if ((patch.isUntracked() && !kFileStatsShowUntracked) ||
-         ((oldfile.mode == newfile.mode) && (oldfile.size == newfile.size)))
-        return;
+      git_filemode_t oldmode = GIT_FILEMODE_UNREADABLE;
+      git_filemode_t newmode = GIT_FILEMODE_UNREADABLE;
+      uint64_t oldsize = 0;
+      uint64_t newsize = 0;
 
-      // Display filesize changes with sign.
-      uint64_t oldsize = oldfile.size;
-      uint64_t newsize = newfile.size;
+      switch (patch.status())
+      {
+        case GIT_DELTA_UNTRACKED:
+          if (!kFilestatsShowUntracked)
+            return;
+          newmode = static_cast<git_filemode_t>(newfile.mode);
+          oldsize = oldfile.size;
+          newsize = newfile.size;
+          break;
+        case GIT_DELTA_ADDED:
+          if (!kFilestatsShowAdded)
+            return;
+          newmode = static_cast<git_filemode_t>(newfile.mode);
+          oldsize = oldfile.size;
+          newsize = newfile.size;
+          break;
+        case GIT_DELTA_DELETED:
+        case GIT_DELTA_UNREADABLE:
+          if (!kFilestatsShowDeleted)
+            return;
+          oldmode = static_cast<git_filemode_t>(oldfile.mode);
+          oldsize = oldfile.size;
+          newsize = newfile.size;
+          break;
+        case GIT_DELTA_MODIFIED:
+          oldmode = static_cast<git_filemode_t>(oldfile.mode);
+          newmode = static_cast<git_filemode_t>(newfile.mode);
+          oldsize = oldfile.size;
+          newsize = newfile.size;
+          break;
+        case GIT_DELTA_UNMODIFIED:
+        case GIT_DELTA_RENAMED:
+        case GIT_DELTA_COPIED:
+        case GIT_DELTA_IGNORED:
+        case GIT_DELTA_TYPECHANGE:
+        case GIT_DELTA_CONFLICTED:
+          // Suppress filesize and filemode.
+          return;
+        default:
+          // New enum added.
+          return;
+      }
 
       // WORKAROUND: filesize of modified binary is not set.
       if ((newfile.mode != GIT_FILEMODE_UNREADABLE) && (newsize == 0)) {
-        if (patch.isValid() && patch.blob(git::Diff::NewFile).isValid())
-          newsize = patch.blob(git::Diff::NewFile).content().size();
+        if (patch.isValid() && patch.blob(git::Diff::NewFile).isValid()) {
+          if (lfs) {
+            QByteArray data;
+
+            newsize = patch.repo().lfsSmudge(data, patch.name()).size();
+          } else {
+            newsize = patch.blob(git::Diff::NewFile).content().size();
+          }
+        }
       }
 
-      if ((newsize || kFileStatsShowDeleted) &&
-          (oldsize > newsize)) {
+      // Display filesize changes with sign.
+      if (oldsize > newsize) {
         mSizeLabel = new QLabel(this);
-        mSizeLabel->setStyleSheet(kfileStatsStypeFmt.arg(Application::theme()->diff(Theme::Diff::Deletion).name()));
+        mSizeLabel->setStyleSheet(kFilestatsStyleFmt.arg(Application::theme()->diff(Theme::Diff::Deletion).name()));
         mSizeLabel->setText("-" + locale().formattedDataSize(oldsize - newsize));
         if (newsize)
-          mSizeLabel->setToolTip("New Filesize: " + QString::number(newsize) + " Bytes");
+          mSizeLabel->setToolTip(FileWidget::tr("New Filesize") + ": " + QString::number(newsize) + " Bytes");
         else
-          mSizeLabel->setToolTip("Old Filesize: " + QString::number(oldsize) + " Bytes");
+          mSizeLabel->setToolTip(FileWidget::tr("Old Filesize") + ": " + QString::number(oldsize) + " Bytes");
 
         mIsValid = true;
       }
-      else if ((oldsize || kFileStatsShowAdded || (patch.isUntracked() && kFileStatsShowUntracked)) &&
-               (oldsize < newsize)) {
+      else if (oldsize < newsize) {
         mSizeLabel = new QLabel(this);
-        mSizeLabel->setStyleSheet(kfileStatsStypeFmt.arg(Application::theme()->diff(Theme::Diff::Addition).name()));
+        mSizeLabel->setStyleSheet(kFilestatsStyleFmt.arg(Application::theme()->diff(Theme::Diff::Addition).name()));
         mSizeLabel->setText("+" + locale().formattedDataSize(newsize - oldsize));
-        mSizeLabel->setToolTip("New Filesize: " + QString::number(newsize) + " Bytes");
+        mSizeLabel->setToolTip(FileWidget::tr("New Filesize") + ": " + QString::number(newsize) + " Bytes");
 
         mIsValid = true;
       }
 
       // Display filemode changes.
-      git_filemode_t oldmode = static_cast<git_filemode_t>(oldfile.mode);
-      git_filemode_t newmode = static_cast<git_filemode_t>(newfile.mode);
-
-      if (((newmode != GIT_FILEMODE_UNREADABLE) || kFileStatsShowDeleted) &&
-           (oldmode != GIT_FILEMODE_UNREADABLE) && (oldmode != newmode)) {
+      if ((oldmode != GIT_FILEMODE_UNREADABLE) && (oldmode != newmode)) {
         mOldLabel = new QLabel(this);
-        mOldLabel->setStyleSheet(kfileStatsStypeFmt.arg(Application::theme()->diff(Theme::Diff::Deletion).name()));
+        mOldLabel->setStyleSheet(kFilestatsStyleFmt.arg(Application::theme()->diff(Theme::Diff::Deletion).name()));
         mOldLabel->setText(fromFileMode(oldmode));
-        mOldLabel->setToolTip("Old Filemode: " + QString::number(oldmode, 8));
+        mOldLabel->setToolTip(FileWidget::tr("Old Filemode") + ": " + QString::number(oldmode, 8));
 
         mIsValid = true;
       }
-      if (((oldmode != GIT_FILEMODE_UNREADABLE) || kFileStatsShowAdded || (patch.isUntracked() && kFileStatsShowUntracked)) &&
-           (newmode != GIT_FILEMODE_UNREADABLE) && (oldmode != newmode)) {
+      if ((newmode != GIT_FILEMODE_UNREADABLE) && (oldmode != newmode)) {
         mNewLabel = new QLabel(this);
-        mNewLabel->setStyleSheet(kfileStatsStypeFmt.arg(Application::theme()->diff(Theme::Diff::Addition).name()));
+        mNewLabel->setStyleSheet(kFilestatsStyleFmt.arg(Application::theme()->diff(Theme::Diff::Addition).name()));
         mNewLabel->setText(fromFileMode(newmode));
-        mNewLabel->setToolTip("New Filemode: " + QString::number(newmode, 8));
+        mNewLabel->setToolTip(FileWidget::tr("New Filemode") + ": " + QString::number(newmode, 8));
 
         mIsValid = true;
       }
@@ -1966,20 +2025,20 @@ public:
     {
       switch (mode) {
         case GIT_FILEMODE_UNREADABLE:
-          return QString("missing");
+          return QString(FileWidget::tr("missing"));
         case GIT_FILEMODE_TREE:
-          return QString("tree");
+          return QString(FileWidget::tr("tree"));
         case GIT_FILEMODE_BLOB:
-          return QString("blob");
+          return QString(FileWidget::tr("blob"));
         case GIT_FILEMODE_BLOB_EXECUTABLE:
-          return QString("executable");
+          return QString(FileWidget::tr("executable"));
         case GIT_FILEMODE_LINK:
-          return QString("link");
+          return QString(FileWidget::tr("link"));
         case GIT_FILEMODE_COMMIT:
-          return QString("submodul");
+          return QString(FileWidget::tr("submodul"));
         default:
           // New (unknown) enum value added
-          return QString("unknown");
+          return QString(FileWidget::tr("unknown"));
         }
     }
 
@@ -2103,7 +2162,7 @@ public:
     }
 
     // Add footer for filestats.
-    mFooter = new Footer(disclosureButton, diff, patch, diff.indexOf(name));
+    mFooter = new Footer(disclosureButton, diff, patch, diff.indexOf(name), lfs);
     layout->addWidget(mFooter);
 
     // Start hidden when the file is checked.
