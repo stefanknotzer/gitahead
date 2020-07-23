@@ -313,12 +313,12 @@
 <context>
     <name>Application</name>
     <message>
-        <location filename="../src/app/Application.cpp" line="391"/>
+        <location filename="../src/app/Application.cpp" line="395"/>
         <source>SSL Errors</source>
         <translation>SSL-Fehler</translation>
     </message>
     <message>
-        <location filename="../src/app/Application.cpp" line="393"/>
+        <location filename="../src/app/Application.cpp" line="397"/>
         <source>Failed to set up SSL session. Do you want to ignore these errors?</source>
         <translation>SSL-Sitzung konnte nicht initialisiert werden. Willst Du den Fehler ignorieren?</translation>
     </message>
@@ -583,72 +583,72 @@
     </message>
     <message>
         <location filename="../src/ui/DetailView.cpp" line="510"/>
-        <location filename="../src/ui/DetailView.cpp" line="693"/>
+        <location filename="../src/ui/DetailView.cpp" line="696"/>
         <source>Commit</source>
         <translation>Committen</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="636"/>
+        <location filename="../src/ui/DetailView.cpp" line="639"/>
         <source>Update %1</source>
         <translation>%1 aktualisiert</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="640"/>
+        <location filename="../src/ui/DetailView.cpp" line="643"/>
         <source>Update %1 and %2</source>
         <translation>%1 und %2 aktualisiert</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="644"/>
+        <location filename="../src/ui/DetailView.cpp" line="647"/>
         <source>Update %1, %2, and %3</source>
         <translation>%1, %2 und %3 aktualisiert</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="649"/>
+        <location filename="../src/ui/DetailView.cpp" line="652"/>
         <source>Update %1, %2, and %3 more files...</source>
         <translation>%1, %2 und %3 weitere dateien aktualisiert...</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="665"/>
+        <location filename="../src/ui/DetailView.cpp" line="668"/>
         <source>Nothing staged</source>
         <translation>Nichts gestaged</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="668"/>
+        <location filename="../src/ui/DetailView.cpp" line="671"/>
         <source>%1 of %2 file staged</source>
         <translation>%1 von %2 Datei gestaged</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="668"/>
+        <location filename="../src/ui/DetailView.cpp" line="671"/>
         <source>%1 of %2 files staged</source>
         <translation>%1 von %2 Dateien gestaged</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="673"/>
+        <location filename="../src/ui/DetailView.cpp" line="676"/>
         <source>%1 file partially staged</source>
         <translation>%1 Datei teilweise gestaged</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="673"/>
+        <location filename="../src/ui/DetailView.cpp" line="676"/>
         <source>%1 files partially staged</source>
         <translation>%1 Dateien teilweise gestaged</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="679"/>
+        <location filename="../src/ui/DetailView.cpp" line="682"/>
         <source>%1 unresolved conflict</source>
         <translation>%1 ungelöster Konflikt</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="679"/>
+        <location filename="../src/ui/DetailView.cpp" line="682"/>
         <source>%1 unresolved conflicts</source>
         <translation>%1 ungelöste Konflikte</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="682"/>
+        <location filename="../src/ui/DetailView.cpp" line="685"/>
         <source>all conflicts resolved</source>
         <translation>Alle Konflikte gelöst</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="693"/>
+        <location filename="../src/ui/DetailView.cpp" line="696"/>
         <source>Commit Merge</source>
         <translation>Merge committen</translation>
     </message>
@@ -698,12 +698,12 @@
     <message>
         <location filename="../src/ui/CommitList.cpp" line="1503"/>
         <source>Delete Tag %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tag %1 löschen</translation>
     </message>
     <message>
         <location filename="../src/ui/CommitList.cpp" line="1513"/>
         <source>Delete Branch %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Branch %1 löschen</translation>
     </message>
     <message>
         <location filename="../src/ui/CommitList.cpp" line="1521"/>
@@ -822,52 +822,52 @@
 <context>
     <name>ConfigDialog</name>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="765"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="773"/>
         <source>General</source>
         <translation>Allgemein</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="773"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="781"/>
         <source>Diff</source>
         <translation>Diff</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="781"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="789"/>
         <source>Remotes</source>
         <translation>Remotes</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="789"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="797"/>
         <source>Branches</source>
         <translation>Branches</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="797"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="805"/>
         <source>Submodules</source>
         <translation>Submodule</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="804"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="812"/>
         <source>Search</source>
         <translation>Suche</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="811"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="819"/>
         <source>Plugins</source>
         <translation>Plugins</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="818"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="826"/>
         <source>LFS</source>
         <translation>LFS</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="833"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="841"/>
         <source>Edit Config File...</source>
         <translation>Konfigurations-Datei bearbeiten...</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="741"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="749"/>
         <source>Esc</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1100,12 +1100,12 @@
 <context>
     <name>DiffView</name>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="2114"/>
+        <location filename="../src/ui/DiffView.cpp" line="2336"/>
         <source>Add new file</source>
         <translation>Neue Datei hinzufügen</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="2128"/>
+        <location filename="../src/ui/DiffView.cpp" line="2350"/>
         <source>Or drag files here to copy into the repository</source>
         <translation>Oder Dateien hierher ziehen, um sie dem Repository hinzuzufügen</translation>
     </message>
@@ -1518,107 +1518,148 @@
 <context>
     <name>FileWidget</name>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1633"/>
+        <location filename="../src/ui/DiffView.cpp" line="1666"/>
         <source>LFS</source>
         <translation>LFS</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1638"/>
-        <location filename="../src/ui/DiffView.cpp" line="1650"/>
+        <location filename="../src/ui/DiffView.cpp" line="1671"/>
+        <location filename="../src/ui/DiffView.cpp" line="1683"/>
         <source>Unlock</source>
         <translation>Entsperren</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1638"/>
-        <location filename="../src/ui/DiffView.cpp" line="1650"/>
+        <location filename="../src/ui/DiffView.cpp" line="1671"/>
+        <location filename="../src/ui/DiffView.cpp" line="1683"/>
         <source>Lock</source>
         <translation>Sperren</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1654"/>
-        <location filename="../src/ui/DiffView.cpp" line="1907"/>
+        <location filename="../src/ui/DiffView.cpp" line="1687"/>
+        <location filename="../src/ui/DiffView.cpp" line="2118"/>
         <source>Show Object</source>
         <translation>Objekt anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1663"/>
+        <location filename="../src/ui/DiffView.cpp" line="1696"/>
         <source>Edit File</source>
         <translation>Datei bearbeiten</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1669"/>
+        <location filename="../src/ui/DiffView.cpp" line="1702"/>
         <source>Discard File</source>
         <translation>Datei verwerfen</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1676"/>
+        <location filename="../src/ui/DiffView.cpp" line="1709"/>
         <source>Directory</source>
         <translation>Ordner</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1676"/>
+        <location filename="../src/ui/DiffView.cpp" line="1709"/>
         <source>File</source>
         <translation>Datei</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1678"/>
+        <location filename="../src/ui/DiffView.cpp" line="1711"/>
         <source>Remove %1?</source>
         <translation>%1 löschen?</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1678"/>
+        <location filename="../src/ui/DiffView.cpp" line="1711"/>
         <source>Discard Changes?</source>
         <translation>Änderungen verwerfen?</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1680"/>
+        <location filename="../src/ui/DiffView.cpp" line="1713"/>
         <source>Are you sure you want to remove &apos;%1&apos;?</source>
         <translation>Bist Du sicher, dass Du &apos;%1&apos; löschen willst?</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1681"/>
+        <location filename="../src/ui/DiffView.cpp" line="1714"/>
         <source>Are you sure you want to discard all changes in &apos;%1&apos;?</source>
         <translation>Bist Du sicher, dass Du alle Änderungen in &apos;%1&apos; verwerfen willst?</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1686"/>
+        <location filename="../src/ui/DiffView.cpp" line="1719"/>
         <source>This action cannot be undone.</source>
         <translation>Die Aktion kann nicht rückgängig gemacht werden.</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1689"/>
+        <location filename="../src/ui/DiffView.cpp" line="1722"/>
         <source>Remove %1</source>
         <translation>%1 löschen</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1689"/>
+        <location filename="../src/ui/DiffView.cpp" line="1722"/>
         <source>Discard Changes</source>
         <translation>Änderungen verwerfen</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1706"/>
+        <location filename="../src/ui/DiffView.cpp" line="1739"/>
         <source>Discard</source>
         <translation>Verwerfen</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1707"/>
+        <location filename="../src/ui/DiffView.cpp" line="1740"/>
         <source>discard</source>
         <translation>verwerfe</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1720"/>
-        <location filename="../src/ui/DiffView.cpp" line="1723"/>
+        <location filename="../src/ui/DiffView.cpp" line="1753"/>
+        <location filename="../src/ui/DiffView.cpp" line="1756"/>
         <source>Collapse File</source>
         <translation>Datei zusammenklappen</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1720"/>
-        <location filename="../src/ui/DiffView.cpp" line="1723"/>
+        <location filename="../src/ui/DiffView.cpp" line="1753"/>
+        <location filename="../src/ui/DiffView.cpp" line="1756"/>
         <source>Expand File</source>
         <translation>Datei ausklappen</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1907"/>
+        <location filename="../src/ui/DiffView.cpp" line="1971"/>
+        <location filename="../src/ui/DiffView.cpp" line="1983"/>
+        <source>Filemode: </source>
+        <translation>Dateiattribute: </translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DiffView.cpp" line="2001"/>
+        <source>missing</source>
+        <translation>nicht vorhanden</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DiffView.cpp" line="2003"/>
+        <source>tree</source>
+        <translation>Verzeichnis</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DiffView.cpp" line="2005"/>
+        <source>blob</source>
+        <translation>Datei</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DiffView.cpp" line="2007"/>
+        <source>executable</source>
+        <translation>Ausführbare Datei</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DiffView.cpp" line="2009"/>
+        <source>link</source>
+        <translation>Verknüpfung</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DiffView.cpp" line="2011"/>
+        <source>submodul</source>
+        <translation>Submodul</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DiffView.cpp" line="2014"/>
+        <source>unknown</source>
+        <translation>unbekannt</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DiffView.cpp" line="2118"/>
         <source>Show Pointer</source>
         <translation>Pointer anzeigen</translation>
     </message>
@@ -1659,62 +1700,67 @@
 <context>
     <name>GeneralPanel</name>
     <message>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="86"/>
         <location filename="../src/dialogs/SettingsDialog.cpp" line="104"/>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="85"/>
         <source>Fetch every</source>
         <translation>Fetchen alle</translation>
     </message>
     <message>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="94"/>
         <location filename="../src/dialogs/SettingsDialog.cpp" line="112"/>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="93"/>
         <source>minutes</source>
         <translation>Minuten</translation>
     </message>
     <message>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="97"/>
         <location filename="../src/dialogs/SettingsDialog.cpp" line="115"/>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="96"/>
         <source>Push after each commit</source>
         <translation>Nach jedem Commit pushen</translation>
     </message>
     <message>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="98"/>
         <location filename="../src/dialogs/SettingsDialog.cpp" line="116"/>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="97"/>
         <source>Update submodules after pull</source>
         <translation>Submodule nach pull aktualisieren</translation>
     </message>
     <message>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="99"/>
         <location filename="../src/dialogs/SettingsDialog.cpp" line="117"/>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="98"/>
         <source>Prune when fetching</source>
         <translation>Beim Fetchen aufräumen</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="118"/>
-        <source>No translation</source>
-        <translation type="unfinished"></translation>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="102"/>
+        <source>Repository alias:</source>
+        <translation>Repository Alias:</translation>
     </message>
     <message>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="118"/>
+        <source>No translation</source>
+        <translation>Keine Übersetzung</translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="103"/>
         <location filename="../src/dialogs/SettingsDialog.cpp" line="131"/>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="101"/>
         <source>User name:</source>
         <translation>Benutzername:</translation>
     </message>
     <message>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="104"/>
         <location filename="../src/dialogs/SettingsDialog.cpp" line="132"/>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="102"/>
         <source>User email:</source>
         <translation>E-Mail-Adresse:</translation>
     </message>
     <message>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="105"/>
         <location filename="../src/dialogs/SettingsDialog.cpp" line="133"/>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="103"/>
         <source>Automatic actions:</source>
         <translation>Automatische Aktionen:</translation>
     </message>
     <message>
         <location filename="../src/dialogs/SettingsDialog.cpp" line="137"/>
         <source>Language:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sprache:</translation>
     </message>
     <message>
         <location filename="../src/dialogs/SettingsDialog.cpp" line="121"/>
@@ -1819,85 +1865,85 @@
 <context>
     <name>HunkWidget</name>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="629"/>
+        <location filename="../src/ui/DiffView.cpp" line="699"/>
         <source>Save</source>
         <translation>Speichern</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="633"/>
+        <location filename="../src/ui/DiffView.cpp" line="703"/>
         <source>Undo</source>
         <translation>Rückgängig</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="644"/>
+        <location filename="../src/ui/DiffView.cpp" line="714"/>
         <source>Use Ours</source>
         <translation>Unseres benutzen</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="655"/>
+        <location filename="../src/ui/DiffView.cpp" line="725"/>
         <source>Use Theirs</source>
         <translation>Ihres benutzen</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="665"/>
+        <location filename="../src/ui/DiffView.cpp" line="735"/>
         <source>Edit Hunk</source>
         <translation>Hunk bearbeiten</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="671"/>
-        <location filename="../src/ui/DiffView.cpp" line="688"/>
+        <location filename="../src/ui/DiffView.cpp" line="741"/>
+        <location filename="../src/ui/DiffView.cpp" line="758"/>
         <source>Discard Hunk</source>
         <translation>Hunk verwerfen</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="676"/>
+        <location filename="../src/ui/DiffView.cpp" line="746"/>
         <source>Discard Hunk?</source>
         <translation>Hunk verwerfen?</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="678"/>
+        <location filename="../src/ui/DiffView.cpp" line="748"/>
         <source>Are you sure you want to remove &apos;%1&apos;?</source>
         <translation>Bist Du sicher, dass Du &apos;%1&apos; entfernen willst?</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="679"/>
+        <location filename="../src/ui/DiffView.cpp" line="749"/>
         <source>Are you sure you want to discard the hunk starting at line %1 in &apos;%2&apos;?</source>
         <translation>Bist Du sicher, dass Du die Änderungen im Hunk ab Zeile %1 in &apos;%2&apos; verwerfen willst?</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="685"/>
+        <location filename="../src/ui/DiffView.cpp" line="755"/>
         <source>This action cannot be undone.</source>
         <translation>Die Aktion kann nicht rückgängig gemacht werden.</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="721"/>
-        <location filename="../src/ui/DiffView.cpp" line="724"/>
+        <location filename="../src/ui/DiffView.cpp" line="791"/>
+        <location filename="../src/ui/DiffView.cpp" line="794"/>
         <source>Collapse Hunk</source>
         <translation>Hunk zusammenklappen</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="721"/>
-        <location filename="../src/ui/DiffView.cpp" line="724"/>
+        <location filename="../src/ui/DiffView.cpp" line="791"/>
+        <location filename="../src/ui/DiffView.cpp" line="794"/>
         <source>Expand Hunk</source>
         <translation>Hunk ausklappen</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="947"/>
+        <location filename="../src/ui/DiffView.cpp" line="1017"/>
         <source>Fix</source>
         <translation>Beheben</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="998"/>
+        <location filename="../src/ui/DiffView.cpp" line="1068"/>
         <source>Edit</source>
         <translation>Bearbeiten</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1197"/>
+        <location filename="../src/ui/DiffView.cpp" line="1271"/>
         <source>No newline at end of file</source>
         <translation>Keine Leerzeile am Ende der Datei</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="920"/>
+        <location filename="../src/ui/DiffView.cpp" line="990"/>
         <source>Esc</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1912,9 +1958,8 @@
 <context>
     <name>Images</name>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="587"/>
         <source>&lt;b&gt;Size:&lt;/b&gt; %1</source>
-        <translation>&lt;b&gt;Größe:&lt;/b&gt; %1</translation>
+        <translation type="vanished">&lt;b&gt;Größe:&lt;/b&gt; %1</translation>
     </message>
 </context>
 <context>
@@ -1927,12 +1972,12 @@
 <context>
     <name>LfsPanel</name>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="490"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="498"/>
         <source>Initialize LFS</source>
         <translation>LFS initialisieren</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="527"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="535"/>
         <source>Specify a glob pattern for tracking large files.
 
 Generally, large files are greater than 500kB, change frequently,
@@ -1957,82 +2002,82 @@ Beispiele
 </translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="542"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="550"/>
         <source>Pattern:</source>
         <translation>Muster:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="547"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="555"/>
         <source>Track</source>
         <translation>Tracken</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="621"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="629"/>
         <source>days</source>
         <translation>Tage</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="626"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="634"/>
         <source>Fetch LFS objects from all references for the past</source>
         <translation>LFS-Objekte von allen Referenzen aus der Vergangenheit fetchen</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="647"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="655"/>
         <source>reference days or</source>
         <translation>Referenz-Tage oder</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="664"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="672"/>
         <source>commit days</source>
         <translation>Commit-Tage</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="668"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="676"/>
         <source>View Environment</source>
         <translation>Umgebung ansehen</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="673"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="681"/>
         <source>git-lfs env (read only)</source>
         <translation>git-lfs env (nur lesen)</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="689"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="697"/>
         <source>Deinitialize LFS</source>
         <translation>LFS deinitialisieren</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="691"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="699"/>
         <source>Deinitialize LFS?</source>
         <translation>LFS deinitialisieren?</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="693"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="701"/>
         <source>Are you sure you want uninstall LFS from this repository?</source>
         <translation>Bist Du sicher, dass Du LFS aus diesem Repository deinstallieren willst?</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="699"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="707"/>
         <source>Deinitialize</source>
         <translation>Deinitialisieren</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="710"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="718"/>
         <source>Server URL:</source>
         <translation>Server-URL:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="711"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="719"/>
         <source>Prune Offset:</source>
         <translation>Prune-Offset:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="712"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="720"/>
         <source>Fetch Recent:</source>
         <translation>Neue holen:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="715"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="723"/>
         <source>Advanced:</source>
         <translation>Erweitert:</translation>
     </message>
@@ -2124,59 +2169,59 @@ Beispiele
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="481"/>
+        <location filename="../src/ui/MainWindow.cpp" line="460"/>
         <source>Invalid Git Repository</source>
         <translation>Ungültiges GIT-Repository</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="482"/>
+        <location filename="../src/ui/MainWindow.cpp" line="461"/>
         <source>%1 does not contain a valid git repository.</source>
         <translation>%1 enthält kein gültiges GIT-Repository.</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="544"/>
-        <location filename="../src/ui/MainWindow.cpp" line="562"/>
+        <location filename="../src/ui/MainWindow.cpp" line="509"/>
+        <location filename="../src/ui/MainWindow.cpp" line="527"/>
         <source>%1 - %2</source>
         <translation>%1 - %2</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="556"/>
+        <location filename="../src/ui/MainWindow.cpp" line="521"/>
         <source>ahead: %1</source>
         <translation>voraus: %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="558"/>
+        <location filename="../src/ui/MainWindow.cpp" line="523"/>
         <source>behind: %1</source>
         <translation>dahinter: %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="560"/>
+        <location filename="../src/ui/MainWindow.cpp" line="525"/>
         <source>up-to-date</source>
         <translation>aktuell</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="561"/>
-        <location filename="../src/ui/MainWindow.cpp" line="598"/>
+        <location filename="../src/ui/MainWindow.cpp" line="526"/>
+        <location filename="../src/ui/MainWindow.cpp" line="563"/>
         <source>%1 (%2)</source>
         <translation>%1 (%2)</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="570"/>
+        <location filename="../src/ui/MainWindow.cpp" line="535"/>
         <source>MERGING</source>
         <translation>MERGE</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="575"/>
+        <location filename="../src/ui/MainWindow.cpp" line="540"/>
         <source>REVERTING</source>
         <translation>REVERTE</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="580"/>
+        <location filename="../src/ui/MainWindow.cpp" line="545"/>
         <source>CHERRY-PICKING</source>
         <translation>CHERRY-PICKEND</translation>
     </message>
     <message>
-        <location filename="../src/ui/MainWindow.cpp" line="589"/>
+        <location filename="../src/ui/MainWindow.cpp" line="554"/>
         <source>REBASING</source>
         <translation>REBASE</translation>
     </message>
@@ -3314,17 +3359,17 @@ Konflikt zu beheben</translation>
     <message>
         <location filename="../src/dialogs/CloneDialog.cpp" line="46"/>
         <source>Enter the URL of the remote repository or browse for a local directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Gib die URL des entfernten Repositories ein oder wähle einen Ordner</translation>
     </message>
     <message>
         <location filename="../src/dialogs/CloneDialog.cpp" line="74"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/dialogs/CloneDialog.cpp" line="76"/>
         <source>Choose Directory</source>
-        <translation type="unfinished">Ordner wählen</translation>
+        <translation>Ordner wählen</translation>
     </message>
     <message>
         <location filename="../src/dialogs/CloneDialog.cpp" line="98"/>
@@ -3358,17 +3403,17 @@ Konflikt zu beheben</translation>
 <context>
     <name>RemotesPanel</name>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="209"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="217"/>
         <source>Delete Remote?</source>
         <translation>Remote löschen?</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="210"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="218"/>
         <source>Are you sure you want to delete &apos;%1&apos;?</source>
         <translation>Bist Du sicher, dass Du &apos;%1&apos; löschen willst?</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="215"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="223"/>
         <source>Delete</source>
         <translation>Löschen</translation>
     </message>
@@ -4321,32 +4366,32 @@ Dies reverted den Commit %2.</translation>
 <context>
     <name>SearchPanel</name>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="400"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="408"/>
         <source>Enable indexing</source>
         <translation>Indizierung aktivieren</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="415"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="423"/>
         <source>terms</source>
         <translation>Terme</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="431"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="439"/>
         <source>lines</source>
         <translation>Zeilen</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="445"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="453"/>
         <source>Limit commits to:</source>
         <translation>Beschränke Commits auf:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="446"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="454"/>
         <source>Diff context:</source>
         <translation>Diff-Kontext:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="463"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="471"/>
         <source>Remove Index</source>
         <translation>Index entfernen</translation>
     </message>
@@ -4376,12 +4421,12 @@ Dies reverted den Commit %2.</translation>
     <message>
         <location filename="../src/conf/Settings.cpp" line="222"/>
         <source>Prompt to stage directories</source>
-        <translation type="unfinished"></translation>
+        <translation>Auffordern, Ordner zu stagen</translation>
     </message>
     <message>
         <location filename="../src/conf/Settings.cpp" line="225"/>
         <source>Prompt to stage large files</source>
-        <translation type="unfinished"></translation>
+        <translation>Auffordern, große Dateien zu stagen</translation>
     </message>
 </context>
 <context>
@@ -5047,7 +5092,6 @@ Dies reverted den Commit %2.</translation>
         <translation>Installer-Skript schlug fehl: %1</translation>
     </message>
     <message>
-        <location filename="../src/update/Updater_mac.mm" line="117"/>
         <location filename="../src/update/Updater.cpp" line="274"/>
         <source>Helper application failed to start</source>
         <translation>Helfer-Programm konnte nicht gestartet werden</translation>
@@ -5058,19 +5102,16 @@ Dies reverted den Commit %2.</translation>
         <translation>Installer konnte nicht gestartet werden</translation>
     </message>
     <message>
-        <location filename="../src/update/Updater_mac.mm" line="77"/>
         <source>The disk image failed to mount successfully</source>
-        <translation>Das Volumen-Abbild konnte nicht eingehangen werden</translation>
+        <translation type="vanished">Das Volumen-Abbild konnte nicht eingehangen werden</translation>
     </message>
     <message>
-        <location filename="../src/update/Updater_mac.mm" line="96"/>
         <source>The existing bundle could not be moved to the trash</source>
-        <translation>Das bereits vorhandene Paket konnte nicht in den Papierkorb verschoben werden</translation>
+        <translation type="vanished">Das bereits vorhandene Paket konnte nicht in den Papierkorb verschoben werden</translation>
     </message>
     <message>
-        <location filename="../src/update/Updater_mac.mm" line="108"/>
         <source>The new bundle could not be copied into place</source>
-        <translation>Das neue Paket konnte nicht an den Zielort verschoben werden</translation>
+        <translation type="vanished">Das neue Paket konnte nicht an den Zielort verschoben werden</translation>
     </message>
 </context>
 <context>
