@@ -1172,9 +1172,9 @@ CommitList::CommitList(Index *index, QWidget *parent)
 
   CommitModel *model = static_cast<CommitModel *>(mModel);
   connect(model, &CommitModel::statusFinished, [this](bool visible) {
-    // Fake a selection notification if the diff is visible and selected.
-    if (visible && selectionModel()->isSelected(mModel->index(0, 0)))
-      resetSelection();
+//sk/build    // Fake a selection notification if the diff is visible and selected.
+//sk/build    if (visible && selectionModel()->isSelected(mModel->index(0, 0)))
+//sk/build      resetSelection();
 
     // Select the first commit if the selection was cleared.
     if (selectedIndexes().isEmpty())
