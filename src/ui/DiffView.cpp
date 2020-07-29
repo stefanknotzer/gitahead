@@ -66,6 +66,7 @@ const int kIndent = 2;
 const int kArrowWidth = 9;
 const int kArrowHeight = 7;
 
+const bool kFilestatsShowBinaryDiff = true;
 const QString kFileLabelStyleFmt =
   "QLabel {"
   " font: bold 19px"
@@ -460,6 +461,214 @@ protected:
 
     TextEditor::focusOutEvent(event);
   }
+};
+
+class Arrow : public QFrame
+{
+public:
+  Arrow(QWidget *parent = nullptr)
+    : QFrame(parent)
+  {
+    setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
+  }
+
+  QSize sizeHint() const override
+  {
+    return QSize(kArrowWidth, kArrowHeight);
+  }
+
+protected:
+  void paintEvent(QPaintEvent *event) override
+  {
+    // Draw arrow.
+    QPainter painter(this);
+    QRect rect = this->rect();
+
+    int x1 = rect.left();
+    int x2 = rect.right();
+    int y = rect.height() / 2;
+
+    QPainterPath path;
+    path.moveTo(x1, y);
+    path.lineTo(x2, y);
+    path.moveTo(x2 - kArrowHeight / 2, y - kArrowHeight / 2);
+    path.lineTo(x2, y);
+    path.lineTo(x2 - kArrowHeight / 2, y + kArrowHeight / 2);
+
+    QPen pen = painter.pen();
+    pen.setWidthF(1.5);
+    painter.setPen(pen);
+    painter.drawPath(path);
+  }
+};
+
+class Images : public QWidget
+{
+  Q_OBJECT
+
+public:
+  Images(
+    const git::Patch &patch,
+    const bool lfs,
+    QWidget *parent = nullptr)
+    : QWidget(parent)
+  {
+    uint64_t oldsize = 0;
+    uint64_t newsize = 0;
+
+    // Load pixmaps.
+    QPixmap oldpix = loadPixmap(patch, git::Diff::OldFile, &oldsize, lfs);
+    QPixmap newpix = loadPixmap(patch, git::Diff::NewFile, &newsize, lfs);
+
+    QHBoxLayout *layout = new QHBoxLayout(this);
+    layout->setContentsMargins(4,2,4,2);
+    layout->setSpacing(4);
+
+    // Add old pixmap and size.
+    QVBoxLayout *oldlay = new QVBoxLayout();
+    oldlay->setSpacing(4);
+
+    QLabel *oldsizelabel = new QLabel(this);
+    oldsizelabel->setStyleSheet(kFilestatsStyleFmt.arg(Application::theme()->diff(Theme::Diff::Deletion).name()));
+    oldsizelabel->setText(locale().formattedDataSize(oldsize));
+    oldlay->addWidget(oldsizelabel, 0, Qt::AlignHCenter);
+
+    QLabel *oldpixlabel = new QLabel(this);
+    if (!oldpix.isNull())
+      oldpixlabel->setPixmap(oldpix);
+    oldlay->addWidget(oldpixlabel, 0, Qt::AlignHCenter);
+
+    layout->addItem(oldlay);
+
+    // Add arrow.
+    Arrow *arrow = new Arrow(this);
+    layout->addWidget(arrow, 0, Qt::AlignVCenter);
+
+    // Add new pixmap and size.
+    QVBoxLayout *newlay = new QVBoxLayout();
+    newlay->setSpacing(4);
+
+    QLabel *newsizelabel = new QLabel(this);
+    newsizelabel->setStyleSheet(kFilestatsStyleFmt.arg(Application::theme()->diff(Theme::Diff::Addition).name()));
+    newsizelabel->setText(locale().formattedDataSize(newsize));
+    newlay->addWidget(newsizelabel, 0, Qt::AlignHCenter);
+
+    QLabel *newpixlabel = new QLabel(this);
+    if (!newpix.isNull())
+      newpixlabel->setPixmap(newpix);
+    newlay->addWidget(newpixlabel, 0, Qt::AlignHCenter);
+
+    layout->addItem(newlay);
+    layout->addStretch();
+
+    // Setup visibility.
+    int visible = 5;
+
+    if (oldsize == 0) {
+      oldsizelabel->setVisible(false);
+      oldpixlabel->setVisible(false);
+      arrow->setVisible(false);
+      visible -= 3;
+    }
+    if (newsize == 0) {
+      newsizelabel->setVisible(false);
+      newpixlabel->setVisible(false);
+      arrow->setVisible(false);
+      visible -= 3;
+    }
+
+    bool sameimage = (oldpix.toImage() == newpix.toImage()) &&
+                     (oldsize != 0) && (newsize != 0) && (!lfs);
+
+    if (oldsize == newsize) {
+      oldsizelabel->setVisible(false);
+      newsizelabel->setVisible(false);
+      visible -= 2;
+    }
+    if (sameimage) {
+      oldpixlabel->setVisible(false);
+      newpixlabel->setVisible(false);
+      visible -= 2;
+    }
+    if (visible <= 1) {
+      arrow->setVisible(false);
+      visible -= 1;
+    }
+
+    if (visible <= 0) {
+      setVisible(false);
+      mIsEmpty = true;
+    }
+  }
+
+  bool isEmpty() const { return mIsEmpty; }
+
+private:
+  QPixmap loadPixmap(const git::Patch &patch, git::Diff::File type, uint64_t *size, bool lfs)
+  {
+    QPixmap pixmap;
+
+    // Shortcut for lfs data.
+    if (patch.isLfsPointer() && !lfs)
+      return pixmap;
+
+    git::Blob blob = patch.blob(type);
+
+    if (blob.isValid()) {
+      QByteArray data = blob.content();
+
+      if (lfs)
+        data = patch.repo().lfsSmudge(data, patch.name());
+
+      *size = data.size();
+
+      // Load pixmap from blob data.
+      pixmap.loadFromData(data);
+      if (!pixmap.isNull()) {
+        if ((pixmap.size().height() > kBinaryPicturesize.height()) ||
+            (pixmap.size().width() > kBinaryPicturesize.width()))
+          return pixmap.scaled(kBinaryPicturesize, Qt::KeepAspectRatio);
+
+        return pixmap;
+      }
+    }
+
+    // Load pixmap from file.
+    QString path = patch.repo().workdir().filePath(patch.name());
+    pixmap.load(path);
+    if (!pixmap.isNull()) {
+      // Set size for new file.
+      if ((type == git::Diff::NewFile) && (*size == 0))
+        *size = QFileInfo(path).size();
+      if ((pixmap.size().height() > kBinaryPicturesize.height()) ||
+          (pixmap.size().width() > kBinaryPicturesize.width()))
+        return pixmap.scaled(kBinaryPicturesize, Qt::KeepAspectRatio);
+
+      return pixmap;
+    }
+
+    QFileIconProvider provider;
+    QIcon icon;
+    if (QFileInfo(path).exists()) {
+      // Set size for new file.
+      if ((type == git::Diff::NewFile) && (*size == 0))
+        *size = QFileInfo(path).size();
+      // Load icon for file.
+      icon = provider.icon(QFileInfo(path));
+    } else {
+      // Set generic icon.
+      icon = provider.icon(QFileIconProvider::File);
+    }
+
+    // Windows: Icons are provided 16 x 16 and 32 x 32
+    // QT5.15.5, Juli 2020
+    pixmap = icon.pixmap(windowHandle(), QSize(32, 32));
+
+    // Upscale / downscale icon if needed.
+    return pixmap.scaled(kBinaryIconsize, Qt::KeepAspectRatio);
+  }
+
+  bool mIsEmpty = false;
 };
 
 class HunkWidget : public QFrame
@@ -1289,45 +1498,6 @@ private:
   bool mLoaded = false;
 };
 
-class Arrow : public QWidget
-{
-public:
-  Arrow(QWidget *parent = nullptr)
-    : QWidget(parent)
-  {
-    setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
-  }
-
-  QSize sizeHint() const override
-  {
-    return QSize(kArrowWidth, kArrowHeight);
-  }
-
-protected:
-  void paintEvent(QPaintEvent *event) override
-  {
-    // Draw arrow.
-    QPainter painter(this);
-    QRect rect = this->rect();
-
-    int x1 = rect.left();
-    int x2 = rect.right();
-    int y = rect.height() / 2;
-
-    QPainterPath path;
-    path.moveTo(x1, y);
-    path.lineTo(x2, y);
-    path.moveTo(x2 - kArrowHeight / 2, y - kArrowHeight / 2);
-    path.lineTo(x2, y);
-    path.lineTo(x2 - kArrowHeight / 2, y + kArrowHeight / 2);
-
-    QPen pen = painter.pen();
-    pen.setWidthF(1.5);
-    painter.setPen(pen);
-    painter.drawPath(path);
-  }
-};
-
 class LineStats : public QWidget
 {
 public:
@@ -1673,7 +1843,6 @@ public:
   {
   public:
     Footer(
-      DisclosureButton *button,
       const git::Diff &diff,
       const git::Patch &patch,
       const int index,
@@ -1750,32 +1919,23 @@ public:
       layout->setContentsMargins(2,2,2,2);
       layout->setSpacing(2);
 
-      if (binary || lfs) {
-        // Binary and lfs: load image.
-        mImages = new Images(patch, oldsize, newsize, this);
-        mImages->setVisible(!lfs);
-        layout->addWidget(mImages);
-
-        if (!mImages->isEmpty())
-          mIsValid = true;
-      }
-      if (!binary) {
+      if (!binary || kFilestatsShowBinaryDiff) {
         // Textfile: filesize diff with sign.
         if (oldsize > newsize) {
-          mDiffLabel = new QLabel(this);
-          mDiffLabel->setStyleSheet(kFilestatsStyleFmt.arg(Application::theme()->diff(Theme::Diff::Deletion).name()));
-          mDiffLabel->setText("-" + locale().formattedDataSize(oldsize - newsize));
-          layout->addWidget(mDiffLabel);
+          QLabel *label = new QLabel(this);
+          label->setStyleSheet(kFilestatsStyleFmt.arg(Application::theme()->diff(Theme::Diff::Deletion).name()));
+          label->setText("-" + locale().formattedDataSize(oldsize - newsize));
+          layout->addWidget(label);
 
-          mIsValid = true;
+          mIsEmpty = false;
         }
         if (oldsize < newsize) {
-          mDiffLabel = new QLabel(this);
-          mDiffLabel->setStyleSheet(kFilestatsStyleFmt.arg(Application::theme()->diff(Theme::Diff::Addition).name()));
-          mDiffLabel->setText("+" + locale().formattedDataSize(newsize - oldsize));
-          layout->addWidget(mDiffLabel);
+          QLabel *label = new QLabel(this);
+          label->setStyleSheet(kFilestatsStyleFmt.arg(Application::theme()->diff(Theme::Diff::Addition).name()));
+          label->setText("+" + locale().formattedDataSize(newsize - oldsize));
+          layout->addWidget(label);
 
-          mIsValid = true;
+          mIsEmpty = false;
         }
       }
 
@@ -1789,7 +1949,7 @@ public:
         label->setToolTip(FileWidget::tr("Filemode: ") + QString::number(oldmode, 8));
         layout->addWidget(label, 0, Qt::AlignBottom);
 
-        mIsValid = true;
+        mIsEmpty = false;
       }
       if ((newmode != GIT_FILEMODE_UNREADABLE) && (oldmode != newmode)) {
         if (oldmode != GIT_FILEMODE_UNREADABLE)
@@ -1801,226 +1961,13 @@ public:
         label->setToolTip(FileWidget::tr("Filemode: ") + QString::number(newmode, 8));
         layout->addWidget(label, 0, Qt::AlignBottom);
 
-        mIsValid = true;
+        mIsEmpty = false;
       }
-
-      // Filestats set or changed.
-      if (mIsValid)
-        connect(button, &DisclosureButton::toggled, this, &QLabel::setVisible);
     }
 
-    bool isEmpty() const { return !mIsValid; }
-
-    void showLfsObject(const bool show)
-    {
-      if (mImages) {
-        if (show)
-          mImages->lfsReload();
-        mImages->setVisible(show);
-      }
-      if (mDiffLabel)
-        mDiffLabel->setVisible(!show);
-    }
+    bool isEmpty() const { return mIsEmpty; }
 
   private:
-    class Images : public QWidget
-    {
-    public:
-      Images(
-        const git::Patch patch,
-        const uint64_t oldsize,
-        const uint64_t newsize,
-        QWidget *parent = nullptr)
-        : QWidget(parent), mPatch(patch)
-      {
-        uint64_t lfssize = 0;
-
-        // Load pixmaps
-        if (oldsize)
-          mOldPix = loadPixmap(git::Diff::OldFile, &lfssize, false);
-        if (newsize)
-          mNewPix = loadPixmap(git::Diff::NewFile, &lfssize, false);
-
-        // Skip unchanged picture and binary icon,
-        // never skip lfs object.
-        bool sameimage = mOldPix.toImage() == mNewPix.toImage();
-        if ((sameimage) &&
-            (oldsize == newsize) &&
-            (!mPatch.isLfsPointer()))
-          return;
-
-        QHBoxLayout *layout = new QHBoxLayout(this);
-        layout->setContentsMargins(4,2,4,2);
-        layout->setSpacing(4);
-
-        // Add old pixmap and size.
-        if ((!mOldPix.isNull() && !sameimage) || oldsize) {
-          QVBoxLayout *oldlay = new QVBoxLayout();
-          oldlay->setSpacing(4);
-
-          mOldLabel = new QLabel(this);
-          if (!mOldPix.isNull() && !sameimage)
-            mOldLabel->setPixmap(mOldPix);
-          else
-            mOldLabel->setVisible(false);
-          oldlay->addWidget(mOldLabel, 0, Qt::AlignHCenter);
-
-          mOldSize = new QLabel(this);
-          mOldSize->setStyleSheet(kFilestatsStyleFmt.arg(Application::theme()->diff(Theme::Diff::Deletion).name()));
-          if (oldsize)
-            mOldSize->setText(locale().formattedDataSize(oldsize));
-          else
-            mOldSize->setVisible(false);
-          oldlay->addWidget(mOldSize, 0, Qt::AlignHCenter);
-
-          layout->addItem(oldlay);
-        }
-
-        // Add arrow.
-        mArrow = new Arrow(this);
-        if ((!mOldPix.isNull() || oldsize) && (!mNewPix.isNull() || newsize))
-          mArrow->setVisible(true);
-        else
-          mArrow->setVisible(false);
-        layout->addWidget(mArrow, 0, Qt::AlignVCenter);
-
-        // Add new pixmap and size.
-        if ((!mNewPix.isNull() && !sameimage) || newsize) {
-          QVBoxLayout *newlay = new QVBoxLayout();
-          newlay->setSpacing(4);
-
-          mNewLabel = new QLabel(this);
-          if (!mNewPix.isNull() && !sameimage)
-            mNewLabel->setPixmap(mNewPix);
-          else
-            mNewLabel->setVisible(false);
-          newlay->addWidget(mNewLabel, 0, Qt::AlignHCenter);
-
-          mNewSize = new QLabel(this);
-          mNewSize->setStyleSheet(kFilestatsStyleFmt.arg(Application::theme()->diff(Theme::Diff::Addition).name()));
-          if (newsize)
-            mNewSize->setText(locale().formattedDataSize(newsize));
-          else
-            mNewSize->setVisible(false);
-          newlay->addWidget(mNewSize, 0, Qt::AlignHCenter);
-
-          layout->addItem(newlay);
-        }
-      }
-
-      void lfsReload()
-      {
-        uint64_t lfssize = 0;
-        if (mLfsReloaded)
-          return;
-
-        int images = 0;
-
-        // Reload old lfs object data.
-        mOldPix = loadPixmap(git::Diff::OldFile, &lfssize, true);
-        if ((mOldLabel) && !mOldPix.isNull()) {
-          mOldLabel->setPixmap(mOldPix);
-          mOldLabel->setVisible(true);
-          if ((mOldSize) && (lfssize)) {
-            mOldSize->setText(locale().formattedDataSize(lfssize));
-            mOldSize->setVisible(true);
-          }
-          images += 1;
-        }
-
-        // Reload new lfs object data.
-        mNewPix = loadPixmap(git::Diff::NewFile, &lfssize, true);
-        if ((mNewLabel) && !mNewPix.isNull()) {
-          mNewLabel->setPixmap(mNewPix);
-          mNewLabel->setVisible(true);
-          if ((mNewSize) && (lfssize)) {
-            mNewSize->setText(locale().formattedDataSize(lfssize));
-            mNewSize->setVisible(true);
-          }
-          images += 1;
-        }
-
-        // Show arrow
-        if ((mArrow) && (images > 1))
-          mArrow->setVisible(true);
-
-        mLfsReloaded = true;
-      }
-
-      bool isEmpty() const { return false; }  //sk/TODO: implement (binary / picture / lfs preview
-
-    private:
-      QPixmap loadPixmap(git::Diff::File type, uint64_t *size, bool lfs)
-      {
-        QPixmap pixmap;
-
-        // Shortcut for lfs data.
-        if (mPatch.isLfsPointer() && !lfs) {
-          return pixmap;
-        }
-
-        git::Blob blob = mPatch.blob(type);
-
-        if (blob.isValid()) {
-          QByteArray data = blob.content();
-
-          if (lfs)
-            data = mPatch.repo().lfsSmudge(data, mPatch.name());
-
-          *size = data.size();
-
-          // Load pixmap from blob data.
-          pixmap.loadFromData(data);
-          if (!pixmap.isNull()) {
-            if ((pixmap.size().height() > kBinaryPicturesize.height()) ||
-                (pixmap.size().width() > kBinaryPicturesize.width()))
-              return pixmap.scaled(kBinaryPicturesize, Qt::KeepAspectRatio);
-
-            return pixmap;
-          }
-        }
-
-        // Load pixmap from file.
-        QString path = mPatch.repo().workdir().filePath(mPatch.name());
-        pixmap.load(path);
-        if (!pixmap.isNull()) {
-          if ((pixmap.size().height() > kBinaryPicturesize.height()) ||
-              (pixmap.size().width() > kBinaryPicturesize.width()))
-            return pixmap.scaled(kBinaryPicturesize, Qt::KeepAspectRatio);
-
-          return pixmap;
-        }
-
-        QFileIconProvider provider;
-        QIcon icon;
-        if (QFileInfo(path).exists()) {
-          // Load icon for file.
-          icon = provider.icon(QFileInfo(path));
-        } else {
-          // Set generic icon.
-          icon = provider.icon(QFileIconProvider::File);
-        }
-
-        // Windows: Icons are provided 16 x 16 and 32 x 32
-        // QT5.15.5, Juli 2020
-        pixmap = icon.pixmap(windowHandle(), QSize(32, 32));
-
-        // Upscale / downscale icon if needed.
-        return pixmap.scaled(kBinaryIconsize, Qt::KeepAspectRatio);
-      }
-
-      bool mLfsReloaded = false;
-
-      QPixmap mOldPix;
-      QPixmap mNewPix;
-      QLabel *mOldLabel = nullptr;
-      QLabel *mNewLabel = nullptr;
-      QLabel *mOldSize = nullptr;
-      QLabel *mNewSize = nullptr;
-      Arrow *mArrow = nullptr;
-      git::Patch mPatch;
-    };
-
     QString fromFileMode(const git_filemode_t mode)
     {
       switch (mode) {
@@ -2042,10 +1989,7 @@ public:
         }
     }
 
-    bool mIsValid = false;
-
-    Images *mImages = nullptr;
-    QLabel *mDiffLabel = nullptr;
+    bool mIsEmpty = true;
   };
 
   FileWidget(
@@ -2086,6 +2030,8 @@ public:
     connect(disclosureButton, &DisclosureButton::toggled, [this](bool visible) {
       if (mHeader->lfsButton() && !visible) {
         mHunks.first()->setVisible(false);
+        if (!mImages.isEmpty())
+          mImages.first()->setVisible(false);
         mFooter->setVisible(false);
         return;
       }
@@ -2093,6 +2039,8 @@ public:
       if (mHeader->lfsButton() && visible) {
         bool checked = mHeader->lfsButton()->isChecked();
         mHunks.first()->setVisible(!checked);
+        if (!mImages.isEmpty())
+          mImages.first()->setVisible(checked);
         mFooter->setVisible(!checked);
         return;
       }
@@ -2113,7 +2061,8 @@ public:
     }
 
     if (binary) {
-      ;// Footer will load a icon or pixmap for the binary later.
+      // Try to load an image from the file.
+      layout->addWidget(addImage(disclosureButton, mPatch, false));
     }
     else if (patch.isUntracked()) {
       // Add untracked file content.
@@ -2140,20 +2089,30 @@ public:
       // LFS
       if (QToolButton *lfsButton = mHeader->lfsButton()) {
         connect(lfsButton, &QToolButton::clicked,
-        [this, disclosureButton, lfsButton](bool checked) {
+        [this, layout, disclosureButton, lfsButton](bool checked) {
           lfsButton->setText(checked ? tr("Show Pointer") : tr("Show Object"));
           disclosureButton->setChecked(true);
           mHunks.first()->setVisible(!checked);
-          mFooter->showLfsObject(checked);
+
+          // Image already loaded.
+          if (!mImages.isEmpty()) {
+            mImages.first()->setVisible(checked);
+            return;
+          }
+
+          // Load image.
+          layout->insertWidget(1, addImage(disclosureButton, mPatch, true));
         });
       }
     }
 
     // Add footer for filestats.
-    mFooter = new Footer(disclosureButton, diff, patch, diff.indexOf(name),
-                         binary, lfs);
+    mFooter = new Footer(diff, patch, diff.indexOf(name), binary, lfs);
+    layout->addWidget(mFooter);
+
+    // Hide on file collapse.
     if (!mFooter->isEmpty())
-      layout->addWidget(mFooter);
+      connect(disclosureButton, &DisclosureButton::toggled, mFooter, &Footer::setVisible);
 
     // Start hidden when the file is checked.
     bool expand = (mHeader->check()->checkState() == Qt::Unchecked);
@@ -2171,7 +2130,7 @@ public:
 
   bool isEmpty()
   {
-    return (mHunks.isEmpty() && mFooter->isEmpty());
+    return (mHunks.isEmpty() && mImages.isEmpty() && mFooter->isEmpty());
   }
 
   Header *header() const { return mHeader; }
@@ -2179,6 +2138,25 @@ public:
   QString name() const { return mPatch.name(); }
 
   QList<HunkWidget *> hunks() const { return mHunks; }
+
+  QWidget *addImage(
+    DisclosureButton *button,
+    const git::Patch patch,
+    bool lfs = false)
+  {
+    Images *images = new Images(patch, lfs, this);
+
+    if (!images->isEmpty()) {
+     // Hide on file collapse.
+      if (!lfs)
+        connect(button, &DisclosureButton::toggled, images, &QLabel::setVisible);
+
+      // Remember image.
+      mImages.append(images);
+    }
+
+    return images;
+  }
 
   HunkWidget *addHunk(
     const git::Diff &diff,
@@ -2242,6 +2220,7 @@ private:
   git::Patch mPatch;
 
   Header *mHeader;
+  QList<QWidget *> mImages;
   QList<HunkWidget *> mHunks;
   Footer *mFooter;
 };
