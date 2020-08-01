@@ -88,10 +88,23 @@ DiffPanel::DiffPanel(const git::Repository &repo, QWidget *parent)
 
   // auto collapse
   Settings *settings = Settings::instance();
+
+  QCheckBox *collapseUntracked = new QCheckBox(tr("Untracked files"), this);
+  collapseUntracked->setChecked(settings->value("collapse/untracked").toBool());
+  connect(collapseUntracked, &QCheckBox::toggled, [settings](bool checked) {
+    settings->setValue("collapse/untracked", checked);
+  });
+
   QCheckBox *collapseAdded = new QCheckBox(tr("Added files"), this);
   collapseAdded->setChecked(settings->value("collapse/added").toBool());
   connect(collapseAdded, &QCheckBox::toggled, [settings](bool checked) {
     settings->setValue("collapse/added", checked);
+  });
+
+  QCheckBox *collapseModified = new QCheckBox(tr("Modified files"), this);
+  collapseModified->setChecked(settings->value("collapse/modified").toBool());
+  connect(collapseModified, &QCheckBox::toggled, [settings](bool checked) {
+    settings->setValue("collapse/modified", checked);
   });
 
   QCheckBox *collapseDeleted = new QCheckBox(tr("Deleted files"), this);
@@ -101,6 +114,8 @@ DiffPanel::DiffPanel(const git::Repository &repo, QWidget *parent)
   });
 
   layout->addRow(tr("Whitespace:"), ignoreWs);
-  layout->addRow(tr("Auto Collapse:"), collapseAdded);
+  layout->addRow(tr("Auto Collapse:"), collapseUntracked);
+  layout->addRow(QString(), collapseAdded);
+  layout->addRow(QString(), collapseModified);
   layout->addRow(QString(), collapseDeleted);
 }
