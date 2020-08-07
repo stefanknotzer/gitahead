@@ -873,6 +873,9 @@ public:
 
         // Draw message.
         painter->save();
+        QFont bold = opt.font;
+        bold.setBold(true);
+        painter->setFont(bold);
         painter->setPen(bright);
         QString msg = commit.summary(git::Commit::SubstituteEmoji);
         QString elidedText = fm.elidedText(msg, Qt::ElideRight, rect.width());
@@ -880,49 +883,19 @@ public:
         painter->restore();
 
       } else {
-        // Draw Name.
-        QString name = commit.author().name();
-        painter->save();
-        QFont bold = opt.font;
-        bold.setBold(true);
-        painter->setFont(bold);
-        painter->drawText(rect, Qt::AlignLeft, name);
-        painter->restore();
-
-        // Draw date.
-        if (rect.width() > fm.horizontalAdvance(name) + timestampWidth + 8) {
-          painter->save();
-          painter->setPen(bright);
-          painter->drawText(rect, Qt::AlignRight, timestamp);
-          painter->restore();
-        }
-
-        rect.setY(rect.y() + constants.lineSpacing + constants.vMargin);
-
-        // Draw id.
-        QString id = commit.shortId();
-        painter->save();
-        painter->drawText(rect, Qt::AlignLeft, id);
-        painter->restore();
-
-        // Draw references.
-        QList<Badge::Label> refs = mRefs.value(commit.id());
-        if (!refs.isEmpty()) {
-          QRect refsRect = rect;
-          refsRect.setX(refsRect.x() + fm.boundingRect(id).width() + 6);
-          Badge::paint(painter, refs, refsRect, &opt);
-        }
-
-        rect.setY(rect.y() + constants.lineSpacing + constants.vMargin);
-
-        // Divide remaining rectangle.
+        // Define star rectangle.
         star = rect;
-        star.setX(star.x() + star.width() - star.height());
+        star.setHeight(rect.height() / 3 + constants.starPadding);
+        star.setX(star.right() - star.height() + constants.starPadding);
+        star.setY(star.top() - constants.starPadding);
         QRect text = rect;
         text.setWidth(text.width() - star.width());
 
         // Draw message.
         painter->save();
+        QFont bold = opt.font;
+        bold.setBold(true);
+        painter->setFont(bold);
         painter->setPen(bright);
         QString msg = commit.summary(git::Commit::SubstituteEmoji);
         QTextLayout layout(msg, painter->font());
@@ -944,6 +917,34 @@ public:
 
         layout.endLayout();
         painter->restore();
+
+        rect.setY(rect.y() + constants.lineSpacing + constants.vMargin + constants.starPadding);
+
+        // Draw Name.
+        QString name = commit.author().name();
+        painter->drawText(rect, Qt::AlignLeft, name);
+
+        // Draw date.
+        if (rect.width() > fm.horizontalAdvance(name) + timestampWidth + 8) {
+          painter->save();
+          painter->setPen(bright);
+          painter->drawText(rect, Qt::AlignRight, timestamp);
+          painter->restore();
+        }
+
+        rect.setY(rect.y() + constants.lineSpacing + constants.vMargin);
+
+        // Draw id.
+        QString id = commit.shortId();
+        painter->drawText(rect, Qt::AlignLeft, id);
+
+        // Draw references.
+        QList<Badge::Label> refs = mRefs.value(commit.id());
+        if (!refs.isEmpty()) {
+          QRect refsRect = rect;
+          refsRect.setX(refsRect.x() + fm.boundingRect(id).width() + 6);
+          Badge::paint(painter, refs, refsRect, &opt);
+        }
       }
 
       // Draw star.
