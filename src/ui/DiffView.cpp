@@ -116,7 +116,13 @@ const QString kFilestatsStyleFmt =
 //  "  border: 2px solid %1;"
   "  color: %1;"
   "  background: %2;"
-  "  font-family: monospace;"
+#if defined(Q_OS_WIN)
+  "  font-family: Consolas;"
+#elif defined(Q_OS_LINUX)
+  "  font-family: Monospace;"
+#elif defined(Q_OS_MAC)
+  "  font-family: Menlo;"
+#endif
   "  font-size: 14px;"
   "}";
 
@@ -1643,6 +1649,8 @@ private:
 
 class FileMode : public QFrame
 {
+  Q_OBJECT
+
 public:
   FileMode(
     const git_filemode_t &oldmode,

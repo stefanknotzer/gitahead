@@ -841,9 +841,7 @@ public:
 
         QRect commitRect = rect;
         commitRect.setX(commitRect.x() + commitRect.width() - idWidth);
-        painter->save();
         painter->drawText(commitRect, Qt::AlignLeft, id);
-        painter->restore();
         rect.setWidth(rect.width() - idWidth - constants.hMargin);
 
         // Draw date. Only if it is not the same as previous?
@@ -896,7 +894,6 @@ public:
         QFont bold = opt.font;
         bold.setBold(true);
         painter->setFont(bold);
-        painter->setPen(bright);
         QString msg = commit.summary(git::Commit::SubstituteEmoji);
         QTextLayout layout(msg, painter->font());
         layout.beginLayout();
@@ -922,16 +919,17 @@ public:
 
         // Draw Name.
         QString name = commit.author().name();
+        painter->save();
+        painter->setPen(bright);
         painter->drawText(rect, Qt::AlignLeft, name);
 
         // Draw date.
         if (rect.width() > fm.horizontalAdvance(name) + timestampWidth + 8) {
           painter->save();
-          painter->setPen(bright);
           painter->drawText(rect, Qt::AlignRight, timestamp);
-          painter->restore();
         }
 
+        painter->restore();
         rect.setY(rect.y() + constants.lineSpacing + constants.vMargin);
 
         // Draw id.
