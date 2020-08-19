@@ -73,6 +73,69 @@ DiffPanel::DiffPanel(const git::Repository &repo, QWidget *parent)
   layout->addRow(tr("Context lines:"), contextLayout);
   layout->addRow(tr("Character Encoding:"), encoding);
 
+  // Diff view.
+  QCheckBox *binaryScaled = new QCheckBox(tr("Scaled"), this);
+  binaryScaled->setChecked(mConfig.value<bool>("diffview.scaled", false));
+
+  connect(binaryScaled, &QCheckBox::toggled, [this](bool checked) {
+    mConfig.setValue("diffview.scaled", checked);
+
+    foreach (MainWindow *window, MainWindow::windows()) {
+      for (int i = 0; i < window->count(); ++i)
+        window->view(i)->refresh();
+    }
+  });
+
+  QComboBox *binaryView = new QComboBox(this);
+  binaryView->addItems(QStringList({tr("Image/Icon"), tr("File Information"), tr("Image/Icon and Information"), tr("Nothing")}));
+  if (repo) {
+    binaryView->insertSeparator(binaryView->count());
+    binaryView->addItem(tr("Reset to Global Default"));
+  }
+  binaryView->setCurrentIndex(mConfig.value<int>("diffview.binary", 0));
+
+  connect(binaryView, QOverload<int>::of(&QComboBox::currentIndexChanged), [this, binaryView, binaryScaled](int index) {
+    if (index > 3) {
+      mConfig.remove("diffview.binary");
+      mConfig.remove("diffview.scaled");
+//sk/TODO      binaryView->setCurrentIndex(mConfig.value<int>("diffview.binary", 0));
+//sk/TODO      binaryScaled->setChecked(mConfig.value<bool>("diffview.scaled", false));
+    } else {
+      mConfig.setValue("diffview.binary", index);
+    }
+
+    foreach (MainWindow *window, MainWindow::windows()) {
+      for (int i = 0; i < window->count(); ++i)
+        window->view(i)->refresh();
+    }
+  });
+
+  QComboBox *lfsView = new QComboBox(this);
+  lfsView->addItems(QStringList({tr("Pointer"), tr("Object"), tr("File Information"), tr("Nothing")}));
+  if (repo) {
+    lfsView->insertSeparator(lfsView->count());
+    lfsView->addItem(tr("Reset to Global Default"));
+  }
+  lfsView->setCurrentIndex(mConfig.value<int>("diffview.lfs", 0));
+
+  connect(lfsView, QOverload<int>::of(&QComboBox::currentIndexChanged), [this, lfsView](int index) {
+    if (index > 3) {
+      mConfig.remove("diffview.lfs");
+//sk/TODO      lfsView->setCurrentIndex(mConfig.value<int>("diffview.lfs", 0));
+    } else {
+      mConfig.setValue("diffview.lfs", index);
+    }
+
+    foreach (MainWindow *window, MainWindow::windows()) {
+      for (int i = 0; i < window->count(); ++i)
+        window->view(i)->refresh();
+    }
+  });
+
+  layout->addRow(tr("Binary View:"), binaryView);
+  layout->addRow(tr("Image/Icon size:"), binaryScaled);
+  layout->addRow(tr("LFS View:"), lfsView);
+
   // Remaining settings are strictly global.
   if (qobject_cast<ConfigDialog *>(parent))
     return;

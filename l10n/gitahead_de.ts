@@ -656,114 +656,114 @@
 <context>
     <name>CommitList</name>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1438"/>
+        <location filename="../src/ui/CommitList.cpp" line="1436"/>
         <source>Remove Untracked Files</source>
         <translation>Ungetrackte Dateien entfernen</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1455"/>
+        <location filename="../src/ui/CommitList.cpp" line="1453"/>
         <source>Apply</source>
         <translation>Anwenden</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1459"/>
+        <location filename="../src/ui/CommitList.cpp" line="1457"/>
         <source>Pop</source>
         <translation>Poppen</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1463"/>
+        <location filename="../src/ui/CommitList.cpp" line="1461"/>
         <source>Drop</source>
         <translation>Droppen</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1477"/>
+        <location filename="../src/ui/CommitList.cpp" line="1475"/>
         <source>Unstar</source>
         <translation>Ent-Favorisieren</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1477"/>
+        <location filename="../src/ui/CommitList.cpp" line="1475"/>
         <source>Star</source>
         <translation>Favorisieren</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1487"/>
+        <location filename="../src/ui/CommitList.cpp" line="1485"/>
         <source>Add Tag...</source>
         <translation>Tag hinzufügen...</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1491"/>
+        <location filename="../src/ui/CommitList.cpp" line="1489"/>
         <source>New Branch...</source>
         <translation>Neuer Branch...</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1502"/>
+        <location filename="../src/ui/CommitList.cpp" line="1500"/>
         <source>Delete Tag %1</source>
         <translation>Tag %1 löschen</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1512"/>
+        <location filename="../src/ui/CommitList.cpp" line="1510"/>
         <source>Delete Branch %1</source>
         <translation>Branch %1 löschen</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1520"/>
+        <location filename="../src/ui/CommitList.cpp" line="1518"/>
         <source>Merge...</source>
         <translation>Mergen...</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1535"/>
+        <location filename="../src/ui/CommitList.cpp" line="1533"/>
         <source>Rebase...</source>
         <translation>Rebasen...</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1550"/>
+        <location filename="../src/ui/CommitList.cpp" line="1548"/>
         <source>Squash...</source>
         <translation>Squashen...</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1567"/>
+        <location filename="../src/ui/CommitList.cpp" line="1565"/>
         <source>Revert</source>
         <translation>Reverten</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1571"/>
+        <location filename="../src/ui/CommitList.cpp" line="1569"/>
         <source>Cherry-pick</source>
         <translation>Cherry-Picken</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1580"/>
-        <location filename="../src/ui/CommitList.cpp" line="1590"/>
-        <location filename="../src/ui/CommitList.cpp" line="1610"/>
+        <location filename="../src/ui/CommitList.cpp" line="1578"/>
+        <location filename="../src/ui/CommitList.cpp" line="1588"/>
+        <location filename="../src/ui/CommitList.cpp" line="1608"/>
         <source>Checkout %1</source>
         <translation>%1 auschecken</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1601"/>
+        <location filename="../src/ui/CommitList.cpp" line="1599"/>
         <source>Local branch is already checked out</source>
         <translation>Ein lokaler Branch ist bereits ausgecheckt</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1604"/>
+        <location filename="../src/ui/CommitList.cpp" line="1602"/>
         <source>This is a bare repository</source>
         <translation>Dies ist ein Bare-Repository</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1621"/>
+        <location filename="../src/ui/CommitList.cpp" line="1619"/>
         <source>Reset</source>
         <translation>Zurücksetzen</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1622"/>
+        <location filename="../src/ui/CommitList.cpp" line="1620"/>
         <source>Soft</source>
         <translation>Soft</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1623"/>
+        <location filename="../src/ui/CommitList.cpp" line="1621"/>
         <source>Mixed</source>
         <translation>Mixed</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1624"/>
+        <location filename="../src/ui/CommitList.cpp" line="1622"/>
         <source>Hard</source>
         <translation>Hard</translation>
     </message>
@@ -1056,12 +1056,70 @@
         <translation>Zeichensatz:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/DiffPanel.cpp" line="83"/>
+        <location filename="../src/dialogs/DiffPanel.cpp" line="77"/>
+        <source>Scaled</source>
+        <translation>Skaliert</translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/DiffPanel.cpp" line="90"/>
+        <source>Image/Icon</source>
+        <translation>Bild/Symbol</translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/DiffPanel.cpp" line="90"/>
+        <location filename="../src/dialogs/DiffPanel.cpp" line="114"/>
+        <source>File Information</source>
+        <translation>Dateiinformationen</translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/DiffPanel.cpp" line="90"/>
+        <source>Image/Icon and Information</source>
+        <translation>Bild/Symbol und Dateinformationen</translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/DiffPanel.cpp" line="90"/>
+        <location filename="../src/dialogs/DiffPanel.cpp" line="114"/>
+        <source>Nothing</source>
+        <translation>Nichts</translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/DiffPanel.cpp" line="93"/>
+        <location filename="../src/dialogs/DiffPanel.cpp" line="117"/>
+        <source>Reset to Global Default</source>
+        <translation>Zurücksetzen auf globale Einstellung</translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/DiffPanel.cpp" line="114"/>
+        <source>Pointer</source>
+        <translation>Zeiger</translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/DiffPanel.cpp" line="114"/>
+        <source>Object</source>
+        <translation>Objekt</translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/DiffPanel.cpp" line="135"/>
+        <source>Binary View:</source>
+        <translation>Anzeige für Binärdateien:</translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/DiffPanel.cpp" line="136"/>
+        <source>Image/Icon size:</source>
+        <translation>Bild/Symbol Größe:</translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/DiffPanel.cpp" line="137"/>
+        <source>LFS View:</source>
+        <translation>LFS Anzeige:</translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/DiffPanel.cpp" line="146"/>
         <source>Ignore Whitespace (-w)</source>
         <translation>Whitespace ignorieren (-w)</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/DiffPanel.cpp" line="92"/>
+        <location filename="../src/dialogs/DiffPanel.cpp" line="155"/>
         <source>Untracked files</source>
         <translation>Ungetrackte Dateien</translation>
     </message>
@@ -1070,22 +1128,22 @@
         <translation type="vanished">Kompakter Modus</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/DiffPanel.cpp" line="98"/>
+        <location filename="../src/dialogs/DiffPanel.cpp" line="161"/>
         <source>Added files</source>
         <translation>Hinzugefügte Dateien</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/DiffPanel.cpp" line="104"/>
+        <location filename="../src/dialogs/DiffPanel.cpp" line="167"/>
         <source>Modified files</source>
         <translation>Geänderte Dateien</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/DiffPanel.cpp" line="110"/>
+        <location filename="../src/dialogs/DiffPanel.cpp" line="173"/>
         <source>Deleted files</source>
         <translation>Gelöschte Dateien</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/DiffPanel.cpp" line="116"/>
+        <location filename="../src/dialogs/DiffPanel.cpp" line="179"/>
         <source>Whitespace:</source>
         <translation>Whitespace:</translation>
     </message>
@@ -1094,9 +1152,9 @@
         <translation type="vanished">Kompakter Modus:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/DiffPanel.cpp" line="117"/>
+        <location filename="../src/dialogs/DiffPanel.cpp" line="180"/>
         <source>Auto Collapse:</source>
-        <translation>Automatisch zusammenklappen:</translation>
+        <translation>Automatisch zuklappen:</translation>
     </message>
 </context>
 <context>
@@ -1110,12 +1168,12 @@
 <context>
     <name>DiffView</name>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="2454"/>
+        <location filename="../src/ui/DiffView.cpp" line="3000"/>
         <source>Add new file</source>
         <translation>Neue Datei hinzufügen</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="2468"/>
+        <location filename="../src/ui/DiffView.cpp" line="3014"/>
         <source>Or drag files here to copy into the repository</source>
         <translation>Oder Dateien hierher ziehen, um sie dem Repository hinzuzufügen</translation>
     </message>
@@ -1528,172 +1586,176 @@
 <context>
     <name>FileMode</name>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1669"/>
-        <location filename="../src/ui/DiffView.cpp" line="1682"/>
         <source>Filemode: </source>
-        <translation>Dateiattribute: </translation>
+        <translation type="vanished">Dateiattribute: </translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1692"/>
         <source>missing</source>
-        <translation>nicht vorhanden</translation>
+        <translation type="vanished">nicht vorhanden</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1694"/>
         <source>tree</source>
-        <translation>Verzeichnis</translation>
+        <translation type="vanished">Verzeichnis</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1696"/>
         <source>blob</source>
-        <translation>Datei</translation>
+        <translation type="vanished">Datei</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1698"/>
         <source>executable</source>
-        <translation>Ausführbare Datei</translation>
+        <translation type="vanished">Ausführbare Datei</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1700"/>
         <source>link</source>
-        <translation>Verknüpfung</translation>
+        <translation type="vanished">Verknüpfung</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1702"/>
         <source>submodul</source>
-        <translation>Submodul</translation>
+        <translation type="vanished">Submodul</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1705"/>
         <source>unknown</source>
-        <translation>unbekannt</translation>
+        <translation type="vanished">unbekannt</translation>
     </message>
 </context>
 <context>
     <name>FileWidget</name>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1910"/>
+        <location filename="../src/ui/DiffView.cpp" line="2256"/>
         <source>LFS</source>
         <translation>LFS</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1915"/>
-        <location filename="../src/ui/DiffView.cpp" line="1927"/>
+        <location filename="../src/ui/DiffView.cpp" line="2261"/>
+        <location filename="../src/ui/DiffView.cpp" line="2273"/>
         <source>Unlock</source>
         <translation>Entsperren</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1915"/>
-        <location filename="../src/ui/DiffView.cpp" line="1927"/>
+        <location filename="../src/ui/DiffView.cpp" line="2261"/>
+        <location filename="../src/ui/DiffView.cpp" line="2273"/>
         <source>Lock</source>
         <translation>Sperren</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1900"/>
-        <location filename="../src/ui/DiffView.cpp" line="1931"/>
-        <location filename="../src/ui/DiffView.cpp" line="2187"/>
-        <location filename="../src/ui/DiffView.cpp" line="2240"/>
+        <location filename="../src/ui/DiffView.cpp" line="2249"/>
+        <location filename="../src/ui/DiffView.cpp" line="2277"/>
+        <location filename="../src/ui/DiffView.cpp" line="2609"/>
+        <location filename="../src/ui/DiffView.cpp" line="2727"/>
         <source>Show Object</source>
         <translation>Objekt anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1872"/>
-        <location filename="../src/ui/DiffView.cpp" line="1877"/>
         <source>Show Filestats</source>
-        <translation>Dateiinfos anzeigen</translation>
+        <translation type="vanished">Dateiinfos anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1877"/>
         <source>Hide Filestats</source>
-        <translation>Dateiinfos verbergen</translation>
+        <translation type="vanished">Dateiinfos verbergen</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1896"/>
+        <location filename="../src/ui/DiffView.cpp" line="2245"/>
         <source>BIN</source>
         <translation>BIN</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1940"/>
+        <location filename="../src/ui/DiffView.cpp" line="2280"/>
+        <location filename="../src/ui/DiffView.cpp" line="2289"/>
+        <location filename="../src/ui/DiffView.cpp" line="2589"/>
+        <location filename="../src/ui/DiffView.cpp" line="2609"/>
+        <location filename="../src/ui/DiffView.cpp" line="2652"/>
+        <location filename="../src/ui/DiffView.cpp" line="2761"/>
+        <source>Show Info</source>
+        <translation>Info anzeigen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DiffView.cpp" line="2298"/>
         <source>Edit File</source>
         <translation>Datei bearbeiten</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1946"/>
+        <location filename="../src/ui/DiffView.cpp" line="2304"/>
         <source>Discard File</source>
         <translation>Datei verwerfen</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1953"/>
+        <location filename="../src/ui/DiffView.cpp" line="2311"/>
         <source>Directory</source>
         <translation>Ordner</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1953"/>
+        <location filename="../src/ui/DiffView.cpp" line="2311"/>
         <source>File</source>
         <translation>Datei</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1955"/>
+        <location filename="../src/ui/DiffView.cpp" line="2313"/>
         <source>Remove %1?</source>
         <translation>%1 löschen?</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1955"/>
+        <location filename="../src/ui/DiffView.cpp" line="2313"/>
         <source>Discard Changes?</source>
         <translation>Änderungen verwerfen?</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1957"/>
+        <location filename="../src/ui/DiffView.cpp" line="2315"/>
         <source>Are you sure you want to remove &apos;%1&apos;?</source>
         <translation>Bist Du sicher, dass Du &apos;%1&apos; löschen willst?</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1958"/>
+        <location filename="../src/ui/DiffView.cpp" line="2316"/>
         <source>Are you sure you want to discard all changes in &apos;%1&apos;?</source>
         <translation>Bist Du sicher, dass Du alle Änderungen in &apos;%1&apos; verwerfen willst?</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1963"/>
+        <location filename="../src/ui/DiffView.cpp" line="2321"/>
         <source>This action cannot be undone.</source>
         <translation>Die Aktion kann nicht rückgängig gemacht werden.</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1966"/>
+        <location filename="../src/ui/DiffView.cpp" line="2324"/>
         <source>Remove %1</source>
         <translation>%1 löschen</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1966"/>
+        <location filename="../src/ui/DiffView.cpp" line="2324"/>
         <source>Discard Changes</source>
         <translation>Änderungen verwerfen</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1983"/>
+        <location filename="../src/ui/DiffView.cpp" line="2341"/>
         <source>Discard</source>
         <translation>Verwerfen</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1984"/>
+        <location filename="../src/ui/DiffView.cpp" line="2342"/>
         <source>discard</source>
         <translation>verwerfe</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1997"/>
-        <location filename="../src/ui/DiffView.cpp" line="2000"/>
+        <location filename="../src/ui/DiffView.cpp" line="2355"/>
+        <location filename="../src/ui/DiffView.cpp" line="2358"/>
         <source>Collapse File</source>
-        <translation>Datei zusammenklappen</translation>
+        <translation>Datei zuklappen</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1997"/>
-        <location filename="../src/ui/DiffView.cpp" line="2000"/>
+        <location filename="../src/ui/DiffView.cpp" line="2355"/>
+        <location filename="../src/ui/DiffView.cpp" line="2358"/>
         <source>Expand File</source>
-        <translation>Datei ausklappen</translation>
+        <translation>Datei aufklappen</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="2180"/>
-        <location filename="../src/ui/DiffView.cpp" line="2187"/>
+        <location filename="../src/ui/DiffView.cpp" line="2652"/>
+        <location filename="../src/ui/DiffView.cpp" line="2719"/>
+        <location filename="../src/ui/DiffView.cpp" line="2752"/>
+        <location filename="../src/ui/DiffView.cpp" line="2761"/>
+        <source>Hide Info</source>
+        <translation>Info verbergen</translation>
+    </message>
+    <message>
         <source>Hide Object</source>
-        <translation>Objekt verbergen</translation>
+        <translation type="vanished">Objekt verbergen</translation>
     </message>
     <message>
         <source>Filemode: </source>
@@ -1728,9 +1790,10 @@
         <translation type="vanished">unbekannt</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="2240"/>
+        <location filename="../src/ui/DiffView.cpp" line="2708"/>
+        <location filename="../src/ui/DiffView.cpp" line="2727"/>
         <source>Show Pointer</source>
-        <translation>Pointer anzeigen</translation>
+        <translation>Zeiger anzeigen</translation>
     </message>
 </context>
 <context>
@@ -1934,85 +1997,85 @@
 <context>
     <name>HunkWidget</name>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="709"/>
+        <location filename="../src/ui/DiffView.cpp" line="1244"/>
         <source>Save</source>
         <translation>Speichern</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="713"/>
+        <location filename="../src/ui/DiffView.cpp" line="1248"/>
         <source>Undo</source>
         <translation>Rückgängig</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="724"/>
+        <location filename="../src/ui/DiffView.cpp" line="1259"/>
         <source>Use Ours</source>
         <translation>Unseres benutzen</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="735"/>
+        <location filename="../src/ui/DiffView.cpp" line="1270"/>
         <source>Use Theirs</source>
         <translation>Ihres benutzen</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="745"/>
+        <location filename="../src/ui/DiffView.cpp" line="1280"/>
         <source>Edit Hunk</source>
         <translation>Hunk bearbeiten</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="751"/>
-        <location filename="../src/ui/DiffView.cpp" line="768"/>
+        <location filename="../src/ui/DiffView.cpp" line="1286"/>
+        <location filename="../src/ui/DiffView.cpp" line="1303"/>
         <source>Discard Hunk</source>
         <translation>Hunk verwerfen</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="756"/>
+        <location filename="../src/ui/DiffView.cpp" line="1291"/>
         <source>Discard Hunk?</source>
         <translation>Hunk verwerfen?</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="758"/>
+        <location filename="../src/ui/DiffView.cpp" line="1293"/>
         <source>Are you sure you want to remove &apos;%1&apos;?</source>
         <translation>Bist Du sicher, dass Du &apos;%1&apos; entfernen willst?</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="759"/>
+        <location filename="../src/ui/DiffView.cpp" line="1294"/>
         <source>Are you sure you want to discard the hunk starting at line %1 in &apos;%2&apos;?</source>
         <translation>Bist Du sicher, dass Du die Änderungen im Hunk ab Zeile %1 in &apos;%2&apos; verwerfen willst?</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="765"/>
+        <location filename="../src/ui/DiffView.cpp" line="1300"/>
         <source>This action cannot be undone.</source>
         <translation>Die Aktion kann nicht rückgängig gemacht werden.</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="801"/>
-        <location filename="../src/ui/DiffView.cpp" line="804"/>
+        <location filename="../src/ui/DiffView.cpp" line="1336"/>
+        <location filename="../src/ui/DiffView.cpp" line="1339"/>
         <source>Collapse Hunk</source>
-        <translation>Hunk zusammenklappen</translation>
+        <translation>Hunk zuklappen</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="801"/>
-        <location filename="../src/ui/DiffView.cpp" line="804"/>
+        <location filename="../src/ui/DiffView.cpp" line="1336"/>
+        <location filename="../src/ui/DiffView.cpp" line="1339"/>
         <source>Expand Hunk</source>
-        <translation>Hunk ausklappen</translation>
+        <translation>Hunk aufklappen</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1027"/>
+        <location filename="../src/ui/DiffView.cpp" line="1564"/>
         <source>Fix</source>
         <translation>Beheben</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1078"/>
+        <location filename="../src/ui/DiffView.cpp" line="1615"/>
         <source>Edit</source>
         <translation>Bearbeiten</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1277"/>
+        <location filename="../src/ui/DiffView.cpp" line="1814"/>
         <source>No newline at end of file</source>
         <translation>Keine Leerzeile am Ende der Datei</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="1000"/>
+        <location filename="../src/ui/DiffView.cpp" line="1537"/>
         <source>Esc</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2025,10 +2088,113 @@
     </message>
 </context>
 <context>
+    <name>ImageWidget</name>
+    <message>
+        <location filename="../src/ui/DiffView.cpp" line="525"/>
+        <source>Binary Image/Icon</source>
+        <translation>Binärdatei Bild/Symbol</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DiffView.cpp" line="529"/>
+        <location filename="../src/ui/DiffView.cpp" line="532"/>
+        <source>Collapse Image</source>
+        <translation>Bild zuklappen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DiffView.cpp" line="529"/>
+        <location filename="../src/ui/DiffView.cpp" line="532"/>
+        <source>Expand Image</source>
+        <translation>Bild aufklappen</translation>
+    </message>
+</context>
+<context>
     <name>Images</name>
     <message>
         <source>&lt;b&gt;Size:&lt;/b&gt; %1</source>
         <translation type="vanished">&lt;b&gt;Größe:&lt;/b&gt; %1</translation>
+    </message>
+</context>
+<context>
+    <name>InfoWidget</name>
+    <message>
+        <location filename="../src/ui/DiffView.cpp" line="814"/>
+        <source>File Information</source>
+        <translation>Dateiinformationen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DiffView.cpp" line="818"/>
+        <location filename="../src/ui/DiffView.cpp" line="821"/>
+        <source>Collapse Info</source>
+        <translation>Info zuklappen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DiffView.cpp" line="818"/>
+        <location filename="../src/ui/DiffView.cpp" line="821"/>
+        <source>Expand Info</source>
+        <translation>Info aufklappen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DiffView.cpp" line="955"/>
+        <location filename="../src/ui/DiffView.cpp" line="986"/>
+        <source>LFS pointer size:</source>
+        <translation>LFS Zeigergröße:</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DiffView.cpp" line="957"/>
+        <location filename="../src/ui/DiffView.cpp" line="988"/>
+        <source>size:</source>
+        <translation>Größe:</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DiffView.cpp" line="967"/>
+        <location filename="../src/ui/DiffView.cpp" line="995"/>
+        <source>LFS object size:</source>
+        <translation>LFS Objektgröße:</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DiffView.cpp" line="977"/>
+        <location filename="../src/ui/DiffView.cpp" line="1005"/>
+        <source>mode:</source>
+        <translation>Attribute:</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DiffView.cpp" line="1141"/>
+        <source>missing</source>
+        <translation>nicht vorhanden</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DiffView.cpp" line="1143"/>
+        <source>tree</source>
+        <translation>Verzeichnis</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DiffView.cpp" line="1145"/>
+        <source>blob</source>
+        <translation>Datei</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DiffView.cpp" line="1147"/>
+        <source>executable</source>
+        <translation>Ausführbare Datei</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DiffView.cpp" line="1149"/>
+        <source>link</source>
+        <translation>Verknüpfung</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DiffView.cpp" line="1151"/>
+        <source>submodule</source>
+        <translation>Submodul</translation>
+    </message>
+    <message>
+        <source>submodul</source>
+        <translation type="obsolete">Submodul</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DiffView.cpp" line="1154"/>
+        <source>unknown</source>
+        <translation>unbekannt</translation>
     </message>
 </context>
 <context>

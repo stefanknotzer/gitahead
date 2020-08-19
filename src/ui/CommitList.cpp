@@ -924,10 +924,8 @@ public:
         painter->drawText(rect, Qt::AlignLeft, name);
 
         // Draw date.
-        if (rect.width() > fm.horizontalAdvance(name) + timestampWidth + 8) {
-          painter->save();
+        if (rect.width() > fm.horizontalAdvance(name) + timestampWidth + 8)
           painter->drawText(rect, Qt::AlignRight, timestamp);
-        }
 
         painter->restore();
         rect.setY(rect.y() + constants.lineSpacing + constants.vMargin);
