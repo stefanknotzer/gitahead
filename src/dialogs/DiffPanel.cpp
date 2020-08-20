@@ -24,7 +24,8 @@
 #include <QTextCodec>
 
 DiffPanel::DiffPanel(const git::Repository &repo, QWidget *parent)
-  : QWidget(parent), mConfig(repo ? repo.config() : git::Config::global())
+  : QWidget(parent), mConfig(repo ? repo.config() : git::Config::global()),
+                     mAppConfig(repo ? repo.appConfig() : git::Config::appGlobal())
 {
   // diff context
   QSpinBox *context = new QSpinBox(this);
@@ -75,10 +76,10 @@ DiffPanel::DiffPanel(const git::Repository &repo, QWidget *parent)
 
   // Diff view.
   QCheckBox *binaryScaled = new QCheckBox(tr("Scaled"), this);
-  binaryScaled->setChecked(mConfig.value<bool>("diffview.scaled", false));
+  binaryScaled->setChecked(mAppConfig.value<bool>("diffview.scaled", false));
 
   connect(binaryScaled, &QCheckBox::toggled, [this](bool checked) {
-    mConfig.setValue("diffview.scaled", checked);
+    mAppConfig.setValue("diffview.scaled", checked);
 
     foreach (MainWindow *window, MainWindow::windows()) {
       for (int i = 0; i < window->count(); ++i)
@@ -92,16 +93,16 @@ DiffPanel::DiffPanel(const git::Repository &repo, QWidget *parent)
     binaryView->insertSeparator(binaryView->count());
     binaryView->addItem(tr("Reset to Global Default"));
   }
-  binaryView->setCurrentIndex(mConfig.value<int>("diffview.binary", 0));
+  binaryView->setCurrentIndex(mAppConfig.value<int>("diffview.binary", 0));
 
   connect(binaryView, QOverload<int>::of(&QComboBox::currentIndexChanged), [this, binaryView, binaryScaled](int index) {
     if (index > 3) {
-      mConfig.remove("diffview.binary");
-      mConfig.remove("diffview.scaled");
-//sk/TODO      binaryView->setCurrentIndex(mConfig.value<int>("diffview.binary", 0));
-//sk/TODO      binaryScaled->setChecked(mConfig.value<bool>("diffview.scaled", false));
+      mAppConfig.remove("diffview.binary");
+      mAppConfig.remove("diffview.scaled");
+//sk/TODO      binaryView->setCurrentIndex(mAppConfig.value<int>("diffview.binary", 0));
+//sk/TODO      binaryScaled->setChecked(mAppConfig.value<bool>("diffview.scaled", false));
     } else {
-      mConfig.setValue("diffview.binary", index);
+      mAppConfig.setValue("diffview.binary", index);
     }
 
     foreach (MainWindow *window, MainWindow::windows()) {
@@ -116,14 +117,14 @@ DiffPanel::DiffPanel(const git::Repository &repo, QWidget *parent)
     lfsView->insertSeparator(lfsView->count());
     lfsView->addItem(tr("Reset to Global Default"));
   }
-  lfsView->setCurrentIndex(mConfig.value<int>("diffview.lfs", 0));
+  lfsView->setCurrentIndex(mAppConfig.value<int>("diffview.lfs", 0));
 
   connect(lfsView, QOverload<int>::of(&QComboBox::currentIndexChanged), [this, lfsView](int index) {
     if (index > 3) {
-      mConfig.remove("diffview.lfs");
-//sk/TODO      lfsView->setCurrentIndex(mConfig.value<int>("diffview.lfs", 0));
+      mAppConfig.remove("diffview.lfs");
+//sk/TODO      lfsView->setCurrentIndex(mAppConfig.value<int>("diffview.lfs", 0));
     } else {
-      mConfig.setValue("diffview.lfs", index);
+      mAppConfig.setValue("diffview.lfs", index);
     }
 
     foreach (MainWindow *window, MainWindow::windows()) {
@@ -139,6 +140,10 @@ DiffPanel::DiffPanel(const git::Repository &repo, QWidget *parent)
   // Remaining settings are strictly global.
   if (qobject_cast<ConfigDialog *>(parent))
     return;
+
+  QFrame *line = new QFrame(this);
+  line->setFrameShape(QFrame::HLine);
+  layout->addRow(QString(), line);
 
   // ignore whitespace
   // The ignore whitespace option is global because it's

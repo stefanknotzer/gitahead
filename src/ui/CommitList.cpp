@@ -79,6 +79,9 @@ public:
 
   bool progress(const QString &oldPath, const QString &newPath) override
   {
+    Q_UNUSED(oldPath);
+    Q_UNUSED(newPath);
+
     return !mCanceled;
   }
 
@@ -266,11 +269,15 @@ public:
 
   bool canFetchMore(const QModelIndex &parent) const
   {
+    Q_UNUSED(parent);
+
     return mWalker.isValid();
   }
 
   void fetchMore(const QModelIndex &parent)
   {
+    Q_UNUSED(parent);
+
     // Load commits.
     int i = 0;
     QList<Row> rows;
@@ -337,6 +344,8 @@ public:
 
   int rowCount(const QModelIndex &parent = QModelIndex()) const
   {
+    Q_UNUSED(parent);
+
     return mRows.size();
   }
 
@@ -614,6 +623,8 @@ public:
 
   int rowCount(const QModelIndex &parent = QModelIndex()) const override
   {
+    Q_UNUSED(parent);
+
     return mCommits.size();
   }
 
@@ -1019,6 +1030,9 @@ public:
     const QStyleOptionViewItem &option,
     const QModelIndex &index) const override
   {
+    Q_UNUSED(option);
+    Q_UNUSED(index);
+
     bool compact = Settings::instance()->value("commit/compact").toBool();
     LayoutConstants constants = layoutConstants(compact);
 
@@ -1042,6 +1056,8 @@ public:
     const QStyleOptionViewItem &option,
     const QModelIndex &index) const
   {
+    Q_UNUSED(index);
+
     bool compact = Settings::instance()->value("commit/compact").toBool();
     LayoutConstants constants = layoutConstants(compact);
 

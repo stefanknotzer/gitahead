@@ -24,6 +24,7 @@ public:
 
 private:
   git::Config mConfig;
+  git::Config mAppConfig;
 };
 
 #endif

@@ -941,7 +941,6 @@ public:
       }
     }
 
-    git::Repository repo = patch.repo();
     QList<Line> lines;
     QByteArray content;
 
@@ -1021,12 +1020,9 @@ public:
     }
 
     // Trim final line end.
-    if (content.endsWith('\n'))
-      content.chop(1);
-    if (content.endsWith('\r'))
-      content.chop(1);
+    content.chop(1);
 
-    mEditor->setText(repo.decode(content));
+    mEditor->setText(content);
 
     // Calculate margin width.
     int width = 0;
@@ -2568,7 +2564,7 @@ public:
     }
 
     // Read default view configuration.
-    git::Config config = repo.config();
+    git::Config config = repo.appConfig();
     int cfgint = config.value<int>("diffview.binary", 0);
     bool binimage = (cfgint == 0) || (cfgint == 2);
     bool bininfo = (cfgint == 1) || (cfgint == 2);

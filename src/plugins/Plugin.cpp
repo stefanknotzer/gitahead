@@ -803,7 +803,7 @@ QList<PluginRef> Plugin::plugins(const git::Repository &repo)
 
 git::Config Plugin::config() const
 {
-  return mRepo.isValid() ? mRepo.config() : git::Config::global();
+  return mRepo.isValid() ? mRepo.appConfig() : git::Config::appGlobal();
 }
 
 void Plugin::setError(const QString &err)
