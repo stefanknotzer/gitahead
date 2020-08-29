@@ -1017,8 +1017,8 @@ private:
     mLengthSpin->setEnabled(enable);
 
     // Subject line length limit.
-    if ((row == 0) && mSubjectProtect->isChecked()) {
-      if (len > limit) {
+    if (mSubjectProtect->isChecked()) {
+      if ((str.count() > 0) && (str[0].length() > mSubjectLimit)) {
         // Warning indication (300 ms).
         mMessage->setStyleSheet(warningStyle(kMessageFmt, true));
         mSubjectFlash = true;
