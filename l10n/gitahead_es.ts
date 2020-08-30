@@ -494,22 +494,22 @@
 <context>
     <name>CommitDetail</name>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="258"/>
+        <location filename="../src/ui/DetailView.cpp" line="257"/>
         <source>Copy</source>
         <translation>Copiar</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="400"/>
+        <location filename="../src/ui/DetailView.cpp" line="399"/>
         <source>Range:</source>
         <translation>Rango:</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="417"/>
+        <location filename="../src/ui/DetailView.cpp" line="416"/>
         <source>Id:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="429"/>
+        <location filename="../src/ui/DetailView.cpp" line="428"/>
         <source>initial commit</source>
         <translation>Confirmación inicial</translation>
     </message>
@@ -574,129 +574,129 @@
         <translation type="vanished">&lt;b&gt;Mensaje de Confirmación:&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="621"/>
+        <location filename="../src/ui/DetailView.cpp" line="615"/>
         <source>Commit Message:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="667"/>
+        <location filename="../src/ui/DetailView.cpp" line="666"/>
         <source>Subject Line Length Warning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="676"/>
+        <location filename="../src/ui/DetailView.cpp" line="675"/>
         <source>Avoid Subject Line Length Violation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="692"/>
+        <location filename="../src/ui/DetailView.cpp" line="691"/>
         <source>Insert Blank Line between Subject and Body</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="702"/>
+        <location filename="../src/ui/DetailView.cpp" line="701"/>
         <source>Body Text Length Warning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="711"/>
+        <location filename="../src/ui/DetailView.cpp" line="710"/>
         <source>Body Text Wordwrap</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="773"/>
+        <location filename="../src/ui/DetailView.cpp" line="772"/>
         <source>Stage All</source>
         <translation>Preparar Todo</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="777"/>
+        <location filename="../src/ui/DetailView.cpp" line="776"/>
         <source>Unstage All</source>
         <translation>No Preparar Nada</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="780"/>
-        <location filename="../src/ui/DetailView.cpp" line="966"/>
+        <location filename="../src/ui/DetailView.cpp" line="779"/>
+        <location filename="../src/ui/DetailView.cpp" line="965"/>
         <source>Commit</source>
         <translation>Confirmar</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="909"/>
+        <location filename="../src/ui/DetailView.cpp" line="908"/>
         <source>Update %1</source>
         <translation>Actualizar %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="913"/>
+        <location filename="../src/ui/DetailView.cpp" line="912"/>
         <source>Update %1 and %2</source>
         <translation>Actualizar %1 y %2</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="917"/>
+        <location filename="../src/ui/DetailView.cpp" line="916"/>
         <source>Update %1, %2, and %3</source>
         <translation>Actualizar %1, %2 y %3</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="922"/>
+        <location filename="../src/ui/DetailView.cpp" line="921"/>
         <source>Update %1, %2, and %3 more files...</source>
         <translation>Actualizar %1, %2 y %3 más archivos...</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="938"/>
+        <location filename="../src/ui/DetailView.cpp" line="937"/>
         <source>Nothing staged</source>
         <translation>Nada preparado</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="941"/>
+        <location filename="../src/ui/DetailView.cpp" line="940"/>
         <source>%1 of %2 file staged</source>
         <translation>Archivo preparado: %1 de %2</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="941"/>
+        <location filename="../src/ui/DetailView.cpp" line="940"/>
         <source>%1 of %2 files staged</source>
         <translation>Archivo preparado: %1 de %2</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="946"/>
+        <location filename="../src/ui/DetailView.cpp" line="945"/>
         <source>%1 file partially staged</source>
         <translation>%1 archivo parcialmente preparado</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="946"/>
+        <location filename="../src/ui/DetailView.cpp" line="945"/>
         <source>%1 files partially staged</source>
         <translation>%1 archivos parcialmente preparados</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="952"/>
+        <location filename="../src/ui/DetailView.cpp" line="951"/>
         <source>%1 unresolved conflict</source>
         <translation>%1 conflicto sin resolver</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="952"/>
+        <location filename="../src/ui/DetailView.cpp" line="951"/>
         <source>%1 unresolved conflicts</source>
         <translation>%1 conflictos sin resolver</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="955"/>
+        <location filename="../src/ui/DetailView.cpp" line="954"/>
         <source>all conflicts resolved</source>
         <translation>todos los conflictos resueltos</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="966"/>
+        <location filename="../src/ui/DetailView.cpp" line="965"/>
         <source>Commit Merge</source>
         <translation>Confirmación de Fusión</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="985"/>
+        <location filename="../src/ui/DetailView.cpp" line="984"/>
         <source>Subject:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="990"/>
+        <location filename="../src/ui/DetailView.cpp" line="989"/>
         <source>Blank:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="995"/>
-        <location filename="../src/ui/DetailView.cpp" line="1000"/>
+        <location filename="../src/ui/DetailView.cpp" line="994"/>
+        <location filename="../src/ui/DetailView.cpp" line="999"/>
         <source>Body:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -704,114 +704,114 @@
 <context>
     <name>CommitList</name>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1452"/>
+        <location filename="../src/ui/CommitList.cpp" line="1532"/>
         <source>Remove Untracked Files</source>
         <translation>Remover archivos sin seguimiento</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1469"/>
+        <location filename="../src/ui/CommitList.cpp" line="1549"/>
         <source>Apply</source>
         <translation>Aplicar</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1473"/>
+        <location filename="../src/ui/CommitList.cpp" line="1553"/>
         <source>Pop</source>
         <translation>Retirar</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1477"/>
+        <location filename="../src/ui/CommitList.cpp" line="1557"/>
         <source>Drop</source>
         <translation>Soltar</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1491"/>
+        <location filename="../src/ui/CommitList.cpp" line="1571"/>
         <source>Unstar</source>
         <translation>Desmarcar como favorito</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1491"/>
+        <location filename="../src/ui/CommitList.cpp" line="1571"/>
         <source>Star</source>
         <translation>Marcar como favorito</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1501"/>
+        <location filename="../src/ui/CommitList.cpp" line="1581"/>
         <source>Add Tag...</source>
         <translation>Agregar etiqueta...</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1505"/>
+        <location filename="../src/ui/CommitList.cpp" line="1585"/>
         <source>New Branch...</source>
         <translation>Nueva rama...</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1516"/>
+        <location filename="../src/ui/CommitList.cpp" line="1596"/>
         <source>Delete Tag %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1526"/>
+        <location filename="../src/ui/CommitList.cpp" line="1606"/>
         <source>Delete Branch %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1534"/>
+        <location filename="../src/ui/CommitList.cpp" line="1614"/>
         <source>Merge...</source>
         <translation>Fusionar...</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1549"/>
+        <location filename="../src/ui/CommitList.cpp" line="1629"/>
         <source>Rebase...</source>
         <translation>Reorganizar...</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1564"/>
+        <location filename="../src/ui/CommitList.cpp" line="1644"/>
         <source>Squash...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1581"/>
+        <location filename="../src/ui/CommitList.cpp" line="1661"/>
         <source>Revert</source>
         <translation>Revertir</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1585"/>
+        <location filename="../src/ui/CommitList.cpp" line="1665"/>
         <source>Cherry-pick</source>
         <translation>Escoger</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1594"/>
-        <location filename="../src/ui/CommitList.cpp" line="1604"/>
-        <location filename="../src/ui/CommitList.cpp" line="1624"/>
+        <location filename="../src/ui/CommitList.cpp" line="1674"/>
+        <location filename="../src/ui/CommitList.cpp" line="1684"/>
+        <location filename="../src/ui/CommitList.cpp" line="1704"/>
         <source>Checkout %1</source>
         <translation>Revisar %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1615"/>
+        <location filename="../src/ui/CommitList.cpp" line="1695"/>
         <source>Local branch is already checked out</source>
         <translation>La rama local ya está revisada</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1618"/>
+        <location filename="../src/ui/CommitList.cpp" line="1698"/>
         <source>This is a bare repository</source>
         <translation>Este es un repositorio vacío</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1635"/>
+        <location filename="../src/ui/CommitList.cpp" line="1715"/>
         <source>Reset</source>
         <translation>Reestablecer</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1636"/>
+        <location filename="../src/ui/CommitList.cpp" line="1716"/>
         <source>Soft</source>
         <translation>Suave</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1637"/>
+        <location filename="../src/ui/CommitList.cpp" line="1717"/>
         <source>Mixed</source>
         <translation>Mezclado</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1638"/>
+        <location filename="../src/ui/CommitList.cpp" line="1718"/>
         <source>Hard</source>
         <translation>Duro</translation>
     </message>
@@ -832,39 +832,44 @@
 <context>
     <name>CommitToolBar</name>
     <message>
-        <location filename="../src/ui/CommitToolBar.cpp" line="138"/>
+        <location filename="../src/ui/CommitToolBar.cpp" line="139"/>
         <source>Show All Branches</source>
         <translation>Mostrar todas las ramas</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitToolBar.cpp" line="139"/>
+        <location filename="../src/ui/CommitToolBar.cpp" line="140"/>
         <source>Show Selected Branch</source>
         <translation>Mostrar rama seleccionada</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitToolBar.cpp" line="143"/>
+        <location filename="../src/ui/CommitToolBar.cpp" line="144"/>
         <source>Sort by Date</source>
         <translation>Ordenar por fecha</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitToolBar.cpp" line="144"/>
+        <location filename="../src/ui/CommitToolBar.cpp" line="145"/>
         <source>Sort Topologically</source>
         <translation>Ordenar topológicamente</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitToolBar.cpp" line="161"/>
+        <location filename="../src/ui/CommitToolBar.cpp" line="162"/>
         <source>Show Graph</source>
         <translation>Mostrar Diagrama</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitToolBar.cpp" line="171"/>
+        <location filename="../src/ui/CommitToolBar.cpp" line="172"/>
         <source>Show Clean Status</source>
         <translation>Mostrar Estado Limpio</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitToolBar.cpp" line="182"/>
+        <location filename="../src/ui/CommitToolBar.cpp" line="183"/>
         <source>Compact Mode</source>
         <translation>Modo Compacto</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/CommitToolBar.cpp" line="184"/>
+        <source>Reduced Mode</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

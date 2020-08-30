@@ -14,7 +14,6 @@
 #include "MenuBar.h"
 #include "TreeWidget.h"
 #include "app/Application.h"
-#include "app/Theme.h"
 #include "git/Branch.h"
 #include "git/Commit.h"
 #include "git/Config.h"
@@ -613,13 +612,13 @@ public:
   CommitEditor(const git::Repository &repo, QWidget *parent = nullptr)
     : QFrame(parent), mRepo(repo)
   {
+    ElidedLabel *label = new ElidedLabel(kBoldFmt.arg(tr("Commit Message:")), Qt::ElideLeft, this);
+    label->setAlignment(Qt::AlignLeft);
+
     // Read configuration.
     git::Config appconfig = repo.appConfig();
     mSubjectLimit = appconfig.value<int>(kSubjectLimitKey, 50);
     mBodyLimit = appconfig.value<int>(kBodyLimitKey, 72);
-
-    ElidedLabel *label = new ElidedLabel(kBoldFmt.arg(tr("Commit Message:")), Qt::ElideLeft, this);
-    label->setAlignment(Qt::AlignLeft);
 
     mLengthLabel = new ElidedLabel(QString(), QString(), Qt::ElideLeft, this);
     mLengthLabel->setAlignment(Qt::AlignRight);
