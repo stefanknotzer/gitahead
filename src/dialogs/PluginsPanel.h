@@ -24,6 +24,8 @@ public:
 
   PluginsPanel(const git::Repository &repo, QWidget *parent = nullptr);
 
+  void init(void) { refresh(); }
+
   QSize sizeHint() const override;
 
 private:
