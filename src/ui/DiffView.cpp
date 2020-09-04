@@ -572,12 +572,8 @@ public:
 
       // Set default font and size.
       Settings *settings = Settings::instance();
-      settings->beginGroup("editor");
-      settings->beginGroup("font");
-      QString fontfamily = settings->value("family").toString();
-      QString fontsize = settings->value("size").toString();
-      settings->endGroup(); // font
-      settings->endGroup(); // editor
+      QString fontfamily = settings->value("editor/font/family").toString();
+      QString fontsize = settings->value("editor/font/size").toString();
 
       QHBoxLayout *layout = new QHBoxLayout(this);
       layout->setContentsMargins(4,2,4,2);

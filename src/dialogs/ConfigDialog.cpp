@@ -38,6 +38,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QListView>
+#include <QMenu>
 #include <QMessageBox>
 #include <QPushButton>
 #include <QShortcut>
@@ -107,7 +108,7 @@ public:
     form->addRow(QString(), mPullUpdate);
     form->addRow(QString(), mAutoPrune);
 
-    init();
+    refresh();
 
     // Connect signals after initializing fields.
     connect(mAlias, &QLineEdit::textChanged, [this](const QString &text) {
@@ -146,7 +147,7 @@ public:
     });
   }
 
-  void init()
+  void refresh()
   {
     git::Config config = mRepo.config();
     mAlias->setText(config.value<QString>("repository.alias"));
@@ -155,16 +156,11 @@ public:
 
     // Read defaults from global settings.
     Settings *settings = Settings::instance();
-    settings->beginGroup("global");
-    settings->beginGroup("autofetch");
-    bool fetch = settings->value("enable").toBool();
-    int minutes = settings->value("minutes").toInt();
-    settings->endGroup();
-
-    bool push = settings->value("autopush/enable").toBool();
-    bool update = settings->value("autoupdate/enable").toBool();
-    bool prune = settings->value("autoprune/enable").toBool();
-    settings->endGroup();
+    bool fetch = settings->value("global/autofetch/enable").toBool();
+    int minutes = settings->value("global/autofetch/minutes").toInt();
+    bool push = settings->value("global/autopush/enable").toBool();
+    bool update = settings->value("global/autoupdate/enable").toBool();
+    bool prune = settings->value("global/autoprune/enable").toBool();
 
     git::Config app = mRepo.appConfig();
     mFetch->setChecked(app.value<bool>("autofetch.enable", fetch));
@@ -403,24 +399,12 @@ public:
 
     // Enable.
     mEnable = new QCheckBox(tr("Enable indexing"), this);
-    connect(mEnable, &QCheckBox::toggled, [view](bool checked) {
-      view->repo().appConfig().setValue("index.enable", checked);
-
-      if (checked) {
-        view->startIndexing();
-      } else {
-        view->cancelIndexing();
-      }
-    });
 
     // Commit term limit.
     mTerms = new QSpinBox(this);
     mTerms->setMinimum(100000);
     mTerms->setMaximum(99999999);
     mTerms->setSingleStep(100000);
-    connect(mTerms, signal, [view](int value) {
-      view->repo().appConfig().setValue("index.termlimit", value);
-    });
     QLabel *termsLabel = new QLabel(tr("terms"), this);
 
     QHBoxLayout *termsLayout = new QHBoxLayout;
@@ -430,9 +414,6 @@ public:
 
     // Diff context lines.
     mContext = new QSpinBox(this);
-    connect(mContext, signal, [view](int value) {
-      view->repo().appConfig().setValue("index.contextlines", value);
-    });
     QLabel *contextLabel = new QLabel(tr("lines"), this);
 
     QHBoxLayout *contextLayout = new QHBoxLayout;
@@ -470,16 +451,35 @@ public:
       remove->setEnabled(index->isValid());
     });
 
-    init();
-
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->addWidget(mEnable);
     layout->addLayout(form);
     layout->addWidget(remove, 0, Qt::AlignLeft);
     layout->addStretch();
+
+    refresh();
+
+    // Connect signals after initializing fields.
+    connect(mEnable, &QCheckBox::toggled, [view](bool checked) {
+      view->repo().appConfig().setValue("index.enable", checked);
+
+      if (checked) {
+        view->startIndexing();
+      } else {
+        view->cancelIndexing();
+      }
+    });
+
+    connect(mTerms, signal, [view](int value) {
+      view->repo().appConfig().setValue("index.termlimit", value);
+    });
+
+    connect(mContext, signal, [view](int value) {
+      view->repo().appConfig().setValue("index.contextlines", value);
+    });
   }
 
-  void init(void)
+  void refresh(void)
   {
     git::Config config = mView->repo().appConfig();
     Q_ASSERT(config.isValid());
@@ -853,31 +853,40 @@ ConfigDialog::ConfigDialog(RepoView *view, Index index)
   connect(buttons, &QDialogButtonBox::accepted, this, &QDialog::accept);
   connect(buttons, &QDialogButtonBox::rejected, this, &QDialog::reject);
 
-  // Add git config edit button.
-  QPushButton *edit =
-    buttons->addButton(tr("Edit git Config File..."), QDialogButtonBox::ResetRole);
-  connect(edit, &QPushButton::clicked, this, [view, generalPanel, diffPanel] {
+  // Add edit menu.
+  QToolButton *edit = new QToolButton();
+  edit->setPopupMode(QToolButton::InstantPopup);
+  edit->setText(tr("Edit Config File..."));
+
+  QMenu *editMenu = new QMenu(edit);
+  QAction *editGit = editMenu->addAction(tr("Edit git Config File"));
+  QAction *editGitAhead = editMenu->addAction(tr("Edit GitAhead Config File"));
+  QAction *removeGitAhead = editMenu->addAction(tr("Remove GitAhead Config File"));
+  edit->setMenu(editMenu);
+
+  buttons->addButton(edit, QDialogButtonBox::ResetRole);
+
+  // Add git config edit.
+  connect(editGit, &QAction::triggered, [view, generalPanel, diffPanel] {
     QString file = view->repo().dir().filePath("config");
     if (EditorWindow *window = view->openEditor(file))
       connect(window->widget(), &BlameEditor::saved, [generalPanel, diffPanel] {
         // git config changed.
-        generalPanel->init();
-        diffPanel->init();
+        generalPanel->refresh();
+        diffPanel->refresh();
       });
   });
 
-  // Add app config edit button.
-  QPushButton *appEdit =
-    buttons->addButton(tr("Edit GitAhead Config File"), QDialogButtonBox::ResetRole);
-  connect(appEdit, &QPushButton::clicked, this, [view, generalPanel, diffPanel, searchPanel, pluginsPanel] {
+  // Add app config edit.
+  connect(editGitAhead, &QAction::triggered, [view, generalPanel, diffPanel, searchPanel, pluginsPanel] {
     QString file = view->repo().dir().filePath("gitahead/config");
     if (EditorWindow *window = view->openEditor(file))
       connect(window->widget(), &BlameEditor::saved, [generalPanel, diffPanel, searchPanel, pluginsPanel] {
         // GitAhead config changed.
-        generalPanel->init();
-        diffPanel->init();
-        searchPanel->init();
-        pluginsPanel->init();
+        generalPanel->refresh();
+        diffPanel->refresh();
+        searchPanel->refresh();
+        pluginsPanel->refresh();
       });
   });
 
@@ -888,17 +897,15 @@ ConfigDialog::ConfigDialog(RepoView *view, Index index)
     file.close();
   }
 
-  // Add app config remove button.
-  QPushButton *appRemove =
-    buttons->addButton(tr("Remove GitAhead Config File"), QDialogButtonBox::ResetRole);
-  connect(appRemove, &QPushButton::clicked, [view, generalPanel, diffPanel, searchPanel, pluginsPanel] {
+  // Add app config remove.
+  connect(removeGitAhead, &QAction::triggered, [view, generalPanel, diffPanel, searchPanel, pluginsPanel] {
     QMessageBox msg;
     msg.setWindowTitle(tr("Remove GitAhead Config File?"));
     msg.setText(tr("Are you sure you want to wipe the local GitAhead configuration?"));
     msg.setInformativeText(
       tr("The global GitAhead configuration is used in case "
          "the local configuration is invalid or missing. "
-         "The global settings remain untouched."));
+         "The global settings remain unchanged."));
     msg.setStandardButtons(QMessageBox::Cancel);
     QPushButton *remove = msg.addButton(tr("Remove"), QMessageBox::AcceptRole);
     connect(remove, &QPushButton::clicked, [view, generalPanel, diffPanel, searchPanel, pluginsPanel] {
@@ -908,10 +915,10 @@ ConfigDialog::ConfigDialog(RepoView *view, Index index)
       file.close();
 
       // GitAhead config changed.
-      generalPanel->init();
-      diffPanel->init();
-      searchPanel->init();
-      pluginsPanel->init();
+      generalPanel->refresh();
+      diffPanel->refresh();
+      searchPanel->refresh();
+      pluginsPanel->refresh();
     });
     remove->setFocus();
     msg.exec();
@@ -926,15 +933,15 @@ ConfigDialog::ConfigDialog(RepoView *view, Index index)
   layout->addWidget(buttons);
 
   // Track actions in a group.
-  connect(mActions, &QActionGroup::triggered, [this, description, edit, appEdit, appRemove](QAction *action) {
+  connect(mActions, &QActionGroup::triggered, [this, description, editGit, editGitAhead, removeGitAhead](QAction *action) {
     int index = mActions->actions().indexOf(action);
     bool gitconfig = (index != Search && index != Plugins);
     bool gitaheadconfig = (index < Remotes || index == Search || index == Plugins);
 
     description->setVisible(gitaheadconfig);
-    edit->setVisible(gitconfig);
-    appEdit->setVisible(gitaheadconfig);
-    appRemove->setVisible(gitaheadconfig);
+    editGit->setEnabled(gitconfig);
+    editGitAhead->setEnabled(gitaheadconfig);
+    removeGitAhead->setEnabled(gitaheadconfig);
     mStack->setCurrentIndex(index);
     setWindowTitle(tr("Repository:") + " " + action->text());
   });

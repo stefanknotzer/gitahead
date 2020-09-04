@@ -25,7 +25,7 @@ class DiffPanel : public QWidget
 public:
   DiffPanel(const git::Repository &repo, QWidget *parent = nullptr);
 
-  void init(void);
+  void refresh(void);
 
 private:
   git::Config mConfig;

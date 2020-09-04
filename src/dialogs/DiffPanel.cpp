@@ -24,6 +24,8 @@ DiffPanel::DiffPanel(const git::Repository &repo, QWidget *parent)
   : QWidget(parent), mConfig(repo ? repo.config() : git::Config::global()),
                      mAppConfig(repo ? repo.appConfig() : git::Config::appGlobal())
 {
+  bool global = repo ? false : true;
+
   // Diff context.
   mContext = new QSpinBox(this);
   QLabel *contextLabel = new QLabel(tr("lines"), this);
@@ -32,35 +34,12 @@ DiffPanel::DiffPanel(const git::Repository &repo, QWidget *parent)
   contextLayout->addWidget(contextLabel);
   contextLayout->addStretch();
 
-  auto contextSignal = QOverload<int>::of(&QSpinBox::valueChanged);
-  connect(mContext, contextSignal, [this](int value) {
-    mConfig.setValue("diff.context", value);
-    foreach (MainWindow *window, MainWindow::windows()) {
-      for (int i = 0; i < window->count(); ++i)
-        window->view(i)->refresh();
-    }
-  });
-
   // Encoding.
   mEncoding = new QComboBox(this);
   mEncoding->addItem(tr("System Locale"), -1);
   mEncoding->insertSeparator(mEncoding->count());
   foreach (int mib, QTextCodec::availableMibs())
     mEncoding->addItem(QTextCodec::codecForMib(mib)->name(), mib);
-
-  auto encodingSignal = QOverload<int>::of(&QComboBox::currentIndexChanged);
-  connect(mEncoding, encodingSignal, [this](int index) {
-    if (mEncoding->itemData(index).toInt() < 0) {
-      mConfig.remove("gui.encoding");
-    } else {
-      mConfig.setValue("gui.encoding", mEncoding->itemText(index));
-    }
-
-    foreach (MainWindow *window, MainWindow::windows()) {
-      for (int i = 0; i < window->count(); ++i)
-        window->view(i)->refresh();
-    }
-  });
 
   QFormLayout *layout = new QFormLayout(this);
   layout->addRow(tr("Context lines:"), contextLayout);
@@ -130,54 +109,79 @@ DiffPanel::DiffPanel(const git::Repository &repo, QWidget *parent)
   layout->addRow(tr("LFS View:"), lfsView);
 
   // Remaining settings are strictly global.
-  if (qobject_cast<ConfigDialog *>(parent)) {
-    init();
-    return;
+  if (global) {
+    QFrame *line = new QFrame(this);
+    line->setFrameShape(QFrame::HLine);
+    layout->addRow(QString(), line);
+
+    // ignore whitespace
+    // The ignore whitespace option is global because it's
+    // not a config setting. It's a flag (-w) to git diff.
+    mIgnoreWs = new QCheckBox(tr("Ignore Whitespace (-w)"), this);
+
+    // Auto collapse diff view.
+    mCollapseUntracked = new QCheckBox(tr("Untracked files"), this);
+    mCollapseAdded = new QCheckBox(tr("Added files"), this);
+    mCollapseModified = new QCheckBox(tr("Modified files"), this);
+    mCollapseDeleted = new QCheckBox(tr("Deleted files"), this);
+
+    layout->addRow(tr("Whitespace:"), mIgnoreWs);
+    layout->addRow(tr("Auto Collapse:"), mCollapseUntracked);
+    layout->addRow(QString(), mCollapseAdded);
+    layout->addRow(QString(), mCollapseModified);
+    layout->addRow(QString(), mCollapseDeleted);
   }
 
-  QFrame *line = new QFrame(this);
-  line->setFrameShape(QFrame::HLine);
-  layout->addRow(QString(), line);
+  refresh();
 
-  // ignore whitespace
-  // The ignore whitespace option is global because it's
-  // not a config setting. It's a flag (-w) to git diff.
-  mIgnoreWs = new QCheckBox(tr("Ignore Whitespace (-w)"), this);
-  connect(mIgnoreWs, &QCheckBox::toggled, [](bool checked) {
-    Settings::instance()->setWhitespaceIgnored(checked);
+  // Connect signals after initializing fields.
+  auto contextSignal = QOverload<int>::of(&QSpinBox::valueChanged);
+  connect(mContext, contextSignal, [this](int value) {
+    mConfig.setValue("diff.context", value);
+    foreach (MainWindow *window, MainWindow::windows()) {
+      for (int i = 0; i < window->count(); ++i)
+        window->view(i)->refresh();
+    }
   });
 
-  // Auto collapse diff view.
-  mCollapseUntracked = new QCheckBox(tr("Untracked files"), this);
-  connect(mCollapseUntracked, &QCheckBox::toggled, [](bool checked) {
-    Settings::instance()->setValue("collapse/untracked", checked);
+  auto encodingSignal = QOverload<int>::of(&QComboBox::currentIndexChanged);
+  connect(mEncoding, encodingSignal, [this](int index) {
+    if (mEncoding->itemData(index).toInt() < 0) {
+      mConfig.remove("gui.encoding");
+    } else {
+      mConfig.setValue("gui.encoding", mEncoding->itemText(index));
+    }
+
+    foreach (MainWindow *window, MainWindow::windows()) {
+      for (int i = 0; i < window->count(); ++i)
+        window->view(i)->refresh();
+    }
   });
 
-  mCollapseAdded = new QCheckBox(tr("Added files"), this);
-  connect(mCollapseAdded, &QCheckBox::toggled, [](bool checked) {
-    Settings::instance()->setValue("collapse/added", checked);
-  });
+  if (global) {
+    connect(mIgnoreWs, &QCheckBox::toggled, [](bool checked) {
+      Settings::instance()->setWhitespaceIgnored(checked);
+    });
 
-  mCollapseModified = new QCheckBox(tr("Modified files"), this);
-  connect(mCollapseModified, &QCheckBox::toggled, [](bool checked) {
-    Settings::instance()->setValue("collapse/modified", checked);
-  });
+    connect(mCollapseUntracked, &QCheckBox::toggled, [](bool checked) {
+      Settings::instance()->setValue("collapse/untracked", checked);
+    });
 
-  mCollapseDeleted = new QCheckBox(tr("Deleted files"), this);
-  connect(mCollapseDeleted, &QCheckBox::toggled, [](bool checked) {
-    Settings::instance()->setValue("collapse/deleted", checked);
-  });
+    connect(mCollapseAdded, &QCheckBox::toggled, [](bool checked) {
+      Settings::instance()->setValue("collapse/added", checked);
+    });
 
-  init();
+    connect(mCollapseModified, &QCheckBox::toggled, [](bool checked) {
+      Settings::instance()->setValue("collapse/modified", checked);
+    });
 
-  layout->addRow(tr("Whitespace:"), mIgnoreWs);
-  layout->addRow(tr("Auto Collapse:"), mCollapseUntracked);
-  layout->addRow(QString(), mCollapseAdded);
-  layout->addRow(QString(), mCollapseModified);
-  layout->addRow(QString(), mCollapseDeleted);
+    connect(mCollapseDeleted, &QCheckBox::toggled, [](bool checked) {
+      Settings::instance()->setValue("collapse/deleted", checked);
+    });
+  }
 }
 
-void DiffPanel::init(void)
+void DiffPanel::refresh(void)
 {
   mContext->setValue(mConfig.value<int>("diff.context", 3));
 

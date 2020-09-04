@@ -47,6 +47,7 @@
 #include <QStackedWidget>
 #include <QStandardItemModel>
 #include <QToolBar>
+#include <QToolButton>
 
 #ifdef Q_OS_UNIX
 #include "cli/Installer.h"
@@ -144,7 +145,7 @@ public:
     layout->setContentsMargins(16,12,16,12);
     layout->addLayout(form);
 
-    init();
+    refresh();
 
     // Connect signals after initializing fields.
     connect(mName, &QLineEdit::textChanged, [](const QString &text) {
@@ -194,24 +195,18 @@ public:
     });
   }
 
-  void init()
+  void refresh()
   {
     git::Config config = git::Config::global();
     mName->setText(config.value<QString>("user.name"));
     mEmail->setText(config.value<QString>("user.email"));
 
     Settings *settings = Settings::instance();
-    settings->beginGroup("global");
-    settings->beginGroup("autofetch");
-    mFetch->setChecked(settings->value("enable").toBool());
-    mFetchMinutes->setValue(settings->value("minutes").toInt());
-    settings->endGroup();
-
-    mPushCommit->setChecked(settings->value("autopush/enable").toBool());
-    mPullUpdate->setChecked(settings->value("autoupdate/enable").toBool());
-    mAutoPrune->setChecked(settings->value("autoprune/enable").toBool());
-    settings->endGroup();
-
+    mFetch->setChecked(settings->value("global/autofetch/enable").toBool());
+    mFetchMinutes->setValue(settings->value("global/autofetch/minutes").toInt());
+    mPushCommit->setChecked(settings->value("global/autopush/enable").toBool());
+    mPullUpdate->setChecked(settings->value("global/autoupdate/enable").toBool());
+    mAutoPrune->setChecked(settings->value("global/autoprune/enable").toBool());
     mNoTranslation->setChecked(settings->value("translation/disable").toBool());
     mStoreCredentials->setChecked(settings->value("credential/store").toBool());
     mUsageReporting->setChecked(settings->value("tracking/enabled").toBool());
@@ -241,6 +236,23 @@ public:
   {
     // External editor.
     mEditTool = new QLineEdit(this);
+
+    // External diff/merge.
+    mDiffTool = externalTools("diff");
+    mMergeTool = externalTools("merge");
+
+    // Backup files.
+    mBackup = new QCheckBox(tr("Keep backup of merge files (.orig)"), this);
+
+    QFormLayout *layout = new QFormLayout(this);
+    layout->addRow(tr("External editor:"), mEditTool);
+    layout->addRow(tr("External diff:"), mDiffTool);
+    layout->addRow(tr("External merge:"), mMergeTool);
+    layout->addRow(tr("Backup files:"), mBackup);
+
+    refresh();
+
+    // Connect signals after initializing fields.
     connect(mEditTool, &QLineEdit::textChanged, [this](const QString &text) {
       if (text.isEmpty()) {
         mConfig.remove("gui.editor");
@@ -249,26 +261,12 @@ public:
       }
     });
 
-    // External diff/merge.
-    mDiffTool = externalTools("diff");
-    mMergeTool = externalTools("merge");
-
-    // Backup files.
-    mBackup = new QCheckBox(tr("Keep backup of merge files (.orig)"), this);
     connect(mBackup, &QCheckBox::toggled, [this](bool checked) {
       mConfig.setValue("mergetool.keepBackup", checked);
     });
-
-    init();
-
-    QFormLayout *layout = new QFormLayout(this);
-    layout->addRow(tr("External editor:"), mEditTool);
-    layout->addRow(tr("External diff:"), mDiffTool);
-    layout->addRow(tr("External merge:"), mMergeTool);
-    layout->addRow(tr("Backup files:"), mBackup);
   }
 
-  void init(void)
+  void refresh(void)
   {
     QComboBox *comboBox;
     QString key;
@@ -377,9 +375,7 @@ public:
     mComboBox->insertSeparator(mComboBox->count());
 
     Settings *settings = Settings::instance();
-    settings->beginGroup("window");
-    int index = mComboBox->findText(settings->value("theme").toString());
-    settings->endGroup(); // window
+    int index = mComboBox->findText(settings->value("window/theme").toString());
 
     // Add theme.
     mComboBox->addItem(tr("Add New Theme"));
@@ -392,6 +388,33 @@ public:
     if(!mComboBox->itemData(mComboBox->currentIndex()).isValid())
       model->item(mComboBox->count() - 1)->setEnabled(false);
 
+    mFullPath = new QCheckBox(tr("Show full repository path"));
+    mHideLog = new QCheckBox(tr("Hide automatically"));
+    mSubTabs = new QCheckBox(tr("Open submodules in tabs"));
+    mRepoTabs = new QCheckBox(tr("Open all repositories in tabs"));
+    mMerge = new QCheckBox(this);
+    mRevert = new QCheckBox(this);
+    mCherryPick = new QCheckBox(this);
+    mStash = new QCheckBox(this);
+    mLargeFiles = new QCheckBox(this);
+    mDirectories = new QCheckBox(this);
+
+    QFormLayout *layout = new QFormLayout(this);
+    layout->addRow(tr("Theme:"), mComboBox);
+    layout->addRow(tr("Title:"), mFullPath);
+    layout->addRow(tr("Log:"), mHideLog);
+    layout->addRow(tr("Tabs:"), mSubTabs);
+    layout->addRow(QString(), mRepoTabs);
+    layout->addRow(tr("Prompt:"), mMerge);
+    layout->addRow(QString(), mRevert);
+    layout->addRow(QString(), mCherryPick);
+    layout->addRow(QString(), mStash);
+    layout->addRow(QString(), mDirectories);
+    layout->addRow(QString(), mLargeFiles);
+
+    refresh();
+
+    // Connect signals after initializing fields.
     auto signal = QOverload<int>::of(&QComboBox::currentIndexChanged);
     connect(mComboBox, signal, [this, parent] {
 
@@ -469,87 +492,57 @@ public:
       }
     });
 
-    mFullPath = new QCheckBox(tr("Show full repository path"));
     connect(mFullPath, &QCheckBox::toggled, [](bool checked) {
       Settings::instance()->setValue("window/path/full", checked);
     });
 
-    mHideLog = new QCheckBox(tr("Hide automatically"));
     connect(mHideLog, &QCheckBox::toggled, [](bool checked) {
       Settings::instance()->setValue("window/log/hide", checked);
     });
 
-    mSubTabs = new QCheckBox(tr("Open submodules in tabs"));
     connect(mSubTabs, &QCheckBox::toggled, [](bool checked) {
       Settings::instance()->setValue("window/tabs/submodule", checked);
     });
 
-    mRepoTabs = new QCheckBox(tr("Open all repositories in tabs"));
     connect(mRepoTabs, &QCheckBox::toggled, [](bool checked) {
       Settings::instance()->setValue("window/tabs/repository", checked);
     });
 
-    mMerge = new QCheckBox(this);
     connect(mMerge, &QCheckBox::toggled, [](bool checked) {
       Settings::instance()->setPrompt(Settings::PromptMerge, checked);
     });
 
-    mRevert = new QCheckBox(this);
     connect(mRevert, &QCheckBox::toggled, [](bool checked) {
       Settings::instance()->setPrompt(Settings::PromptRevert, checked);
     });
 
-    mCherryPick = new QCheckBox(this);
     connect(mCherryPick, &QCheckBox::toggled, [](bool checked) {
       Settings::instance()->setPrompt(Settings::PromptCherryPick, checked);
     });
 
-    mStash = new QCheckBox(this);
     connect(mStash, &QCheckBox::toggled, [](bool checked) {
       Settings::instance()->setPrompt(Settings::PromptStash, checked);
     });
 
-    mLargeFiles = new QCheckBox(this);
     connect(mLargeFiles, &QCheckBox::toggled, [](bool checked) {
       Settings::instance()->setPrompt(Settings::PromptLargeFiles, checked);
     });
 
-    mDirectories = new QCheckBox(this);
     connect(mDirectories, &QCheckBox::toggled, [](bool checked) {
       Settings::instance()->setPrompt(Settings::PromptDirectories, checked);
     });
-
-    init();
-
-    QFormLayout *layout = new QFormLayout(this);
-    layout->addRow(tr("Theme:"), mComboBox);
-    layout->addRow(tr("Title:"), mFullPath);
-    layout->addRow(tr("Log:"), mHideLog);
-    layout->addRow(tr("Tabs:"), mSubTabs);
-    layout->addRow(QString(), mRepoTabs);
-    layout->addRow(tr("Prompt:"), mMerge);
-    layout->addRow(QString(), mRevert);
-    layout->addRow(QString(), mCherryPick);
-    layout->addRow(QString(), mStash);
-    layout->addRow(QString(), mDirectories);
-    layout->addRow(QString(), mLargeFiles);
   }
 
-  void init(void)
+  void refresh(void)
   {
     Settings *settings = Settings::instance();
-    settings->beginGroup("window");
-
-    int index = mComboBox->findText(settings->value("theme").toString());
+    int index = mComboBox->findText(settings->value("window/theme").toString());
     mComboBox->setCurrentIndex(index >= 0 ? index : 0);
 
-    mFullPath->setChecked(settings->value("path/full").toBool());
-    mHideLog->setChecked(settings->value("log/hide").toBool());
-    settings->beginGroup("tabs");
-    mSubTabs->setChecked(settings->value("submodule").toBool());
-    mRepoTabs->setChecked(settings->value("repository").toBool());
-    settings->endGroup(); // tabs
-    settings->endGroup(); // window
+    mFullPath->setChecked(settings->value("window/path/full").toBool());
+    mHideLog->setChecked(settings->value("window/log/hide").toBool());
+    mSubTabs->setChecked(settings->value("window/tabs/submodule").toBool());
+    mRepoTabs->setChecked(settings->value("window/tabs/repository").toBool());
 
     QString mergeText = settings->promptDescription(Settings::PromptMerge);
     mMerge->setText(mergeText);
@@ -603,42 +596,21 @@ public:
 
     mFont = new QFontComboBox(this);
     mFont->setEditable(false);
-    mFont->setFontFilters(QFontComboBox::MonospacedFonts);
-    connect(mFont, &QFontComboBox::currentTextChanged, [](const QString &text) {
-      Settings::instance()->setValue("editor/font/family", text);
-    });
 
     mFontSize = new QSpinBox(this);
     mFontSize->setRange(2, 32);
-    connect(mFontSize, spin, [](int i) {
-      Settings::instance()->setValue("editor/font/size", i);
-    });
 
     mIndent = new QComboBox(this);
     mIndent->addItem(tr("Tabs"));
     mIndent->addItem(tr("Spaces"));
-    connect(mIndent, combo, [](int i) {
-      Settings::instance()->setValue("editor/indent/tabs", i == 0);
-    });
 
     mIndentWidth = new QSpinBox(this);
     mIndentWidth->setRange(1, 32);
-    connect(mIndentWidth, spin, [](int i) {
-      Settings::instance()->setValue("editor/indent/width", i);
-    });
 
     mTabWidth = new QSpinBox(this);
     mTabWidth->setRange(1, 32);
-    connect(mTabWidth, spin, [](int i) {
-      Settings::instance()->setValue("editor/indent/tabwidth", i);
-    });
 
     mBlameHeatMap = new QCheckBox(tr("Show heat map"), this);
-    connect(mBlameHeatMap, &QCheckBox::toggled, [](bool checked) {
-      Settings::instance()->setValue("editor/blame/heatmap", checked);
-    });
-
-    init();
 
     QFormLayout *layout = new QFormLayout(this);
     layout->addRow(tr("Font:"), mFont);
@@ -647,26 +619,45 @@ public:
     layout->addRow(tr("Indent width:"), mIndentWidth);
     layout->addRow(tr("Tab width:"), mTabWidth);
     layout->addRow(tr("Blame margin:"), mBlameHeatMap);
+
+    refresh();
+
+    // Connect signals after initializing fields.
+    mFont->setFontFilters(QFontComboBox::MonospacedFonts);
+    connect(mFont, &QFontComboBox::currentTextChanged, [](const QString &text) {
+      Settings::instance()->setValue("editor/font/family", text);
+    });
+
+    connect(mFontSize, spin, [](int i) {
+      Settings::instance()->setValue("editor/font/size", i);
+    });
+
+    connect(mIndent, combo, [](int i) {
+      Settings::instance()->setValue("editor/indent/tabs", i == 0);
+    });
+
+    connect(mIndentWidth, spin, [](int i) {
+      Settings::instance()->setValue("editor/indent/width", i);
+    });
+
+    connect(mTabWidth, spin, [](int i) {
+      Settings::instance()->setValue("editor/indent/tabwidth", i);
+    });
+
+    connect(mBlameHeatMap, &QCheckBox::toggled, [](bool checked) {
+      Settings::instance()->setValue("editor/blame/heatmap", checked);
+    });
   }
 
-  void init(void)
+  void refresh(void)
   {
     Settings *settings = Settings::instance();
-    settings->beginGroup("editor");
-
-    settings->beginGroup("font");
-    mFont->setCurrentText(settings->value("family").toString());
-    mFontSize->setValue(settings->value("size").toInt());
-    settings->endGroup(); // font
-
-    settings->beginGroup("indent");
-    mIndent->setCurrentIndex(settings->value("tabs").toBool() ? 0 : 1);
-    mIndentWidth->setValue(settings->value("width").toInt());
-    mTabWidth->setValue(settings->value("tabwidth").toInt());
-    settings->endGroup(); // indent
-
-    mBlameHeatMap->setChecked(settings->value("blame/heatmap").toBool());
-    settings->endGroup(); // editor
+    mFont->setCurrentText(settings->value("editor/font/family").toString());
+    mFontSize->setValue(settings->value("editor/font/size").toInt());
+    mIndent->setCurrentIndex(settings->value("editor/indent/tabs").toBool() ? 0 : 1);
+    mIndentWidth->setValue(settings->value("editor/indent/width").toInt());
+    mTabWidth->setValue(settings->value("editor/indent/tabwidth").toInt());
+    mBlameHeatMap->setChecked(settings->value("editor/blame/heatmap").toBool());
   }
 
 private:
@@ -688,37 +679,36 @@ public:
   {
     QString checkText = tr("Check for updates automatically");
     mCheck = new QCheckBox(checkText, this);
-    connect(mCheck, &QCheckBox::toggled, [](bool checked) {
-      Settings::instance()->setValue("update/check", checked);
-    });
 
     QString downloadText = tr("Automatically download and install updates");
     mDownload = new QCheckBox(downloadText, this);
-    connect(mDownload, &QCheckBox::toggled, [](bool checked) {
-      Settings::instance()->setValue("update/download", checked);
-    });
 
     QPushButton *button = new QPushButton(tr("Check Now"), this);
     connect(button, &QPushButton::clicked,
             Updater::instance(), &Updater::update);
 
-    init();
-
     QFormLayout *layout = new QFormLayout(this);
     layout->addRow(tr("Software Update:"), mCheck);
     layout->addRow(QString(), mDownload);
     layout->addRow(QString(), button);
+
+    refresh();
+
+    // Connect signals after initializing fields.
+    connect(mCheck, &QCheckBox::toggled, [](bool checked) {
+      Settings::instance()->setValue("update/check", checked);
+    });
+
+    connect(mDownload, &QCheckBox::toggled, [](bool checked) {
+      Settings::instance()->setValue("update/download", checked);
+    });
   }
 
-  void init(void)
+  void refresh(void)
   {
     Settings *settings = Settings::instance();
-    settings->beginGroup("update");
-
-    mCheck->setChecked(settings->value("check").toBool());
-    mDownload->setChecked(settings->value("download").toBool());
-
-    settings->endGroup(); // update
+    mCheck->setChecked(settings->value("update/check").toBool());
+    mDownload->setChecked(settings->value("update/download").toBool());
   }
 
 private:
@@ -734,32 +724,30 @@ public:
   MiscPanel(QWidget *parent = nullptr)
     : QWidget(parent)
   {
-
-
     mSshConfigPathBox = new QLineEdit(this);
-    connect(mSshConfigPathBox, &QLineEdit::textChanged, [](const QString &text) {
-      Settings::instance()->setValue("ssh/configFilePath", text);
-    });
-
     mSshKeyPathBox = new QLineEdit(this);
-    connect(mSshKeyPathBox, &QLineEdit::textChanged, [](const QString &text) {
-      Settings::instance()->setValue("ssh/keyFilePath", text);
-    });
-
-    init();
 
     QFormLayout *layout = new QFormLayout(this);
     layout->addRow(tr("Path to SSH config file:"), mSshConfigPathBox);
     layout->addRow(tr("Path to default / fallback SSH key file:"), mSshKeyPathBox);
+
+    refresh();
+
+    // Connect signals after initializing fields.
+    connect(mSshConfigPathBox, &QLineEdit::textChanged, [](const QString &text) {
+      Settings::instance()->setValue("ssh/configFilePath", text);
+    });
+
+    connect(mSshKeyPathBox, &QLineEdit::textChanged, [](const QString &text) {
+      Settings::instance()->setValue("ssh/keyFilePath", text);
+    });
   }
 
-  void init(void)
+  void refresh(void)
   {
     Settings *settings = Settings::instance();
-    settings->beginGroup("ssh");
-    mSshConfigPathBox->setText(settings->value("configFilePath").toString());
-    mSshKeyPathBox->setText(settings->value("keyFilePath").toString());
-    settings->endGroup(); // ssh
+    mSshConfigPathBox->setText(settings->value("ssh/configFilePath").toString());
+    mSshKeyPathBox->setText(settings->value("ssh/keyFilePath").toString());
   }
 
 private:
@@ -777,21 +765,18 @@ public:
     : QWidget(parent)
   {
     Settings *settings = Settings::instance();
-    settings->beginGroup("terminal");
 
-    mNameBox = new QLineEdit(settings->value("name").toString(), this);
+    mNameBox = new QLineEdit(settings->value("terminal/name").toString(), this);
     connect(mNameBox, &QLineEdit::textChanged, [this](const QString &text) {
       Settings::instance()->setValue("terminal/name", text);
       updateInstallButton();
     });
 
-    mPathBox = new QLineEdit(settings->value("path").toString(), this);
+    mPathBox = new QLineEdit(settings->value("terminal/path").toString(), this);
     connect(mPathBox, &QLineEdit::textChanged, [this](const QString &text) {
       Settings::instance()->setValue("terminal/path", text);
       updateInstallButton();
     });
-
-    settings->endGroup();
 
     mInstallButton = new QPushButton(tr("Install"), this);
     connect(mInstallButton, &QPushButton::clicked, [this] {
@@ -870,17 +855,18 @@ SettingsDialog::SettingsDialog(Index index, QWidget *parent)
   connect(buttons, &QDialogButtonBox::accepted, this, &SettingsDialog::close);
   connect(buttons, &QDialogButtonBox::rejected, this, &SettingsDialog::close);
 
-  // Add git config edit button.
-  QPushButton *edit =
-    buttons->addButton(tr("Edit git Config File..."), QDialogButtonBox::ResetRole);
+  // Add edit menu.
+  QToolButton *edit = new QToolButton();
+  edit->setPopupMode(QToolButton::InstantPopup);
+  edit->setText(tr("Edit Config File..."));
 
-  // Add app config edit button.
-  QPushButton *appEdit =
-    buttons->addButton(tr("Edit GitAhead Config File"), QDialogButtonBox::ResetRole);
+  QMenu *editMenu = new QMenu(edit);
+  QAction *editGit = editMenu->addAction(tr("Edit git Config File"));
+  QAction *editGitAhead = editMenu->addAction(tr("Edit GitAhead Config File"));
+  QAction *editGlobal = editMenu->addAction(tr("Edit GitAhead Global Settings"));
+  edit->setMenu(editMenu);
 
-  // Add app settings edit button.
-  QPushButton *appSettings =
-    buttons->addButton(tr("Edit GitAhead Settings"), QDialogButtonBox::ResetRole);
+  buttons->addButton(edit, QDialogButtonBox::ResetRole);
 
   QWidget *widget = new QWidget(this);
   QVBoxLayout *layout = new QVBoxLayout(widget);
@@ -898,16 +884,16 @@ SettingsDialog::SettingsDialog(Index index, QWidget *parent)
   // Track actions in a group.
   QActionGroup *actions = new QActionGroup(this);
   connect(actions, &QActionGroup::triggered,
-  [this, stack, description, edit, appEdit, appSettings](QAction *action) {
+  [this, stack, description, editGit, editGitAhead, editGlobal](QAction *action) {
     int index = action->data().toInt();
     bool gitconfig = (index < Window);
     bool gitaheadconfig = (index == General || index == Diff || index == Plugins);
-    bool gitaheadsetting = (index  == General || index == Diff || index > Tools);
+    bool gitaheadsetting = (index != Tools && index != Plugins);
 
     description->setVisible(gitconfig || gitaheadconfig);
-    edit->setVisible(gitconfig);
-    appEdit->setVisible(gitaheadconfig);
-    appSettings->setVisible(gitaheadsetting);
+    editGit->setEnabled(gitconfig);
+    editGitAhead->setEnabled(gitaheadconfig);
+    editGlobal->setEnabled(gitaheadsetting);
     stack->setCurrentIndex(index);
     setWindowTitle(action->text());
   });
@@ -996,43 +982,43 @@ SettingsDialog::SettingsDialog(Index index, QWidget *parent)
   stack->addWidget(new TerminalPanel(this));
 #endif
 
-  // Hook up app config edit button.
-  connect(appEdit, &QPushButton::clicked, stack, [generalPanel, diffPanel, pluginsPanel] {
+  // Hook up git config edit.
+  connect(editGit, &QAction::triggered, stack, [generalPanel, diffPanel, toolsPanel] {
+    // Update on save.
+    EditorWindow *window = EditorWindow::open(git::Config::globalPath());
+    connect(window->widget(), &BlameEditor::saved, [generalPanel, diffPanel, toolsPanel] {
+      // GitAhead Config changed.
+      generalPanel->refresh();
+      diffPanel->refresh();
+      toolsPanel->refresh();
+    });
+  });
+
+  // Hook up app config edit.
+  connect(editGitAhead, &QAction::triggered, stack, [generalPanel, diffPanel, pluginsPanel] {
     // Update on save.
     EditorWindow *window = EditorWindow::open(Settings::userDir().path() + "/config");
     connect(window->widget(), &BlameEditor::saved, [generalPanel, diffPanel, pluginsPanel] {
       // GitAhead config changed.
-      generalPanel->init();
-      diffPanel->init();
-      pluginsPanel->init();
+      generalPanel->refresh();
+      diffPanel->refresh();
+      pluginsPanel->refresh();
     });
   });
 
-  // Hook up app settings edit button.
-  connect(appSettings, &QPushButton::clicked, stack, [generalPanel, diffPanel, windowPanel, editorPanel, updatePanel, miscPanel] {
+  // Hook up app settings edit.
+  connect(editGlobal, &QAction::triggered, stack, [generalPanel, diffPanel, windowPanel, editorPanel, updatePanel, miscPanel] {
     // Update on save.
     QSettings settings;
     EditorWindow *window = EditorWindow::open(settings.fileName());
     connect(window->widget(), &BlameEditor::saved, [generalPanel, diffPanel, windowPanel, editorPanel, updatePanel, miscPanel] {
       // Gitahead settings changed.
-      generalPanel->init();
-      diffPanel->init();
-      windowPanel->init();
-      editorPanel->init();
-      updatePanel->init();
-      miscPanel->init();
-    });
-  });
-
-  // Hook up git config edit button.
-  connect(edit, &QPushButton::clicked, stack, [generalPanel, diffPanel, toolsPanel] {
-    // Update on save.
-    EditorWindow *window = EditorWindow::open(git::Config::globalPath());
-    connect(window->widget(), &BlameEditor::saved, [generalPanel, diffPanel, toolsPanel] {
-      // GitAhead Config changed.
-      generalPanel->init();
-      diffPanel->init();
-      toolsPanel->init();
+      generalPanel->refresh();
+      diffPanel->refresh();
+      windowPanel->refresh();
+      editorPanel->refresh();
+      updatePanel->refresh();
+      miscPanel->refresh();
     });
   });
 
