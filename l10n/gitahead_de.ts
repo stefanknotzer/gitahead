@@ -928,12 +928,12 @@
     <message>
         <location filename="../src/dialogs/ConfigDialog.cpp" line="862"/>
         <source>Edit git Config File</source>
-        <translation>git Konfiguration editieren</translation>
+        <translation>git Konfiguration bearbeiten</translation>
     </message>
     <message>
         <location filename="../src/dialogs/ConfigDialog.cpp" line="863"/>
         <source>Edit GitAhead Config File</source>
-        <translation>GitAhead Konfiguration editieren</translation>
+        <translation>GitAhead Konfiguration bearbeiten</translation>
     </message>
     <message>
         <location filename="../src/dialogs/ConfigDialog.cpp" line="864"/>
@@ -953,7 +953,7 @@
     <message>
         <location filename="../src/dialogs/ConfigDialog.cpp" line="906"/>
         <source>The global GitAhead configuration is used in case the local configuration is invalid or missing. The global settings remain unchanged.</source>
-        <translation>Die globalen GitAhead Einstellung werden gültig, wenn die lokalen Einstellungen ungültig sind oder fehlen. Die globalen GitAhead Einstellungen bleiben unverändert erhalten.</translation>
+        <translation>Wenn die lokalen Einstellungen ungültig sind oder fehlen, werden die globalen GitAhead Einstellungen verwendet. Die globalen GitAhead Einstellungen bleiben unverändert erhalten.</translation>
     </message>
     <message>
         <location filename="../src/dialogs/ConfigDialog.cpp" line="910"/>
@@ -4772,7 +4772,7 @@ Dies reverted den Commit %2.</translation>
     <message>
         <location filename="../src/dialogs/SettingsDialog.cpp" line="842"/>
         <source>Global git and GitAhead settings can be overridden for each repository in the corresponding repository configuration page.</source>
-        <translation>Die globalen git und GitAhead Einstellungen können für jedes Repository durch die Repositoryeinstellungen überschrieben werden.</translation>
+        <translation>Globale git- und GitAhead-Einstellungen können für jedes Repository in den entsprechenden Einstellungs-Seiten überschrieben werden.</translation>
     </message>
     <message>
         <location filename="../src/dialogs/SettingsDialog.cpp" line="861"/>
@@ -4782,55 +4782,55 @@ Dies reverted den Commit %2.</translation>
     <message>
         <location filename="../src/dialogs/SettingsDialog.cpp" line="864"/>
         <source>Edit git Config File</source>
-        <translation>git Konfiguration editieren</translation>
+        <translation>git Konfiguration bearbeiten</translation>
     </message>
     <message>
         <location filename="../src/dialogs/SettingsDialog.cpp" line="865"/>
         <source>Edit GitAhead Config File</source>
-        <translation>GitAhead Konfiguration editieren</translation>
+        <translation>GitAhead Konfiguration bearbeiten</translation>
     </message>
     <message>
         <location filename="../src/dialogs/SettingsDialog.cpp" line="866"/>
         <source>Edit GitAhead Global Settings</source>
-        <translation>Globale GitAhead Einstellungen editieren</translation>
+        <translation>Globale GitAhead Einstellungen bearbeiten</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="902"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="905"/>
         <source>General</source>
         <translation>Allgemein</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="911"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="914"/>
         <source>Diff</source>
         <translation>Diff</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="920"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="923"/>
         <source>Tools</source>
         <translation>Tools</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="931"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="934"/>
         <source>Window</source>
         <translation>Fenster</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="940"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="943"/>
         <source>Editor</source>
         <translation>Editor</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="949"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="952"/>
         <source>Update</source>
         <translation>Update</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="958"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="961"/>
         <source>Plugins</source>
         <translation>Plugins</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="967"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="970"/>
         <source>Misc</source>
         <translation>Sonstiges</translation>
     </message>
@@ -4839,7 +4839,7 @@ Dies reverted den Commit %2.</translation>
         <translation type="vanished">Hotkeys</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="977"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="980"/>
         <source>Terminal</source>
         <translation>Terminal</translation>
     </message>

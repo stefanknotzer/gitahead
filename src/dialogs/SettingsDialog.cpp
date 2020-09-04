@@ -856,7 +856,7 @@ SettingsDialog::SettingsDialog(Index index, QWidget *parent)
   connect(buttons, &QDialogButtonBox::rejected, this, &SettingsDialog::close);
 
   // Add edit menu.
-  QToolButton *edit = new QToolButton();
+  QToolButton *edit = new QToolButton(this);
   edit->setPopupMode(QToolButton::InstantPopup);
   edit->setText(tr("Edit Config File..."));
 
@@ -864,6 +864,9 @@ SettingsDialog::SettingsDialog(Index index, QWidget *parent)
   QAction *editGit = editMenu->addAction(tr("Edit git Config File"));
   QAction *editGitAhead = editMenu->addAction(tr("Edit GitAhead Config File"));
   QAction *editGlobal = editMenu->addAction(tr("Edit GitAhead Global Settings"));
+#ifndef Q_OS_LINUX
+  editGlobal->setVisible(false);
+#endif
   edit->setMenu(editMenu);
 
   buttons->addButton(edit, QDialogButtonBox::ResetRole);
@@ -983,7 +986,7 @@ SettingsDialog::SettingsDialog(Index index, QWidget *parent)
 #endif
 
   // Hook up git config edit.
-  connect(editGit, &QAction::triggered, stack, [generalPanel, diffPanel, toolsPanel] {
+  connect(editGit, &QAction::triggered, [generalPanel, diffPanel, toolsPanel] {
     // Update on save.
     EditorWindow *window = EditorWindow::open(git::Config::globalPath());
     connect(window->widget(), &BlameEditor::saved, [generalPanel, diffPanel, toolsPanel] {
@@ -995,7 +998,7 @@ SettingsDialog::SettingsDialog(Index index, QWidget *parent)
   });
 
   // Hook up app config edit.
-  connect(editGitAhead, &QAction::triggered, stack, [generalPanel, diffPanel, pluginsPanel] {
+  connect(editGitAhead, &QAction::triggered, [generalPanel, diffPanel, pluginsPanel] {
     // Update on save.
     EditorWindow *window = EditorWindow::open(Settings::userDir().path() + "/config");
     connect(window->widget(), &BlameEditor::saved, [generalPanel, diffPanel, pluginsPanel] {
@@ -1006,8 +1009,9 @@ SettingsDialog::SettingsDialog(Index index, QWidget *parent)
     });
   });
 
+#ifdef Q_OS_LINUX
   // Hook up app settings edit.
-  connect(editGlobal, &QAction::triggered, stack, [generalPanel, diffPanel, windowPanel, editorPanel, updatePanel, miscPanel] {
+  connect(editGlobal, &QAction::triggered, [generalPanel, diffPanel, windowPanel, editorPanel, updatePanel, miscPanel] {
     // Update on save.
     QSettings settings;
     EditorWindow *window = EditorWindow::open(settings.fileName());
@@ -1021,6 +1025,7 @@ SettingsDialog::SettingsDialog(Index index, QWidget *parent)
       miscPanel->refresh();
     });
   });
+#endif
 
   // Select the requested index.
   actions->actions().at(index)->trigger();

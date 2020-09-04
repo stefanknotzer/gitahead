@@ -4590,47 +4590,47 @@ Esto revierte la confirmación %2.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="902"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="905"/>
         <source>General</source>
         <translation>General</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="911"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="914"/>
         <source>Diff</source>
         <translation>Diferencia</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="920"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="923"/>
         <source>Tools</source>
         <translation>Herramientas</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="931"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="934"/>
         <source>Window</source>
         <translation>Ventana</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="940"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="943"/>
         <source>Editor</source>
         <translation>Editor</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="949"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="952"/>
         <source>Update</source>
         <translation>Actualizar</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="958"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="961"/>
         <source>Plugins</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="967"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="970"/>
         <source>Misc</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="977"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="980"/>
         <source>Terminal</source>
         <translation></translation>
     </message>
