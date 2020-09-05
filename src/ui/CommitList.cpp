@@ -1682,7 +1682,11 @@ void CommitList::contextMenuEvent(QContextMenuEvent *event)
             !view->repo().isBare());
         } else if (ref.isRemoteBranch()) {
           QAction *checkout = menu.addAction(tr("Checkout %1").arg(ref.name()),
-          [view, ref] {
+          [view, head, commit, ref] {
+            // Local branch: checkout detached HEAD first.
+            if (head.name() == ref.name().section('/', 1))
+              view->checkout(commit);
+
             view->checkout(ref);
           });
 
@@ -1690,8 +1694,8 @@ void CommitList::contextMenuEvent(QContextMenuEvent *event)
           QString local = ref.name().section('/', 1);
           if (!head.isValid()) { // I'm not sure when this can happen
             checkout->setEnabled(false);
+            checkout->setToolTip(tr("HEAD is invalid"));
           } else if (head.name() == local) {
-            checkout->setEnabled(false);
             checkout->setToolTip(tr("Local branch is already checked out"));
           } else if (view->repo().isBare()) {
             checkout->setEnabled(false);
