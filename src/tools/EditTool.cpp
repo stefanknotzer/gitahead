@@ -57,26 +57,27 @@ bool EditTool::start()
   QStringList args = editor.split("\" \"");
 
   if (args.count() > 1) {
-    // Format 1: \"Command\" \"Argument1\" \"Argument2\"
-    editor = args[0].append("\"");
+    // Format 1: "Command" "Argument1" "Argument2"
+    editor = args[0];
     for (int i = 1; i < args.count(); i++)
       args[i].remove("\"");
   } else {
     int fi = editor.indexOf("\"");
     int li = editor.lastIndexOf("\"");
     if ((fi == 0) && (li > fi) && (li < (editor.length() - 1))) {
-      // Format 2: \"Command\" Argument1 Argument2
+      // Format 2: "Command" Argument1 Argument2
       args = editor.right(editor.length() - li - 2).split(" ");
       args.insert(0, "dummy");
       editor = editor.left(li + 1);
     } else {
-      // Format 3: Command
+      // Format 3: Command (no argument)
     }
   }
 
-  // Remove command, add filename.
+  // Remove command, add filename, trim command.
   args.removeFirst();
   args.append(mFile);
+  editor.remove("\"");
 
   // Destroy this after process finishes.
   QProcess *process = new QProcess(this);
