@@ -30,6 +30,7 @@
 #include <QAbstractListModel>
 #include <QApplication>
 #include <QMenu>
+#include <QMessageBox>
 #include <QPainter>
 #include <QPainterPath>
 #include <QPushButton>
@@ -1683,9 +1684,22 @@ void CommitList::contextMenuEvent(QContextMenuEvent *event)
         } else if (ref.isRemoteBranch()) {
           QAction *checkout = menu.addAction(tr("Checkout %1").arg(ref.name()),
           [view, head, commit, ref] {
+            QString local = ref.name().section('/', 1);
+
             // Local branch: checkout detached HEAD first.
-            if (head.name() == ref.name().section('/', 1))
-              view->checkout(commit);
+            if (head.name() == local) {
+              QMessageBox msg;
+              msg.setWindowTitle(tr("Continue Checkout?"));
+              msg.setText(tr("Continue Checkout?"));
+              msg.setInformativeText(tr("The local branch %1 is already checked out. "
+                                        "Continue to check out %2 as detached HEAD first "
+                                        "before %3 is checked out.").arg(local).arg(commit.detachedHeadName()).arg(ref.name()));
+              msg.setStandardButtons(QMessageBox::Yes| QMessageBox::No);
+              if (msg.exec() == QDialog::Accepted)
+                view->checkout(commit);
+              else
+                return;
+            }
 
             view->checkout(ref);
           });

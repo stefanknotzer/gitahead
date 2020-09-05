@@ -70,7 +70,8 @@ bool EditTool::start()
       args.insert(0, "dummy");
       editor = editor.left(li + 1);
     } else {
-      // Format 3: Command (no argument)
+      // Format 3: "Command" (no argument)
+      // Format 4: Command (no argument)
     }
   }
 
