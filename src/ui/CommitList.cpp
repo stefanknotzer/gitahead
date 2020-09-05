@@ -1689,13 +1689,15 @@ void CommitList::contextMenuEvent(QContextMenuEvent *event)
             // Local branch: checkout detached HEAD first.
             if (head.name() == local) {
               QMessageBox msg;
+              msg.setIcon(QMessageBox::Question);
               msg.setWindowTitle(tr("Continue Checkout?"));
-              msg.setText(tr("Continue Checkout?"));
-              msg.setInformativeText(tr("The local branch %1 is already checked out. "
-                                        "Continue to check out %2 as detached HEAD first "
-                                        "before %3 is checked out.").arg(local).arg(commit.detachedHeadName()).arg(ref.name()));
-              msg.setStandardButtons(QMessageBox::Yes| QMessageBox::No);
-              if (msg.exec() == QDialog::Accepted)
+              msg.setText(tr("Continue to check out '%1'?").arg(ref.name()));
+              msg.setInformativeText(tr("The local branch '%1' is already checked out. "
+                                        "Continue to check out '%2' as detached HEAD first "
+                                        "before '%3' is checked out.").arg(local).arg(commit.detachedHeadName()).arg(ref.name()));
+              msg.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+
+              if (msg.exec() == QMessageBox::Yes)
                 view->checkout(commit);
               else
                 return;

@@ -900,6 +900,7 @@ ConfigDialog::ConfigDialog(RepoView *view, Index index)
   // Add app config remove.
   connect(removeGitAhead, &QAction::triggered, [view, generalPanel, diffPanel, searchPanel, pluginsPanel] {
     QMessageBox msg;
+    msg.setIcon(QMessageBox::Question);
     msg.setWindowTitle(tr("Remove GitAhead Config File?"));
     msg.setText(tr("Are you sure you want to wipe the local GitAhead configuration?"));
     msg.setInformativeText(

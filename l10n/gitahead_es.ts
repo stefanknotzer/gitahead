@@ -704,114 +704,134 @@
 <context>
     <name>CommitList</name>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1532"/>
+        <location filename="../src/ui/CommitList.cpp" line="1533"/>
         <source>Remove Untracked Files</source>
         <translation>Remover archivos sin seguimiento</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1549"/>
+        <location filename="../src/ui/CommitList.cpp" line="1550"/>
         <source>Apply</source>
         <translation>Aplicar</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1553"/>
+        <location filename="../src/ui/CommitList.cpp" line="1554"/>
         <source>Pop</source>
         <translation>Retirar</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1557"/>
+        <location filename="../src/ui/CommitList.cpp" line="1558"/>
         <source>Drop</source>
         <translation>Soltar</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1571"/>
+        <location filename="../src/ui/CommitList.cpp" line="1572"/>
         <source>Unstar</source>
         <translation>Desmarcar como favorito</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1571"/>
+        <location filename="../src/ui/CommitList.cpp" line="1572"/>
         <source>Star</source>
         <translation>Marcar como favorito</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1581"/>
+        <location filename="../src/ui/CommitList.cpp" line="1582"/>
         <source>Add Tag...</source>
         <translation>Agregar etiqueta...</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1585"/>
+        <location filename="../src/ui/CommitList.cpp" line="1586"/>
         <source>New Branch...</source>
         <translation>Nueva rama...</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1596"/>
+        <location filename="../src/ui/CommitList.cpp" line="1597"/>
         <source>Delete Tag %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1606"/>
+        <location filename="../src/ui/CommitList.cpp" line="1607"/>
         <source>Delete Branch %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1614"/>
+        <location filename="../src/ui/CommitList.cpp" line="1615"/>
         <source>Merge...</source>
         <translation>Fusionar...</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1629"/>
+        <location filename="../src/ui/CommitList.cpp" line="1630"/>
         <source>Rebase...</source>
         <translation>Reorganizar...</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1644"/>
+        <location filename="../src/ui/CommitList.cpp" line="1645"/>
         <source>Squash...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1661"/>
+        <location filename="../src/ui/CommitList.cpp" line="1662"/>
         <source>Revert</source>
         <translation>Revertir</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1665"/>
+        <location filename="../src/ui/CommitList.cpp" line="1666"/>
         <source>Cherry-pick</source>
         <translation>Escoger</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1674"/>
-        <location filename="../src/ui/CommitList.cpp" line="1684"/>
-        <location filename="../src/ui/CommitList.cpp" line="1704"/>
+        <location filename="../src/ui/CommitList.cpp" line="1675"/>
+        <location filename="../src/ui/CommitList.cpp" line="1685"/>
+        <location filename="../src/ui/CommitList.cpp" line="1724"/>
         <source>Checkout %1</source>
         <translation>Revisar %1</translation>
     </message>
     <message>
+        <location filename="../src/ui/CommitList.cpp" line="1693"/>
+        <source>Continue Checkout?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/CommitList.cpp" line="1694"/>
+        <source>Continue to check out &apos;%1&apos;?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/ui/CommitList.cpp" line="1695"/>
+        <source>The local branch &apos;%1&apos; is already checked out. Continue to check out &apos;%2&apos; as detached HEAD first before &apos;%3&apos; is checked out.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/CommitList.cpp" line="1713"/>
+        <source>HEAD is invalid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/CommitList.cpp" line="1715"/>
         <source>Local branch is already checked out</source>
         <translation>La rama local ya está revisada</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1698"/>
+        <location filename="../src/ui/CommitList.cpp" line="1718"/>
         <source>This is a bare repository</source>
         <translation>Este es un repositorio vacío</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1715"/>
+        <location filename="../src/ui/CommitList.cpp" line="1735"/>
         <source>Reset</source>
         <translation>Reestablecer</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1716"/>
+        <location filename="../src/ui/CommitList.cpp" line="1736"/>
         <source>Soft</source>
         <translation>Suave</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1717"/>
+        <location filename="../src/ui/CommitList.cpp" line="1737"/>
         <source>Mixed</source>
         <translation>Mezclado</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1718"/>
+        <location filename="../src/ui/CommitList.cpp" line="1738"/>
         <source>Hard</source>
         <translation>Duro</translation>
     </message>
@@ -819,12 +839,12 @@
 <context>
     <name>CommitModel</name>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="361"/>
+        <location filename="../src/ui/CommitList.cpp" line="362"/>
         <source>Uncommitted changes</source>
         <translation>Cambios sin confirmar</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="362"/>
+        <location filename="../src/ui/CommitList.cpp" line="363"/>
         <source>Checking for uncommitted changes</source>
         <translation>Revisando por cambios sin confirmar</translation>
     </message>
@@ -945,27 +965,27 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="903"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="904"/>
         <source>Remove GitAhead Config File?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="904"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="905"/>
         <source>Are you sure you want to wipe the local GitAhead configuration?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="906"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="907"/>
         <source>The global GitAhead configuration is used in case the local configuration is invalid or missing. The global settings remain unchanged.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="910"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="911"/>
         <source>Remove</source>
         <translation type="unfinished">Remover</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="946"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="947"/>
         <source>Repository:</source>
         <translation type="unfinished"></translation>
     </message>
