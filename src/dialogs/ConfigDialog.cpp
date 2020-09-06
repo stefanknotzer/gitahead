@@ -899,15 +899,15 @@ ConfigDialog::ConfigDialog(RepoView *view, Index index)
 
   // Add app config remove.
   connect(removeGitAhead, &QAction::triggered, [view, generalPanel, diffPanel, searchPanel, pluginsPanel] {
-    QMessageBox msg;
-    msg.setIcon(QMessageBox::Question);
-    msg.setWindowTitle(tr("Remove GitAhead Config File?"));
-    msg.setText(tr("Are you sure you want to wipe the local GitAhead configuration?"));
+    QMessageBox msg(QMessageBox::Question,
+                    tr("Remove GitAhead Config File?"),
+                    tr("Are you sure you want to remove the local GitAhead configuration?"),
+                    QMessageBox::Cancel);
     msg.setInformativeText(
-      tr("The global GitAhead configuration is used in case "
-         "the local configuration is invalid or missing. "
-         "The global settings remain unchanged."));
-    msg.setStandardButtons(QMessageBox::Cancel);
+      tr("If the local configuration is invalid or missing, "
+         "the global GitAhead configuration is used. "
+         "The global configuration remains unchanged when removing "
+         "the local configuration."));
     QPushButton *remove = msg.addButton(tr("Remove"), QMessageBox::AcceptRole);
     connect(remove, &QPushButton::clicked, [view, generalPanel, diffPanel, searchPanel, pluginsPanel] {
       QFile file(view->repo().dir().filePath("gitahead/config"));

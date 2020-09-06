@@ -773,58 +773,135 @@
     </message>
     <message>
         <location filename="../src/ui/CommitList.cpp" line="1675"/>
-        <location filename="../src/ui/CommitList.cpp" line="1685"/>
-        <location filename="../src/ui/CommitList.cpp" line="1724"/>
+        <location filename="../src/ui/CommitList.cpp" line="1715"/>
+        <location filename="../src/ui/CommitList.cpp" line="1778"/>
         <source>Checkout %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1693"/>
+        <location filename="../src/ui/CommitList.cpp" line="1679"/>
+        <location filename="../src/ui/CommitList.cpp" line="1721"/>
+        <location filename="../src/ui/CommitList.cpp" line="1782"/>
+        <source>Checkout and Discard Changes?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/CommitList.cpp" line="1680"/>
+        <location filename="../src/ui/CommitList.cpp" line="1722"/>
+        <location filename="../src/ui/CommitList.cpp" line="1783"/>
+        <source>Are you sure you want to checkout and discard all changes?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/CommitList.cpp" line="1682"/>
+        <location filename="../src/ui/CommitList.cpp" line="1724"/>
+        <location filename="../src/ui/CommitList.cpp" line="1785"/>
+        <source>This action cannot be undone.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/CommitList.cpp" line="1683"/>
+        <source>The Local branch &apos;%1&apos; is already checked out. A forced checkout will discard all local changes. Since the checkout cannot be undone, all local changes will be lost.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/CommitList.cpp" line="1686"/>
+        <location filename="../src/ui/CommitList.cpp" line="1728"/>
+        <location filename="../src/ui/CommitList.cpp" line="1789"/>
+        <source>Checkout and Discard Changes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/CommitList.cpp" line="1691"/>
+        <location filename="../src/ui/CommitList.cpp" line="1733"/>
+        <location filename="../src/ui/CommitList.cpp" line="1794"/>
+        <source>Checkout and Discard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/CommitList.cpp" line="1692"/>
+        <location filename="../src/ui/CommitList.cpp" line="1734"/>
+        <location filename="../src/ui/CommitList.cpp" line="1795"/>
+        <source>checkout and discard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/CommitList.cpp" line="1708"/>
+        <location filename="../src/ui/CommitList.cpp" line="1766"/>
+        <location filename="../src/ui/CommitList.cpp" line="1811"/>
+        <source>Checkout %1 (discard changes)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/CommitList.cpp" line="1725"/>
+        <location filename="../src/ui/CommitList.cpp" line="1786"/>
+        <source>&apos;%1&apos; is already checked out. A forced checkout will discard all local changes. Since the checkout cannot be undone, all local changes will be lost.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/CommitList.cpp" line="1743"/>
         <source>Continue Checkout?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1694"/>
+        <location filename="../src/ui/CommitList.cpp" line="1744"/>
         <source>Continue to check out &apos;%1&apos;?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1695"/>
-        <source>The local branch &apos;%1&apos; is already checked out. Continue to check out &apos;%2&apos; as detached HEAD first before &apos;%3&apos; is checked out.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/CommitList.cpp" line="1713"/>
+        <location filename="../src/ui/CommitList.cpp" line="1706"/>
+        <location filename="../src/ui/CommitList.cpp" line="1764"/>
+        <location filename="../src/ui/CommitList.cpp" line="1809"/>
         <source>HEAD is invalid</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1715"/>
+        <location filename="../src/ui/CommitList.cpp" line="1709"/>
+        <location filename="../src/ui/CommitList.cpp" line="1767"/>
+        <location filename="../src/ui/CommitList.cpp" line="1769"/>
+        <location filename="../src/ui/CommitList.cpp" line="1812"/>
         <source>Local branch is already checked out</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1718"/>
+        <location filename="../src/ui/CommitList.cpp" line="1712"/>
+        <location filename="../src/ui/CommitList.cpp" line="1772"/>
+        <location filename="../src/ui/CommitList.cpp" line="1815"/>
         <source>This is a bare repository</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1735"/>
+        <location filename="../src/ui/CommitList.cpp" line="1746"/>
+        <source>The local branch &apos;%1&apos; is already checked out.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/CommitList.cpp" line="1747"/>
+        <source>Continue to check out &apos;%1&apos; as detached HEAD first before &apos;%2&apos; is checked out.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/CommitList.cpp" line="1749"/>
+        <source>Checkout</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/CommitList.cpp" line="1820"/>
         <source>Reset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1736"/>
+        <location filename="../src/ui/CommitList.cpp" line="1821"/>
         <source>Soft</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1737"/>
+        <location filename="../src/ui/CommitList.cpp" line="1822"/>
         <source>Mixed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1738"/>
+        <location filename="../src/ui/CommitList.cpp" line="1823"/>
         <source>Hard</source>
         <translation type="unfinished"></translation>
     </message>
@@ -958,18 +1035,18 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="904"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="903"/>
         <source>Remove GitAhead Config File?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="905"/>
-        <source>Are you sure you want to wipe the local GitAhead configuration?</source>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="904"/>
+        <source>Are you sure you want to remove the local GitAhead configuration?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/dialogs/ConfigDialog.cpp" line="907"/>
-        <source>The global GitAhead configuration is used in case the local configuration is invalid or missing. The global settings remain unchanged.</source>
+        <source>If the local configuration is invalid or missing, the global GitAhead configuration is used. The global configuration remains unchanged when removing the local configuration.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
