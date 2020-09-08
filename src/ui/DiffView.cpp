@@ -2320,7 +2320,7 @@ public:
             RepoView *view = RepoView::parentView(this);
             git::Repository repo = mPatch.repo();
             QString name = mPatch.name();
-            int strategy = GIT_CHECKOUT_FORCE;
+
             if (untracked) {
               QDir dir = repo.workdir();
               if (QFileInfo(dir.filePath(name)).isDir()) {
@@ -2329,9 +2329,9 @@ public:
               } else {
                 dir.remove(name);
               }
-            } else if (!repo.checkout(git::Commit(), nullptr, {name}, strategy)) {
-              LogEntry *parent = view->addLogEntry(mPatch.name(), FileWidget::tr("Discard"));
-              view->error(parent, FileWidget::tr("discard"), mPatch.name());
+            } else {
+              int strategy = GIT_CHECKOUT_FORCE;
+              view->checkout(repo.head().target(), {name}, strategy);
             }
 
             // FIXME: Work dir changed?

@@ -1903,15 +1903,23 @@ void RepoView::promptToCheckout()
   dialog->open();
 }
 
-void RepoView::checkout(const git::Commit &commit, const QStringList &paths)
+void RepoView::checkout(
+  const git::Commit &commit,
+  const QStringList &paths,
+  int strategy)
 {
+  Q_ASSERT(commit);
+
   QString count = QString::number(paths.size());
   QString name = (paths.size() == 1) ? tr("file") : tr("files");
   QString text = tr("%1 - %2 %3").arg(commit.link(), count, name);
-  LogEntry *entry = addLogEntry(text, tr("Checkout"));
+  LogEntry *entry;
+  if (strategy == GIT_CHECKOUT_FORCE)
+    entry = addLogEntry(text, tr("Discard"));
+  else
+    entry = addLogEntry(text, tr("Checkout"));
 
   CheckoutCallbacks callbacks(entry, GIT_CHECKOUT_NOTIFY_ALL);
-  int strategy = GIT_CHECKOUT_SAFE | GIT_CHECKOUT_DONT_UPDATE_INDEX;
   mRepo.checkout(commit, &callbacks, paths, strategy);
   mRefs->select(mRepo.head());
 }

@@ -183,13 +183,8 @@ FileContextMenu::FileContextMenu(
       QString text = tr("Discard Changes");
       QPushButton *discard = dialog->addButton(text, QMessageBox::AcceptRole);
       connect(discard, &QPushButton::clicked, [view, modified] {
-        git::Repository repo = view->repo();
         int strategy = GIT_CHECKOUT_FORCE;
-        if (!repo.checkout(git::Commit(), nullptr, modified, strategy)) {
-          QString text = tr("%1 files").arg(modified.size());
-          LogEntry *parent = view->addLogEntry(text, tr("Discard"));
-          view->error(parent, tr("discard"), text);
-        }
+        view->checkout(view->repo().head().target(), modified, strategy);
 
         // FIXME: Work dir changed?
         view->refresh();

@@ -237,7 +237,10 @@ public:
 
   // checkout
   void promptToCheckout();
-  void checkout(const git::Commit &commit, const QStringList &paths);
+  void checkout(
+    const git::Commit &commit,
+    const QStringList &paths,
+    int strategy = GIT_CHECKOUT_SAFE | GIT_CHECKOUT_DONT_UPDATE_INDEX);
   void checkout(const git::Reference &ref, bool detach = false);
   void checkout(
     const git::Commit &commit,

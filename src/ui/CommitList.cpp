@@ -1509,6 +1509,30 @@ void CommitList::setModel(QAbstractItemModel *model)
   restoreSelection();
 }
 
+void CommitList::checkoutDiscard(const git::Commit &commit, const QString &name)
+{
+  RepoView *view = RepoView::parentView(this);
+
+  QMessageBox msg(QMessageBox::Warning,
+                  tr("Checkout and Discard Changes?"),
+                  tr("Are you sure you want to checkout and discard all changes?"),
+                  QMessageBox::Cancel);
+  msg.setInformativeText(tr("This action cannot be undone."));
+  msg.setDetailedText(tr("'%1' is already checked out. "
+                         "A forced checkout will discard all changes. "
+                         "Since the checkout cannot be undone, all changes in "
+                         "the working directory will be lost.").arg(name));
+  QPushButton *discard = msg.addButton(tr("Checkout and Discard Changes"), QMessageBox::AcceptRole);
+  connect(discard, &QPushButton::clicked, [view, commit] {
+    int strategy = GIT_CHECKOUT_FORCE;
+    view->checkout(commit, QStringList(), strategy);
+
+    // FIXME: Work dir changed?
+    view->refresh();
+  });
+  msg.exec();
+}
+
 void CommitList::contextMenuEvent(QContextMenuEvent *event)
 {
   QModelIndex index = indexAt(event->pos());
@@ -1521,12 +1545,15 @@ void CommitList::contextMenuEvent(QContextMenuEvent *event)
   if (!commit.isValid()) {
     QMenu menu;
 
-    // clean
+    // Untracked and modified files.
     QStringList untracked;
+    QStringList modified;
     if (git::Diff diff = status()) {
       for (int i = 0; i < diff.count(); i++) {
         if (diff.status(i) == GIT_DELTA_UNTRACKED)
           untracked.append(diff.name(i));
+        if (diff.status(i) == GIT_DELTA_MODIFIED)
+          modified.append(diff.name(i));
       }
     }
 
@@ -1536,6 +1563,30 @@ void CommitList::contextMenuEvent(QContextMenuEvent *event)
     });
 
     clean->setEnabled(!untracked.isEmpty());
+
+    QAction *discard = menu.addAction(tr("Discard All Changes"), [view, modified] {
+      QMessageBox *dialog = new QMessageBox(
+        QMessageBox::Warning, tr("Discard All Changes?"),
+        tr("Are you sure you want to discard all changes in the working directory?"),
+        QMessageBox::Cancel, view);
+      dialog->setAttribute(Qt::WA_DeleteOnClose);
+      dialog->setInformativeText(tr("This action cannot be undone."));
+      dialog->setDetailedText(modified.join('\n'));
+
+      QString text = tr("Discard All Changes");
+      QPushButton *discard = dialog->addButton(text, QMessageBox::AcceptRole);
+      connect(discard, &QPushButton::clicked, [view] {
+        int strategy = GIT_CHECKOUT_FORCE;
+        view->checkout(view->repo().head().target(), QStringList(), strategy);
+
+        // FIXME: Work dir changed?
+        view->refresh();
+      });
+
+      dialog->open();
+    });
+
+    discard->setEnabled(!modified.isEmpty() && view->repo().isValid());
 
     menu.exec(event->globalPos());
     return;
@@ -1673,29 +1724,9 @@ void CommitList::contextMenuEvent(QContextMenuEvent *event)
       foreach (const git::Reference &ref, commit.refs()) {
         if (ref.isLocalBranch()) {
           QAction *checkout = menu.addAction(tr("Checkout %1").arg(ref.name()),
-          [view, head, ref] {
+          [this, view, commit, head, ref] {
             if (head.qualifiedName() == ref.qualifiedName()) {
-              QMessageBox msg(QMessageBox::Warning,
-                              tr("Checkout and Discard Changes?"),
-                              tr("Are you sure you want to checkout and discard all changes?"),
-                              QMessageBox::Cancel);
-              msg.setInformativeText(tr("This action cannot be undone."));
-              msg.setDetailedText(tr("The Local branch '%1' is already checked out. "
-                                     "A forced checkout will discard all local changes. "
-                                     "Since the checkout cannot be undone, all local changes will be lost.").arg(ref.name()));
-              QPushButton *discard = msg.addButton(tr("Checkout and Discard Changes"), QMessageBox::AcceptRole);
-              connect(discard, &QPushButton::clicked, [view, head, ref] {
-                git::Repository repo = view->repo();
-                int strategy = GIT_CHECKOUT_FORCE;
-                if (!repo.checkout(git::Commit(), nullptr, {ref.name()}, strategy)) {
-                  LogEntry *parent = view->addLogEntry(ref.name(), tr("Checkout and Discard"));
-                  view->error(parent, tr("checkout and discard"), ref.name());
-                }
-
-                // FIXME: Work dir changed?
-                view->refresh();
-              });
-              msg.exec();
+              checkoutDiscard(commit, ref.name());
             } else {
               view->checkout(ref);
             }
@@ -1705,53 +1736,26 @@ void CommitList::contextMenuEvent(QContextMenuEvent *event)
             checkout->setEnabled(false);
             checkout->setToolTip(tr("HEAD is invalid"));
           } else if (head.qualifiedName() == ref.qualifiedName()) {
-            checkout->setText(tr("Checkout %1 (discard changes)").arg(ref.name()));
-            checkout->setToolTip(tr("Local branch is already checked out"));
+            checkout->setText(tr("Force Checkout %1").arg(ref.name()));
+            checkout->setToolTip(tr("Local branch is already checked out\nAll changes will be discarded"));
           } else if (view->repo().isBare()) {
             checkout->setEnabled(false);
             checkout->setToolTip(tr("This is a bare repository"));
           }
         } else if (ref.isRemoteBranch()) {
           QAction *checkout = menu.addAction(tr("Checkout %1").arg(ref.name()),
-          [view, head, commit, ref] {
+          [this, view, head, commit, ref] {
             QString local = ref.name().section('/', 1);
 
             if (head.target() == commit) {
-              QMessageBox msg(QMessageBox::Warning,
-                              tr("Checkout and Discard Changes?"),
-                              tr("Are you sure you want to checkout and discard all changes?"),
-                              QMessageBox::Cancel);
-              msg.setInformativeText(tr("This action cannot be undone."));
-              msg.setDetailedText(tr("'%1' is already checked out. "
-                                     "A forced checkout will discard all local changes. "
-                                     "Since the checkout cannot be undone, all local changes will be lost.").arg(ref.name()));
-                QPushButton *discard = msg.addButton(tr("Checkout and Discard Changes"), QMessageBox::AcceptRole);
-                connect(discard, &QPushButton::clicked, [view, commit, ref] {
-                  git::Repository repo = view->repo();
-                  int strategy = GIT_CHECKOUT_FORCE;
-                  if (!repo.checkout(git::Commit(), nullptr, {ref.name()}, strategy)) {
-                    LogEntry *parent = view->addLogEntry(commit.detachedHeadName(), tr("Checkout and Discard"));
-                    view->error(parent, tr("checkout and discard"), ref.name());
-                  }
-
-                  // FIXME: Work dir changed?
-                  view->refresh();
-                });
-                msg.exec();
+              checkoutDiscard(commit, ref.name());
             } else if (head.name() == local) {
-              QMessageBox msg(QMessageBox::Question,
-                              tr("Continue Checkout?"),
-                              tr("Continue to check out '%1'?").arg(ref.name()),
-                              QMessageBox::Cancel);
-              msg.setInformativeText(tr("The local branch '%1' is already checked out.").arg(local));
-              msg.setDetailedText(tr("Continue to check out '%1' as detached HEAD first "
-                                     "before '%2' is checked out.").arg(commit.detachedHeadName()).arg(ref.name()));
-              QPushButton *checkout = msg.addButton(tr("Checkout"), QMessageBox::AcceptRole);
-              connect(checkout, &QPushButton::clicked, [view, commit, ref, local] {
-                view->checkout(commit, ref, false);
+              view->checkout(commit, ref);
+
+              // Checkout done, reset local branch.
+              QString id = view->repo().head().target().id().toString();
+              if (id.contains(commit.detachedHeadName()))
                 view->createBranch(local, ref.target(), ref, true, true);
-              });
-              msg.exec();
             } else {
               view->checkout(ref);
             }
@@ -1763,9 +1767,10 @@ void CommitList::contextMenuEvent(QContextMenuEvent *event)
             checkout->setEnabled(false);
             checkout->setToolTip(tr("HEAD is invalid"));
           } else if (head.target() == commit) {
-            checkout->setText(tr("Checkout %1 (discard changes)").arg(ref.name()));
-            checkout->setToolTip(tr("Local branch is already checked out"));
+            checkout->setText(tr("Force Checkout %1").arg(ref.name()));
+            checkout->setToolTip(tr("Local branch is already checked out\nAll changes will be discarded"));
           } else if (head.name() == local) {
+            checkout->setText(tr("Checkout %1 Reset %2").arg(ref.name()).arg(local));
             checkout->setToolTip(tr("Local branch is already checked out"));
           } else if (view->repo().isBare()) {
             checkout->setEnabled(false);
@@ -1776,31 +1781,11 @@ void CommitList::contextMenuEvent(QContextMenuEvent *event)
 
       QString name = commit.detachedHeadName();
       QAction *checkout = menu.addAction(tr("Checkout %1").arg(name),
-      [view, commit, head] {
+      [this, view, commit, head] {
         if (head.target() == commit) {
-          QMessageBox msg(QMessageBox::Warning,
-                          tr("Checkout and Discard Changes?"),
-                          tr("Are you sure you want to checkout and discard all changes?"),
-                          QMessageBox::Cancel);
-          msg.setInformativeText(tr("This action cannot be undone."));
-          msg.setDetailedText(tr("'%1' is already checked out. "
-                                 "A forced checkout will discard all local changes. "
-                                 "Since the checkout cannot be undone, all local changes will be lost.").arg(commit.detachedHeadName()));
-          QPushButton *discard = msg.addButton(tr("Checkout and Discard Changes"), QMessageBox::AcceptRole);
-          connect(discard, &QPushButton::clicked, [view, commit, head] {
-            git::Repository repo = view->repo();
-            int strategy = GIT_CHECKOUT_FORCE;
-            if (!repo.checkout(git::Commit(), nullptr, {commit.detachedHeadName()}, strategy)) {
-              LogEntry *parent = view->addLogEntry(commit.detachedHeadName(), tr("Checkout and Discard"));
-              view->error(parent, tr("checkout and discard"), commit.detachedHeadName());
-            }
-
-            // FIXME: Work dir changed?
-            view->refresh();
-          });
-          msg.exec();
+          checkoutDiscard(commit, commit.detachedHeadName());
         } else {
-          view->checkout(commit);
+          view->checkout(commit, git::Reference(), true);
         }
       });
 
@@ -1808,8 +1793,8 @@ void CommitList::contextMenuEvent(QContextMenuEvent *event)
         checkout->setEnabled(false);
         checkout->setToolTip(tr("HEAD is invalid"));
       } else if (head.target() == commit) {
-        checkout->setText(tr("Checkout %1 (discard changes)").arg(name));
-        checkout->setToolTip(tr("Local branch is already checked out"));
+        checkout->setText(tr("Force Checkout %1").arg(name));
+        checkout->setToolTip(tr("Local branch is already checked out\nAll changes will be discarded"));
       } else if (view->repo().isBare()) {
         checkout->setEnabled(false);
         checkout->setToolTip(tr("This is a bare repository"));
