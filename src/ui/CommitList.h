@@ -87,8 +87,6 @@ private:
   bool isDecoration(const QModelIndex &index, const QPoint &pos);
   bool isStar(const QModelIndex &index, const QPoint &pos);
 
-  void checkoutDiscard(const git::Commit &commit, const QString &name);
-
   QString mFile;
   QModelIndex mStar;
   QModelIndex mCancel;
