@@ -522,14 +522,14 @@ public:
       : QFrame(parent)
     {
       setObjectName("ImageHeader");
-      QLabel *label = new QLabel(kHunkFmt.arg(ImageWidget::tr("Binary Image/Icon")), this);
+      QLabel *label = new QLabel(kHunkFmt.arg(ImageWidget::tr("Binary Picture/Icon")), this);
 
       mButton = new DisclosureButton(this);
       mButton->setToolTip(
-        mButton->isChecked() ? ImageWidget::tr("Collapse Image") : ImageWidget::tr("Expand Image"));
+        mButton->isChecked() ? ImageWidget::tr("Collapse Picture/Icon") : ImageWidget::tr("Expand Picture/Icon"));
       connect(mButton, &DisclosureButton::toggled, [this] {
         mButton->setToolTip(
-          mButton->isChecked() ? ImageWidget::tr("Collapse Image") : ImageWidget::tr("Expand Image"));
+          mButton->isChecked() ? ImageWidget::tr("Collapse Picture/Icon") : ImageWidget::tr("Expand Picture/Icon"));
       });
 
       QHBoxLayout *layout = new QHBoxLayout(this);
@@ -803,18 +803,26 @@ public:
   {
   public:
     Header(
+      bool binary,
+      bool lfs,
       QWidget *parent = nullptr)
       : QFrame(parent)
     {
       setObjectName("InfoHeader");
-      QLabel *label = new QLabel(kHunkFmt.arg(InfoWidget::tr("File Information")), this);
+      QLabel *label = new QLabel(this);
+      if (binary)
+        label->setText(kHunkFmt.arg(InfoWidget::tr("Binary File Information")));
+      else if (lfs)
+        label->setText(kHunkFmt.arg(InfoWidget::tr("Large File Information")));
+      else
+        label->setText(kHunkFmt.arg(InfoWidget::tr("Text File Information")));
 
       mButton = new DisclosureButton(this);
       mButton->setToolTip(
-        mButton->isChecked() ? InfoWidget::tr("Collapse Info") : InfoWidget::tr("Expand Info"));
+        mButton->isChecked() ? InfoWidget::tr("Collapse File Info") : InfoWidget::tr("Expand File Info"));
       connect(mButton, &DisclosureButton::toggled, [this] {
         mButton->setToolTip(
-          mButton->isChecked() ? InfoWidget::tr("Collapse Info") : InfoWidget::tr("Expand Info"));
+          mButton->isChecked() ? InfoWidget::tr("Collapse File Info") : InfoWidget::tr("Expand File Info"));
       });
 
       QHBoxLayout *layout = new QHBoxLayout(this);
@@ -842,6 +850,7 @@ public:
   InfoWidget(
     const git::Diff &diff,
     const git::Patch &patch,
+    bool binary,
     bool lfs,
     QWidget *parent = nullptr)
     : QFrame(parent)
@@ -853,7 +862,7 @@ public:
 
     int index = diff.indexOf(patch.name());
 
-    mHeader = new Header(this);
+    mHeader = new Header(binary, lfs, this);
     layout->addWidget(mHeader);
 
     mEditor = new Editor(this);
@@ -2233,17 +2242,16 @@ public:
       layout->addLayout(buttons);
 
       if (binary) {
+
         // Add BIN buttons.
         Badge *binBadge = new Badge({Badge::Label(FileWidget::tr("BIN"), true)}, this);
         buttons->addWidget(binBadge);
 
-        mBinButton = new QToolButton(this);
-        mBinButton->setText(FileWidget::tr("Show Object"));
-        mBinButton->setCheckable(true);
-
-        buttons->addWidget(mBinButton);
-        buttons->addSpacing(8);
+        mToolButton = new QToolButton(this);
+        mToolButton->setText(FileWidget::tr("Show Picture/Icon"));
+        mToolButton->setCheckable(true);
       } else if (lfs) {
+
         // Add LFS buttons.
         Badge *lfsBadge = new Badge({Badge::Label(FileWidget::tr("LFS"), true)}, this);
         buttons->addWidget(lfsBadge);
@@ -2265,25 +2273,18 @@ public:
           lfsLockButton->setText(locked ? FileWidget::tr("Unlock") : FileWidget::tr("Lock"));
         });
 
-        mLfsButton = new QToolButton(this);
-        mLfsButton->setText(FileWidget::tr("Show Object"));
-        mLfsButton->setCheckable(true);
-        mInfoButton = new QToolButton(this);
-        mInfoButton->setText(FileWidget::tr("Show Info"));
-        mInfoButton->setCheckable(true);
-
-        buttons->addWidget(mLfsButton);
-        buttons->addWidget(mInfoButton);
-        buttons->addSpacing(8);
+        mToolButton = new QToolButton(this);
+        mToolButton->setText(FileWidget::tr("Show Object"));
+        mToolButton->setCheckable(true);
       } else {
-        // Add INFO button.
-        mInfoButton = new QToolButton(this);
-        mInfoButton->setText(FileWidget::tr("Show Info"));
-        mInfoButton->setCheckable(true);
 
-        buttons->addWidget(mInfoButton);
-        buttons->addSpacing(8);
+        // Add INFO button.
+        mToolButton = new QToolButton(this);
+        mToolButton->setText(FileWidget::tr("Show Info"));
+        mToolButton->setCheckable(true);
       }
+      buttons->addWidget(mToolButton);
+      buttons->addSpacing(8);
 
       // Add edit button.
       mEdit = new EditButton(patch, -1, binary, lfs, this);
@@ -2376,11 +2377,7 @@ public:
 
     DisclosureButton *disclosureButton() const { return mDisclosureButton; }
 
-    QToolButton *lfsButton() const { return mLfsButton; }
-
-    QToolButton *binButton() const { return mBinButton; }
-
-    QToolButton *infoButton() const { return mInfoButton; }
+    QToolButton *toolButton() const { return mToolButton; }
 
   protected:
     void mouseDoubleClickEvent(QMouseEvent *event) override
@@ -2432,9 +2429,7 @@ public:
     git::Patch mPatch;
 
     QCheckBox *mCheck;
-    QToolButton *mInfoButton = nullptr;
-    QToolButton *mBinButton = nullptr;
-    QToolButton *mLfsButton = nullptr;
+    QToolButton *mToolButton;
     EditButton *mEdit;
     DisclosureButton *mDisclosureButton;
   };
@@ -2479,9 +2474,9 @@ public:
 
     // File collapse.
     DisclosureButton *disclosureButton = mHeader->disclosureButton();
-    connect(disclosureButton, &DisclosureButton::toggled, [this](bool visible) {
-      // LFS expand/collapse.
-      if (mHeader->lfsButton() && !visible) {
+    connect(disclosureButton, &DisclosureButton::toggled, [this, lfs, binary](bool visible) {
+      // LFS file expand/collapse.
+      if (lfs && !visible) {
         if (!mHunks.isEmpty())
           mHunks.first()->setVisible(false);
         if (!mImages.isEmpty())
@@ -2491,22 +2486,19 @@ public:
         return;
       }
 
-      if (mHeader->lfsButton() && visible) {
-        bool checked = mHeader->lfsButton()->isChecked();
+      if (lfs && visible) {
+        bool checked = mHeader->toolButton()->isChecked();
         if (!mHunks.isEmpty())
           mHunks.first()->setVisible(!checked);
         if (!mImages.isEmpty())
           mImages.first()->setVisible(checked);
-        if (mHeader->infoButton()) {
-          bool checked = mHeader->infoButton()->isChecked();
-          if (!mInfos.isEmpty())
-            mInfos.first()->setVisible(checked);
-        }
+        if (!mInfos.isEmpty())
+          mInfos.first()->setVisible(true);
         return;
       }
 
-      // Binary expand/collapse.
-      if (mHeader->binButton() && !visible) {
+      // Binary file expand/collapse.
+      if (binary && !visible) {
         if (!mImages.isEmpty())
           mImages.first()->setVisible(false);
         if (!mInfos.isEmpty())
@@ -2514,32 +2506,32 @@ public:
         return;
       }
 
-      if (mHeader->binButton() && visible) {
-        bool checked = mHeader->binButton()->isChecked();
-        if (mHeader->binButton()->isEnabled()) {
-          // Toggle image and info visibility.
-          if (!mInfos.isEmpty())
-            mInfos.first()->setVisible(!checked);
+      if (binary && visible) {
+        bool checked = mHeader->toolButton()->isChecked();
+        if (mHeader->toolButton()->isEnabled()) {
+
+          // Toggle picture visibility.
           if (!mImages.isEmpty())
             mImages.first()->setVisible(checked);
         } else {
-          // Button is disabled: expand/collapse image and info.
-          if (!mInfos.isEmpty())
-            mInfos.first()->setVisible(true);
+
+          // Button is disabled: expand/collapse picture.
           if (!mImages.isEmpty())
             mImages.first()->setVisible(true);
         }
+        if (!mInfos.isEmpty())
+          mInfos.first()->setVisible(true);
         return;
       }
 
-      // Info expand/collapse.
-      if (mHeader->infoButton() && !visible) {
+      // Text file expand/collapse.
+      if (mHeader->toolButton() && !visible) {
         if (!mInfos.isEmpty())
           mInfos.first()->setVisible(false);
       }
 
-      if (mHeader->infoButton() && visible) {
-        bool checked = mHeader->infoButton()->isChecked();
+      if (mHeader->toolButton() && visible) {
+        bool checked = mHeader->toolButton()->isChecked();
         if (!mInfos.isEmpty())
           mInfos.first()->setVisible(checked);
       }
@@ -2559,70 +2551,50 @@ public:
       });
     }
 
-    // Read default view configuration.
+    // Read default binary view configuration.
     git::Config config = repo.appConfig();
-    int cfgint = config.value<int>("diffview.binary", 0);
-    bool binimage = (cfgint == 0) || (cfgint == 2);
-    bool bininfo = (cfgint == 1) || (cfgint == 2);
+    bool loadbinary = config.value<bool>("diffview.loadbinary", true);
+    bool scalebinary = config.value<bool>("diffview.scalebinary", false);
 
-    bool binscaled = config.value<bool>("diffview.scaled", false);
-
-    cfgint = config.value<int>("diffview.lfs", 0);
-    bool lfspointer = cfgint == 0;
-    bool lfsobject = cfgint == 1;
-    bool lfsinfo = cfgint == 2;
+    QToolButton *toolButton = mHeader->toolButton();
 
     if (binary) {
-      // Add file image.
-      if ((patch.status() != GIT_DELTA_RENAMED) && binimage) {
-        layout->addWidget(addImage(patch, lfs, binscaled));
-        if (QToolButton *binButton = mHeader->binButton()) {
-          binButton->setChecked(true);
-          binButton->setText(tr("Show Info"));
-        }
-      }
+      if (patch.status() != GIT_DELTA_RENAMED) {
+        if (loadbinary) {
 
-      // Add file info.
-      if ((patch.status() != GIT_DELTA_RENAMED) && bininfo)
-        layout->addWidget(addInfo(mDiff, mPatch, lfs));
-
-      // Disable binary button.
-      if (binimage && bininfo) {
-        if (QToolButton *binButton = mHeader->binButton()) {
-          binButton->setEnabled(false);
-          binButton->setVisible(false);
+          // Add file picture/icon.
+          layout->addWidget(addImage(patch, lfs, scalebinary));
+          if (toolButton)
+            toolButton->setVisible(false);
         }
+
+        // Add file info.
+        layout->addWidget(addInfo(mDiff, mPatch, true, lfs));
       }
 
       // Binary button.
-      if (QToolButton *binButton = mHeader->binButton()) {
-        connect(binButton, &QToolButton::clicked,
-        [this, layout, disclosureButton, binButton, lfs, binscaled](bool checked) {
-          binButton->setText(checked ? tr("Show Info") : tr("Show Object"));
+      if (toolButton) {
+        connect(toolButton, &QToolButton::clicked,
+        [this, layout, disclosureButton, toolButton, lfs, scalebinary](bool checked) {
+          toolButton->setText(checked ? tr("Hide Picture/Icon") : tr("Show Picture/Icon"));
 
           if (!mImages.isEmpty()) {
-            // Image already loaded.
+
+            // Picture/icon already loaded.
             mImages.first()->setVisible(checked);
             mImages.first()->button()->setChecked(checked);
           } else if (checked) {
-            // Load image.
-            layout->insertWidget(1, addImage(mPatch, lfs, binscaled));
-            disclosureButton->setChecked(!mImages.isEmpty());
+
+            // Load picture/icon.
+            layout->insertWidget(1, addImage(mPatch, lfs, scalebinary));
           }
 
-          if (!mInfos.isEmpty()) {
-            // Info already loaded.
-            mInfos.first()->setVisible(!checked);
-            mInfos.first()->button()->setChecked(!checked);
-          } else if (!checked) {
-            // Load file info.
-            layout->addWidget(addInfo(mDiff, mPatch, lfs));
-            disclosureButton->setChecked(!mInfos.isEmpty());
-          }
+          // Load file info.
+          if (mInfos.isEmpty())
+            layout->addWidget(addInfo(mDiff, mPatch, true, lfs));
 
-          // Image or info loaded.
+          // File picture/icon or info loaded.
           if (!mImages.isEmpty() || !mInfos.isEmpty()) {
-            disclosureButton->setChecked(true);
             disclosureButton->setEnabled(true);
           }
           else {
@@ -2631,17 +2603,18 @@ public:
           }
         });
       }
-    }
-    else if (patch.isUntracked()) {
+
+    } else if (patch.isUntracked()) {
+
       // Add untracked file content.
       if (!QFileInfo(path).isDir())
         layout->addWidget(addHunk(diff, patch, -1, lfs, submodule));
 
       // File info button.
-      if (QToolButton *infoButton = mHeader->infoButton()) {
-        connect(infoButton, &QToolButton::clicked,
-        [this, layout, disclosureButton, infoButton, lfs](bool checked) {
-          infoButton->setText(checked ? tr("Hide Info") : tr("Show Info"));
+      if (toolButton) {
+        connect(toolButton, &QToolButton::clicked,
+        [this, layout, disclosureButton, toolButton, lfs](bool checked) {
+          toolButton->setText(checked ? tr("Hide Info") : tr("Show Info"));
 
           if (!mInfos.isEmpty()) {
             // Info already loaded.
@@ -2649,7 +2622,7 @@ public:
             mInfos.first()->button()->setChecked(checked);
           } else if (checked) {
             // Load file info.
-            layout->addWidget(addInfo(mDiff, mPatch, lfs));
+            layout->addWidget(addInfo(mDiff, mPatch, false, lfs));
           }
 
           // Hunk or info loaded.
@@ -2661,7 +2634,9 @@ public:
           }
         });
       }
+
     } else {
+
       // Generate a diff between the head tree and index.
       QSet<int> stagedHunks;
       if (staged.isValid()) {
@@ -2680,104 +2655,77 @@ public:
 
       // LFS view
       if (lfs) {
-        // Hide diff hunks.
-        if (!lfspointer) {
-          disclosureButton->setChecked(false);
-          disclosureButton->setEnabled(false);
-          mHunks.first()->setVisible(false);
-        }
-
-        // Add file image.
-        if (lfsobject) {
-          mHunks.first()->setVisible(false);
-          layout->insertWidget(1, addImage(mPatch, lfs, binscaled));
-        }
-
-        // Change LFS button.
-        if (!lfspointer || lfsobject) {
-          if (QToolButton *lfsButton = mHeader->lfsButton()) {
-            lfsButton->setChecked(true);
-            lfsButton->setText(tr("Show Pointer"));
-          }
-        }
 
         // Add file info.
-        if (lfsinfo) {
-          layout->addWidget(addInfo(mDiff, mPatch, lfs));
-
-          // Change file info button.
-          if (QToolButton *infoButton = mHeader->infoButton()) {
-            infoButton->setChecked(true);
-            infoButton->setText(tr("Hide Info"));
-          }
-        }
+        layout->addWidget(addInfo(mDiff, mPatch, false, lfs));
 
         // LFS button.
-        if (QToolButton *lfsButton = mHeader->lfsButton()) {
-          connect(lfsButton, &QToolButton::clicked,
-          [this, layout, disclosureButton, lfsButton, lfs, binscaled](bool checked) {
-            lfsButton->setText(checked ? tr("Show Pointer") : tr("Show Object"));
+        if (toolButton) {
+          connect(toolButton, &QToolButton::clicked,
+          [this, layout, disclosureButton, toolButton, scalebinary](bool checked) {
+            toolButton->setText(checked ? tr("Show Pointer") : tr("Show Object"));
             mHunks.first()->setVisible(!checked);
+            mHunks.first()->header()->button()->setChecked(!checked);
 
-            // Image already loaded.
             if (!mImages.isEmpty()) {
+
+              // Picture/icon already loaded.
               mImages.first()->setVisible(checked);
               mImages.first()->button()->setChecked(checked);
             } else if (checked) {
-              // Load image.
-              layout->insertWidget(1, addImage(mPatch, lfs, binscaled));
+
+              // Load picture/icon.
+              layout->insertWidget(1, addImage(mPatch, true, scalebinary));
             }
 
-            // Hunk or image loaded.
+            // Pointer, object or info loaded.
             disclosureButton->setEnabled(true);
-            disclosureButton->setChecked(true);
           });
         }
       } else {
+
         // Add file info: filemode changed.
         if ((patch.status() != GIT_DELTA_RENAMED) && (mHunks.isEmpty())) {
-          layout->addWidget(addInfo(mDiff, mPatch, lfs));
+          layout->addWidget(addInfo(mDiff, mPatch, false, lfs));
 
           // Change file info button.
-          if (QToolButton *infoButton = mHeader->infoButton()) {
-            infoButton->setChecked(true);
-            infoButton->setText(tr("Hide Info"));
+          if (toolButton) {
+            toolButton->setChecked(true);
+            toolButton->setText(tr("Hide Info"));
           }
         }
-      }
 
-      // File info button.
-      if (QToolButton *infoButton = mHeader->infoButton()) {
-        connect(infoButton, &QToolButton::clicked,
-        [this, layout, disclosureButton, infoButton, lfs](bool checked) {
-          infoButton->setText(checked ? tr("Hide Info") : tr("Show Info"));
+        // File info button.
+        if (toolButton) {
+          connect(toolButton, &QToolButton::clicked,
+          [this, layout, disclosureButton, toolButton](bool checked) {
+            toolButton->setText(checked ? tr("Hide Info") : tr("Show Info"));
 
-          if (!mInfos.isEmpty()) {
-            // Info already loaded.
-            mInfos.first()->setVisible(checked);
-            mInfos.first()->button()->setChecked(checked);
-          } else if (checked) {
-            // Load file info.
-            layout->addWidget(addInfo(mDiff, mPatch, lfs));
-          }
+            if (!mInfos.isEmpty()) {
 
-          // Hunk, image or info loaded.
-          if (!mHunks.isEmpty() || !mImages.isEmpty() || (!mInfos.isEmpty() && checked))
-            disclosureButton->setEnabled(true);
-          else {
-            disclosureButton->setChecked(false);
-            disclosureButton->setEnabled(false);
-          }
-        });
+              // Info already loaded.
+              mInfos.first()->setVisible(checked);
+              mInfos.first()->button()->setChecked(checked);
+            } else if (checked) {
+
+              // Load file info.
+              layout->addWidget(addInfo(mDiff, mPatch, false, false));
+            }
+
+            // Hunk, picture/info or info loaded.
+            if (!mHunks.isEmpty() || !mImages.isEmpty() || (!mInfos.isEmpty() && checked))
+              disclosureButton->setEnabled(true);
+            else {
+              disclosureButton->setChecked(false);
+              disclosureButton->setEnabled(false);
+            }
+          });
+        }
       }
     }
 
     // Start hidden when the file is checked.
     bool expand = (mHeader->check()->checkState() == Qt::Unchecked);
-
-    // LFS view displaying nothing.
-    if (lfs && !lfspointer && !lfsobject && !lfsinfo)
-      expand = false;
 
     // Auto collapse settings
     if (Settings::instance()->value("collapse/untracked").toBool() == true &&
@@ -2813,9 +2761,10 @@ public:
   QWidget *addInfo(
     const git::Diff diff,
     const git::Patch patch,
+    bool binary,
     bool lfs)
   {
-    InfoWidget *info = new InfoWidget(diff, patch, lfs, this);
+    InfoWidget *info = new InfoWidget(diff, patch, binary, lfs, this);
 
     // Remember info.
     mInfos.append(info);
@@ -2830,7 +2779,7 @@ public:
   {
     ImageWidget *image = new ImageWidget(patch, lfs, scaled, this);
 
-    // Remember image.
+    // Remember picture/icon.
     mImages.append(image);
 
     return image;

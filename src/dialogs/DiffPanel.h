@@ -33,6 +33,8 @@ private:
 
   QSpinBox *mContext;
   QComboBox *mEncoding;
+  QCheckBox *mLoadBinary;
+  QCheckBox *mScaleBinary;
 
   QCheckBox *mIgnoreWs = nullptr;
 
