@@ -80,9 +80,6 @@ public:
 
   bool progress(const QString &oldPath, const QString &newPath) override
   {
-    Q_UNUSED(oldPath);
-    Q_UNUSED(newPath);
-
     return !mCanceled;
   }
 
@@ -270,15 +267,11 @@ public:
 
   bool canFetchMore(const QModelIndex &parent) const
   {
-    Q_UNUSED(parent);
-
     return mWalker.isValid();
   }
 
   void fetchMore(const QModelIndex &parent)
   {
-    Q_UNUSED(parent);
-
     // Load commits.
     int i = 0;
     QList<Row> rows;
@@ -345,8 +338,6 @@ public:
 
   int rowCount(const QModelIndex &parent = QModelIndex()) const
   {
-    Q_UNUSED(parent);
-
     return mRows.size();
   }
 
@@ -624,8 +615,6 @@ public:
 
   int rowCount(const QModelIndex &parent = QModelIndex()) const override
   {
-    Q_UNUSED(parent);
-
     return mCommits.size();
   }
 
@@ -1104,9 +1093,6 @@ public:
     const QStyleOptionViewItem &option,
     const QModelIndex &index) const override
   {
-    Q_UNUSED(option);
-    Q_UNUSED(index);
-
     bool compact = Settings::instance()->value("commit/compact").toBool();
     bool reduced = Settings::instance()->value("commit/reduced").toBool();
     LayoutConstants constants = layoutConstants(compact, reduced);
@@ -1131,8 +1117,6 @@ public:
     const QStyleOptionViewItem &option,
     const QModelIndex &index) const
   {
-    Q_UNUSED(index);
-
     bool compact = Settings::instance()->value("commit/compact").toBool();
     bool reduced = Settings::instance()->value("commit/reduced").toBool();
     LayoutConstants constants = layoutConstants(compact, reduced);
@@ -1546,25 +1530,7 @@ void CommitList::contextMenuEvent(QContextMenuEvent *event)
     clean->setEnabled(!untracked.isEmpty());
 
     QAction *discard = menu.addAction(tr("Discard All Changes"), [view, modified] {
-      QMessageBox *dialog = new QMessageBox(
-        QMessageBox::Warning, tr("Discard All Changes?"),
-        tr("Are you sure you want to discard all changes in the working directory?"),
-        QMessageBox::Cancel, view);
-      dialog->setAttribute(Qt::WA_DeleteOnClose);
-      dialog->setInformativeText(tr("This action cannot be undone."));
-      dialog->setDetailedText(modified.join('\n'));
-
-      QString text = tr("Discard All Changes");
-      QPushButton *discard = dialog->addButton(text, QMessageBox::AcceptRole);
-      connect(discard, &QPushButton::clicked, [view] {
-        int strategy = GIT_CHECKOUT_FORCE;
-        view->checkout(view->repo().head().target(), QStringList(), strategy);
-
-        // FIXME: Work dir changed?
-        view->refresh();
-      });
-
-      dialog->open();
+      view->promptToDiscard(view->repo().head().target(), modified, true);
     });
 
     discard->setEnabled(!modified.isEmpty() && view->repo().isValid());

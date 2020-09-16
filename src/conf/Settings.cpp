@@ -105,7 +105,6 @@ QVariant Settings::value(const QString &key) const
 {
   QSettings settings;
   QVariant result = settings.value(key, defaultValue(key));
-
   return result;
 }
 
@@ -117,7 +116,6 @@ QVariant Settings::defaultValue(const QString &key) const
 void Settings::setValue(const QString &key, const QVariant &value, bool refresh)
 {
   QSettings settings;
-
   if (value == defaultValue(key)) {
     if (settings.contains(key)) {
       settings.remove(key);

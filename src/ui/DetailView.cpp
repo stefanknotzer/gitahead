@@ -171,15 +171,11 @@ public:
 
   void moveEvent(QMoveEvent *event) override
   {
-    Q_UNUSED(event);
-
     updateLayout();
   }
 
   void resizeEvent(QResizeEvent *event) override
   {
-    Q_UNUSED(event);
-
     updateLayout();
   }
 
@@ -588,7 +584,8 @@ private:
     QFont font = QLabel::font();
 
     // Detect common HTML tags.
-    font.setBold(mText.contains("<b>"));
+    font.setBold(font.bold() || mText.contains("<b>"));
+    font.setItalic(font.italic() || mText.contains("<i>"));
 
     QFontMetrics fm(font);
 

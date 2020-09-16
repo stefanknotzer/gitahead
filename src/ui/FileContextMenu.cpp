@@ -172,25 +172,7 @@ FileContextMenu::FileContextMenu(
     }
 
     QAction *discard = addAction(tr("Discard Changes"), [view, modified] {
-      QMessageBox *dialog = new QMessageBox(
-        QMessageBox::Warning, tr("Discard Changes?"),
-        tr("Are you sure you want to discard changes in the selected files?"),
-        QMessageBox::Cancel, view);
-      dialog->setAttribute(Qt::WA_DeleteOnClose);
-      dialog->setInformativeText(tr("This action cannot be undone."));
-      dialog->setDetailedText(modified.join('\n'));
-
-      QString text = tr("Discard Changes");
-      QPushButton *discard = dialog->addButton(text, QMessageBox::AcceptRole);
-      connect(discard, &QPushButton::clicked, [view, modified] {
-        int strategy = GIT_CHECKOUT_FORCE;
-        view->checkout(view->repo().head().target(), modified, strategy);
-
-        // FIXME: Work dir changed?
-        view->refresh();
-      });
-
-      dialog->open();
+      view->promptToDiscard(view->repo().head().target(), modified);
     });
 
     QAction *remove = addAction(tr("Remove Untracked Files"), [view, untracked] {

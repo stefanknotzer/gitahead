@@ -455,9 +455,21 @@ RepoView::~RepoView()
 
 void RepoView::clean(const QStringList &untracked)
 {
-  QString singular = tr("untracked file");
-  QString plural = tr("untracked files");
-  QString phrase = (untracked.count() == 1) ? singular : plural;
+  QString phrase = tr("untracked files");
+
+  if (untracked.count() == 1) {
+    QString path = repo().workdir().filePath(untracked[0]);
+    phrase = QFileInfo(path).isDir() ? tr("untracked directory") : tr("untracked file");
+  } else {
+    foreach (const QString &name, untracked) {
+      QString path = repo().workdir().filePath(name);
+      if (QFileInfo(path).isDir()) {
+        phrase = tr("untracked directories/files");
+        break;
+      }
+    }
+  }
+
   QMessageBox mb(QMessageBox::Warning, tr("Remove Untracked Files"),
                  tr("Remove %1 %2?").arg(
                    QString::number(untracked.count()), phrase));
@@ -470,8 +482,14 @@ void RepoView::clean(const QStringList &untracked)
   mb.exec();
 
   if (mb.clickedButton() == remove) {
-    foreach (const QString &name, untracked)
-      repo().clean(name);
+    LogEntry *entry = addLogEntry(phrase, tr("Remove"));
+
+    foreach (const QString &name, untracked) {
+      if (repo().clean(name))
+        entry->addEntry(LogEntry::File, name)->setStatus('D');
+      else
+        entry->addEntry(LogEntry::Error, tr("%1 failed").arg(name));
+    }
   }
 }
 
@@ -1897,6 +1915,40 @@ void RepoView::amendCommit()
   }
 }
 
+void RepoView::promptToDiscard(
+  const git::Commit &commit,
+  const QStringList &paths,
+  bool all)
+{
+  QMessageBox mb(QMessageBox::Warning,
+                 tr("Discard %1 Files").arg(
+                   all ? tr("All") : tr("Selected")),
+                 tr("Discard %1 %2?").arg(
+                   (paths.size() == 0) ? "all" : QString::number(paths.count()),
+                   (paths.size() == 1) ? tr("file") : tr("files")));
+  mb.setInformativeText(tr("This action cannot be undone."));
+  mb.setDetailedText(paths.join('\n'));
+
+  QPushButton *discard = mb.addButton(tr("Discard"), QMessageBox::AcceptRole);
+  mb.addButton(QMessageBox::Cancel);
+  mb.setDefaultButton(discard);
+  mb.exec();
+
+  if (mb.clickedButton() == discard) {
+    QString count = (paths.size() == 0) ? tr("all") : QString::number(paths.size());
+    QString name = (paths.size() == 1) ? tr("file") : tr("files");
+    QString text = tr("%1 - %2 %3").arg(commit.link(), count, name);
+    LogEntry *entry = addLogEntry(text, tr("Discard"));
+
+    CheckoutCallbacks callbacks(entry, GIT_CHECKOUT_NOTIFY_DIRTY | GIT_CHECKOUT_NOTIFY_UPDATED);
+    int strategy = GIT_CHECKOUT_FORCE;
+    mRepo.checkout(commit, &callbacks,
+                   all ? QStringList() : paths,
+                   strategy);
+    mRefs->select(mRepo.head());
+  }
+}
+
 void RepoView::promptToCheckout()
 {
   git::Reference ref = reference();
@@ -1908,25 +1960,16 @@ void RepoView::promptToCheckout()
   dialog->open();
 }
 
-void RepoView::checkout(
-  const git::Commit &commit,
-  const QStringList &paths,
-  int strategy)
+void RepoView::checkout(const git::Commit &commit, const QStringList &paths)
 {
-  Q_ASSERT(commit);
-
   QString count = (paths.size() == 0) ? tr("all") : QString::number(paths.size());
   QString name = (paths.size() == 1) ? tr("file") : tr("files");
   QString text = tr("%1 - %2 %3").arg(commit.link(), count, name);
   LogEntry *entry = addLogEntry(text, tr("Checkout"));
 
-  CheckoutCallbacks *callbacks;
-  if (strategy == GIT_CHECKOUT_FORCE)
-    callbacks = new CheckoutCallbacks(entry, GIT_CHECKOUT_NOTIFY_UPDATED);
-  else
-    callbacks = new CheckoutCallbacks(entry, GIT_CHECKOUT_NOTIFY_ALL);
-
-  mRepo.checkout(commit, callbacks, paths, strategy);
+  CheckoutCallbacks callbacks(entry, GIT_CHECKOUT_NOTIFY_ALL);
+  int strategy = GIT_CHECKOUT_SAFE | GIT_CHECKOUT_DONT_UPDATE_INDEX;
+  mRepo.checkout(commit, &callbacks, paths, strategy);
   mRefs->select(mRepo.head());
 }
 

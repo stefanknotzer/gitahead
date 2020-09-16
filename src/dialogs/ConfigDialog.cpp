@@ -768,7 +768,7 @@ ConfigDialog::ConfigDialog(RepoView *view, Index index)
 
   layout->addWidget(mStack);
 
-  // Add actions.
+  // Track actions in a group.
   mActions = new QActionGroup(this);
 
   // Add project panel.

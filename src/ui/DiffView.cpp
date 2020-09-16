@@ -53,6 +53,7 @@
 #include <QShortcut>
 #include <QStyleOption>
 #include <QTableWidget>
+#include <QTextDocumentFragment>
 #include <QTextEdit>
 #include <QTextLayout>
 #include <QTextStream>
@@ -68,11 +69,6 @@ const int kIndent = 2;
 
 const int kArrowWidth = 9;
 const int kArrowHeight = 8;
-
-const QString kFileLabelStyleFmt =
-  "QLabel {"
-  " font: bold 19px"
-  "}";
 
 const QString kHunkFmt = "<h4>%1</h4>";
 
@@ -361,8 +357,6 @@ public:
 protected:
   void paintEvent(QPaintEvent *event) override
   {
-    Q_UNUSED(event);
-
     QPainter painter(this);
     initButtonPainter(&painter);
 
@@ -397,8 +391,6 @@ public:
 protected:
   void paintEvent(QPaintEvent *event) override
   {
-    Q_UNUSED(event);
-
     QPainter painter(this);
     initButtonPainter(&painter);
 
@@ -428,8 +420,6 @@ public:
 protected:
   void paintEvent(QPaintEvent *event) override
   {
-    Q_UNUSED(event);
-
     QPainter painter(this);
     initButtonPainter(&painter);
 
@@ -1383,8 +1373,6 @@ public:
   protected:
     void mouseDoubleClickEvent(QMouseEvent *event) override
     {
-      Q_UNUSED(event);
-
       if (mButton->isEnabled())
         mButton->toggle();
     }
@@ -2061,7 +2049,6 @@ public:
 
   void paintEvent(QPaintEvent *event) override
   {
-    Q_UNUSED(event);
     // Drawing the outline of the shapes with a narrow pen approximates
     // a slight drop shadow. Minus has to be drawn slightly smaller than
     // plus or it creates an optical illusion that makes it look to big.
@@ -2111,82 +2098,159 @@ private:
   int mMinuses = 0;
 };
 
+class ElidedLabel : public QLabel
+{
+public:
+  ElidedLabel(const QString &text,
+              const QString &shorttext = QString(),
+              const Qt::TextElideMode &elidemode = Qt::ElideMiddle,
+              QWidget *parent = nullptr)
+    : QLabel(parent), mText(text), mShortText(shorttext), mElideMode(elidemode)
+  {
+    QLabel(text, parent);
+    setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Fixed);
+  }
+
+  ElidedLabel(const QString &text,
+              const Qt::TextElideMode &elidemode = Qt::ElideMiddle,
+              QWidget *parent = nullptr)
+    : QLabel(parent), mText(text), mElideMode(elidemode)
+  {
+    QLabel(text, parent);
+    setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Fixed);
+  }
+
+  void setText(const QString &text,
+               const QString &shorttext = QString())
+  {
+    mText = text;
+    mShortText = shorttext;
+
+    QFontMetrics fm = getFontMetric();
+    QString plain = QTextDocumentFragment::fromHtml(text).toPlainText();
+    mWidth = fm.boundingRect(plain).width() + fm.averageCharWidth();
+
+    QLabel::setText(text);
+  }
+
+  void setElideMode(const Qt::TextElideMode &elidemode)
+  {
+    mElideMode = elidemode;
+    repaint();
+  }
+
+  QSize sizeHint() const override
+  {
+    if (mElided)
+      return QSize(mWidth, QLabel::sizeHint().height());
+
+    return QLabel::sizeHint();
+  }
+
+  QSize minimumSizeHint() const override
+  {
+    if (mElided && !mShortText.isEmpty())
+      return QLabel::minimumSizeHint();
+
+    QFontMetrics fm = getFontMetric();
+
+    return QSize(fm.boundingRect("...").width() + fm.averageCharWidth(), QLabel::minimumSizeHint().height());
+  }
+
+protected:
+  void paintEvent(QPaintEvent *event) override
+  {
+    QFontMetrics fm = getFontMetric();
+    QString plain = QTextDocumentFragment::fromHtml(mText).toPlainText();
+    QString elide = fm.elidedText(plain, mElideMode, width());
+    if (plain.length() > elide.length()) {
+      // Use short text or elide text.
+      if (!mShortText.isEmpty())
+        QLabel::setText(mShortText);
+      else {
+        QString text = mText;
+        QLabel::setText(text.replace(plain, elide));
+      }
+      mElided = true;
+    } else {
+      // Use text.
+      QLabel::setText(mText);
+      mElided = false;
+      mWidth = QLabel::width();
+    }
+
+    QLabel::paintEvent(event);
+  }
+
+private:
+  QFontMetrics getFontMetric(void) const
+  {
+    QFont font = QLabel::font();
+
+    // Detect common HTML tags.
+    font.setBold(font.bold() || mText.contains("<b>"));
+    font.setItalic(font.italic() || mText.contains("<i>"));
+
+    QFontMetrics fm(font);
+
+    return fm;
+  }
+
+  QString mText;
+  QString mShortText;
+
+  Qt::TextElideMode mElideMode = Qt::ElideMiddle;
+
+  bool mElided = false;
+  int mWidth = 10000;
+};
+
 class FileLabel : public QWidget
 {
+  Q_OBJECT
+
 public:
   FileLabel(const QString &oldname,
             const QString &newname,
             bool submodule, QWidget *parent = nullptr)
-    : QWidget(parent), mOldName(oldname), mNewName(newname)
+    : QWidget(parent)
   {
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(2,2,2,2);
 
+    QFont font = this->font();
+    font.setBold(true);
+    font.setPointSize(font.pointSize() + 3);
+
     // Old name of renamed file.
     if (!oldname.isEmpty()) {
-      mOldLabel = new QLabel(this);
-      mOldLabel->setStyleSheet(kFileLabelStyleFmt);
-      mOldLabel->setText(mOldName);
-      layout->addWidget(mOldLabel);
+      ElidedLabel *oldlabel = new ElidedLabel(oldname, Qt::ElideLeft, this);
+      oldlabel->setFont(font);
+      layout->addWidget(oldlabel, 1);
       layout->addWidget(new Arrow(this));
-
-      mSpaceMargin = kArrowWidth + 3 * layout->spacing();
-    } else {
-      mSpaceMargin = 1 * layout->spacing();
     }
 
+    ElidedLabel *newlabel = new ElidedLabel(newname, Qt::ElideRight, this);
+    newlabel->setFont(font);
+
     // New name, hyperlink if this is a submodule.
-    mNewLabel = new QLabel(this);
-    mNewLabel->setStyleSheet(kFileLabelStyleFmt);
     if (submodule) {
       mUrlName = newname;
-      mNewName.insert(0, "<a href=\"submodule\">");
-      mNewLabel->setText(mNewName);
-      connect(mNewLabel, &QLabel::linkActivated, [this] {
+      newlabel->setText("<a href=\"submodule\">" + newname + "</a>", QString());
+      newlabel->setToolTip(FileLabel::tr("Open Submodule"));
+      connect(newlabel, &QLabel::linkActivated, [this] {
         QUrl url;
         url.setScheme("submodule");
         url.setPath(mUrlName);
         RepoView::parentView(this)->visitLink(url.toString());
       });
     }
-    mNewLabel->setText(mNewName);
-    layout->addWidget(mNewLabel);
+    layout->addWidget(newlabel);
     layout->addStretch();
   }
 
-protected:
-    void paintEvent(QPaintEvent *event) override
-    {
-      if (mOldLabel) {
-        // Calcualte remaining pixel.
-        int w = width() - mNewLabel->width() - mSpaceMargin;
-        QFontMetrics fm(mOldLabel->font());
-
-        // Elide old name.
-        mOldLabel->setText(fm.elidedText(mOldName, Qt::ElideMiddle, w));
-      }
-      if (mNewLabel && !mNewName.contains("<a href=")) {
-        // Calcualte remaining pixel.
-        int w = width() - mSpaceMargin;
-        QFontMetrics fm(mNewLabel->font());
-
-        // Elide new name.
-        mNewLabel->setText(fm.elidedText(mNewName, Qt::ElideMiddle, w));
-      }
-
-      QWidget::paintEvent(event);
-    }
-
 private:
-  QString mOldName;
-  QString mNewName;
-
   QString mUrlName;
-
-  QLabel *mOldLabel = nullptr;
-  QLabel *mNewLabel = nullptr;
-
-  int mSpaceMargin = 0;
 };
 
 class FileWidget : public QFrame
@@ -2243,13 +2307,11 @@ public:
 
       if (binary) {
 
-        // Add BIN buttons.
-        Badge *binBadge = new Badge({Badge::Label(FileWidget::tr("BIN"), true)}, this);
-        buttons->addWidget(binBadge);
-
+        // Add binary button.
         mToolButton = new QToolButton(this);
         mToolButton->setText(FileWidget::tr("Show Picture/Icon"));
         mToolButton->setCheckable(true);
+
       } else if (lfs) {
 
         // Add LFS buttons.
@@ -2276,9 +2338,10 @@ public:
         mToolButton = new QToolButton(this);
         mToolButton->setText(FileWidget::tr("Show Object"));
         mToolButton->setCheckable(true);
+
       } else {
 
-        // Add INFO button.
+        // Add info button.
         mToolButton = new QToolButton(this);
         mToolButton->setText(FileWidget::tr("Show Info"));
         mToolButton->setCheckable(true);
@@ -2298,48 +2361,13 @@ public:
         buttons->addWidget(discard);
 
         connect(discard, &QToolButton::clicked, [this] {
+          RepoView *view = RepoView::parentView(this);
           QString name = mPatch.name();
-          bool untracked = mPatch.isUntracked();
-          QString path = mPatch.repo().workdir().filePath(name);
-          QString arg = QFileInfo(path).isDir() ? FileWidget::tr("Directory") : FileWidget::tr("File");
-          QString title =
-            untracked ? FileWidget::tr("Remove %1?").arg(arg) : FileWidget::tr("Discard Changes?");
-          QString text = untracked ?
-            FileWidget::tr("Are you sure you want to remove '%1'?") :
-            FileWidget::tr("Are you sure you want to discard all changes in '%1'?");
-          QMessageBox *dialog = new QMessageBox(
-            QMessageBox::Warning, title, text.arg(name),
-            QMessageBox::Cancel, this);
-          dialog->setAttribute(Qt::WA_DeleteOnClose);
-          dialog->setInformativeText(FileWidget::tr("This action cannot be undone."));
 
-          QString button =
-            untracked ? FileWidget::tr("Remove %1").arg(arg) : FileWidget::tr("Discard Changes");
-          QPushButton *discard =
-            dialog->addButton(button, QMessageBox::AcceptRole);
-          connect(discard, &QPushButton::clicked, [this, untracked] {
-            RepoView *view = RepoView::parentView(this);
-            git::Repository repo = mPatch.repo();
-            QString name = mPatch.name();
-
-            if (untracked) {
-              QDir dir = repo.workdir();
-              if (QFileInfo(dir.filePath(name)).isDir()) {
-                if (dir.cd(name))
-                  dir.removeRecursively();
-              } else {
-                dir.remove(name);
-              }
-            } else {
-              int strategy = GIT_CHECKOUT_FORCE;
-              view->checkout(repo.head().target(), {name}, strategy);
-            }
-
-            // FIXME: Work dir changed?
-            view->refresh();
-          });
-
-          dialog->open();
+          if (mPatch.isUntracked())
+            view->clean({name});
+          else
+            view->promptToDiscard(view->repo().head().target(), {name});
         });
       }
 
@@ -2382,8 +2410,6 @@ public:
   protected:
     void mouseDoubleClickEvent(QMouseEvent *event) override
     {
-      Q_UNUSED(event);
-
       if (mDisclosureButton->isEnabled())
         mDisclosureButton->toggle();
     }
@@ -2559,23 +2585,21 @@ public:
     QToolButton *toolButton = mHeader->toolButton();
 
     if (binary) {
-      if (patch.status() != GIT_DELTA_RENAMED) {
-        if (loadbinary) {
+      if ((patch.status() != GIT_DELTA_RENAMED) && loadbinary) {
 
-          // Add file picture/icon.
-          layout->addWidget(addImage(patch, lfs, scalebinary));
-          if (toolButton)
-            toolButton->setVisible(false);
-        }
-
-        // Add file info.
-        layout->addWidget(addInfo(mDiff, mPatch, true, lfs));
+        // Add file picture/icon.
+        layout->addWidget(addImage(patch, lfs, scalebinary));
+        if (toolButton)
+          toolButton->setVisible(false);
       }
+
+      // Add file info.
+      layout->addWidget(addInfo(mDiff, mPatch, true, false));
 
       // Binary button.
       if (toolButton) {
         connect(toolButton, &QToolButton::clicked,
-        [this, layout, disclosureButton, toolButton, lfs, scalebinary](bool checked) {
+        [this, layout, disclosureButton, toolButton, scalebinary](bool checked) {
           toolButton->setText(checked ? tr("Hide Picture/Icon") : tr("Show Picture/Icon"));
 
           if (!mImages.isEmpty()) {
@@ -2586,12 +2610,12 @@ public:
           } else if (checked) {
 
             // Load picture/icon.
-            layout->insertWidget(1, addImage(mPatch, lfs, scalebinary));
+            layout->insertWidget(1, addImage(mPatch, false, scalebinary));
           }
 
           // Load file info.
           if (mInfos.isEmpty())
-            layout->addWidget(addInfo(mDiff, mPatch, true, lfs));
+            layout->addWidget(addInfo(mDiff, mPatch, true, false));
 
           // File picture/icon or info loaded.
           if (!mImages.isEmpty() || !mInfos.isEmpty()) {
@@ -2657,7 +2681,7 @@ public:
       if (lfs) {
 
         // Add file info.
-        layout->addWidget(addInfo(mDiff, mPatch, false, lfs));
+        layout->addWidget(addInfo(mDiff, mPatch, false, true));
 
         // LFS button.
         if (toolButton) {
@@ -2684,16 +2708,16 @@ public:
         }
       } else {
 
-        // Add file info: filemode changed.
-        if ((patch.status() != GIT_DELTA_RENAMED) && (mHunks.isEmpty())) {
-          layout->addWidget(addInfo(mDiff, mPatch, false, lfs));
-
-          // Change file info button.
-          if (toolButton) {
+        // Add file info.
+        if (mHunks.isEmpty()) {
+          layout->addWidget(addInfo(mDiff, mPatch, false, false));
+          if (toolButton)
             toolButton->setChecked(true);
-            toolButton->setText(tr("Hide Info"));
-          }
         }
+
+        // Submodule and empty hunk: hide file info button.
+        if (toolButton && (submodule || mHunks.isEmpty()))
+          toolButton->setVisible(false);
 
         // File info button.
         if (toolButton) {
@@ -2738,6 +2762,9 @@ public:
 
     if (Settings::instance()->value("collapse/modified").toBool() == true &&
         patch.status() == GIT_DELTA_MODIFIED)
+      expand = false;
+
+    if (patch.status() == GIT_DELTA_RENAMED)
       expand = false;
 
     if (Settings::instance()->value("collapse/deleted").toBool() == true &&
@@ -2803,7 +2830,6 @@ public:
     // Respond to editor diagnostic signal.
     connect(hunk->editor(false), &TextEditor::diagnosticAdded,
     [this](int line, const TextEditor::Diagnostic &diag) {
-      Q_UNUSED(line);
       emit diagnosticAdded(diag.kind);
     });
 

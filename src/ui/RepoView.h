@@ -235,12 +235,15 @@ public:
     bool force = false);
   void amendCommit();
 
-  // checkout
-  void promptToCheckout();
-  void checkout(
+  // discard
+  void promptToDiscard(
     const git::Commit &commit,
     const QStringList &paths,
-    int strategy = GIT_CHECKOUT_SAFE | GIT_CHECKOUT_DONT_UPDATE_INDEX);
+    bool all = false);
+
+  // checkout
+  void promptToCheckout();
+  void checkout(const git::Commit &commit, const QStringList &paths);
   void checkout(const git::Reference &ref, bool detach = false);
   void checkout(
     const git::Commit &commit,
