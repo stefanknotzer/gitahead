@@ -361,9 +361,18 @@ QSize TextEditor::viewportSizeHint() const
   int height = const_cast<TextEditor *>(this)->textHeight(line);
   int y = const_cast<TextEditor *>(this)->pointFromPosition(length()).y();
 
+  // Windows: (empty) space for the scroll bar is always visible,
+  // even when the scroll bar is not visible.
+  // To avoid wasting pixels a negative height is set.
+#ifdef Q_OS_WIN
+  int scrollBarHeight = -horizontalScrollBar()->height();
+#else
   int scrollBarHeight = 0;
+#endif
+
+  // Horizontal scroll bar is visible.
   if (horizontalScrollBar()->maximum() > 0)
-    scrollBarHeight = horizontalScrollBar()->height();
+    scrollBarHeight += horizontalScrollBar()->height();
 
   return QSize(size.width(), y + (lines * height) + scrollBarHeight);
 }
