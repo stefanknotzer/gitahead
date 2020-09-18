@@ -459,6 +459,14 @@ QColor Theme::badge(BadgeRole role, BadgeState state)
       case BadgeRole::Background:
         switch (state) {
           case BadgeState::Normal:
+          case BadgeState::Untracked:
+          case BadgeState::Added:
+          case BadgeState::Modified:
+          case BadgeState::Renamed:
+          case BadgeState::Deleted:
+          case BadgeState::Local:
+          case BadgeState::Remote:
+          case BadgeState::Tag:
             return "#2A82DA";
 
           case BadgeState::Selected:
@@ -471,7 +479,7 @@ QColor Theme::badge(BadgeRole role, BadgeState state)
             return "#52A500";
 
           case BadgeState::Notification:
-            return "#D00000";
+            return "#8C2026";
         }
     }
   }
@@ -489,6 +497,14 @@ QColor Theme::badge(BadgeRole role, BadgeState state)
     case BadgeRole::Background:
       switch (state) {
         case BadgeState::Normal:
+        case BadgeState::Untracked:
+        case BadgeState::Added:
+        case BadgeState::Modified:
+        case BadgeState::Renamed:
+        case BadgeState::Deleted:
+        case BadgeState::Local:
+        case BadgeState::Remote:
+        case BadgeState::Tag:
           return "#A6ACB6";
 
         case BadgeState::Selected:

@@ -2311,11 +2311,10 @@ public:
         mToolButton = new QToolButton(this);
         mToolButton->setText(FileWidget::tr("Show Picture/Icon"));
         mToolButton->setCheckable(true);
-
       } else if (lfs) {
 
         // Add LFS buttons.
-        Badge *lfsBadge = new Badge({Badge::Label(FileWidget::tr("LFS"), true)}, this);
+        Badge *lfsBadge = new Badge({Badge::Label(FileWidget::tr("LFS"), Theme::BadgeState::Head)}, this);
         buttons->addWidget(lfsBadge);
 
         QToolButton *lfsLockButton = new QToolButton(this);
@@ -2338,7 +2337,6 @@ public:
         mToolButton = new QToolButton(this);
         mToolButton->setText(FileWidget::tr("Show Object"));
         mToolButton->setCheckable(true);
-
       } else {
 
         // Add info button.
