@@ -584,7 +584,7 @@
     <message>
         <location filename="../src/ui/DetailView.cpp" line="1127"/>
         <source>Body Text Length Check</source>
-        <translation>Nachrichtentextlänge prüfen</translation>
+        <translation>Nachrichtentext Zeilenlänge prüfen</translation>
     </message>
     <message>
         <location filename="../src/ui/DetailView.cpp" line="1190"/>
@@ -669,18 +669,18 @@
     </message>
     <message>
         <location filename="../src/ui/DetailView.cpp" line="1400"/>
-        <source>Subject</source>
-        <translation>Betreff</translation>
+        <source>Subject:</source>
+        <translation>Betreff:</translation>
     </message>
     <message>
         <location filename="../src/ui/DetailView.cpp" line="1410"/>
-        <source>Blank</source>
-        <translation>Leerzeile</translation>
+        <source>Blank:</source>
+        <translation>Leerzeile:</translation>
     </message>
     <message>
         <location filename="../src/ui/DetailView.cpp" line="1422"/>
-        <source>Body</source>
-        <translation>Nachricht</translation>
+        <source>Body:</source>
+        <translation>Nachricht:</translation>
     </message>
 </context>
 <context>

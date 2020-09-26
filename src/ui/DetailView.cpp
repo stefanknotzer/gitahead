@@ -1082,7 +1082,7 @@ public:
 
     // Label, Spinbox and ComboBox fontsize adaption.
     QFont font = mLengthSpin->font();
-    font.setPointSize(font.pointSize() - 2);
+    font.setPointSize(font.pointSize() - 1);
     mLengthLabel->setFont(font);
     mLengthSpin->setFont(font);
     mDictBox->setFont(font);
@@ -1397,7 +1397,7 @@ private:
       case 0:
         if (mSubjectCheck->isChecked()) {
           QString text = QString::number(len) + "/";
-          mLengthLabel->setText(tr("Subject") + " " + text, text);
+          mLengthLabel->setText(tr("Subject:") + " " + text, text);
           mLengthSpin->setValue(mSubjectLimit);
         }
         mLengthLabel->setVisible(mSubjectCheck->isChecked());
@@ -1407,7 +1407,7 @@ private:
 
       case 1:
         if (mInsertBlank->isChecked()) {
-          mLengthLabel->setText(tr("Blank") + " 0/", QString("0 /"));
+          mLengthLabel->setText(tr("Blank:") + " 0/", QString("0 /"));
           mLengthSpin->setValue(0);
           mLengthLabel->setVisible(true);
           mLengthSpin->setVisible(true);
@@ -1419,7 +1419,7 @@ private:
       default:
         if (mBodyCheck->isChecked()) {
           QString text = QString::number(len) + "/";
-          mLengthLabel->setText(tr("Body") + " " + text, text);
+          mLengthLabel->setText(tr("Body:") + " " + text, text);
           mLengthSpin->setValue(mBodyLimit);
         }
         mLengthLabel->setVisible(mBodyCheck->isChecked());

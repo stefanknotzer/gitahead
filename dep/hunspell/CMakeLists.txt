@@ -15,17 +15,13 @@ add_library(hunspell
 
 target_compile_definitions(hunspell
   PUBLIC
-    HUNSPELL
+    HUNSPELL_STATIC
 )
 
 target_include_directories(hunspell
   PUBLIC
     ${HUNSPELL_DIR}/src/hunspell
 )
-
-#target_link_libraries(hunspell
-#  Qt5::Widgets
-#)
 
 set_target_properties(hunspell PROPERTIES
   AUTOMOC ON

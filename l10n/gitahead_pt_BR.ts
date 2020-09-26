@@ -672,17 +672,17 @@
     </message>
     <message>
         <location filename="../src/ui/DetailView.cpp" line="1400"/>
-        <source>Subject</source>
+        <source>Subject:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/DetailView.cpp" line="1410"/>
-        <source>Blank</source>
+        <source>Blank:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/DetailView.cpp" line="1422"/>
-        <source>Body</source>
+        <source>Body:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
