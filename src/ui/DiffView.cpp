@@ -2338,6 +2338,10 @@ public:
         mToolButton->setText(FileWidget::tr("Show Object"));
         mToolButton->setCheckable(true);
       } else {
+        if (submodule) {
+          Badge *lfsBadge = new Badge({Badge::Label(FileWidget::tr("Submodule"), Theme::BadgeState::Head)}, this);
+          buttons->addWidget(lfsBadge);
+        }
 
         // Add info button.
         mToolButton = new QToolButton(this);
@@ -2625,7 +2629,6 @@ public:
           }
         });
       }
-
     } else if (patch.isUntracked()) {
 
       // Add untracked file content.
@@ -2656,7 +2659,6 @@ public:
           }
         });
       }
-
     } else {
 
       // Generate a diff between the head tree and index.
@@ -2713,7 +2715,7 @@ public:
             toolButton->setChecked(true);
         }
 
-        // Submodule and empty hunk: hide file info button.
+        // Submodule or empty hunk: hide file info button.
         if (toolButton && (submodule || mHunks.isEmpty()))
           toolButton->setVisible(false);
 

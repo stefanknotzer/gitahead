@@ -262,6 +262,13 @@ QDir Settings::l10nDir()
   return dir;
 }
 
+QDir Settings::dictionariesDir()
+{
+  QDir dir = confDir();
+  dir.cd("dictionaries");
+  return dir;
+}
+
 QDir Settings::lexerDir()
 {
   QDir dir = confDir();

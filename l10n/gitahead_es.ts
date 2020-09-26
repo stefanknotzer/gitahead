@@ -494,22 +494,22 @@
 <context>
     <name>CommitDetail</name>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="253"/>
+        <location filename="../src/ui/DetailView.cpp" line="255"/>
         <source>Copy</source>
         <translation>Copiar</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="405"/>
+        <location filename="../src/ui/DetailView.cpp" line="407"/>
         <source>Range:</source>
         <translation>Rango:</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="422"/>
+        <location filename="../src/ui/DetailView.cpp" line="424"/>
         <source>Id:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="434"/>
+        <location filename="../src/ui/DetailView.cpp" line="436"/>
         <source>initial commit</source>
         <translation>Confirmación inicial</translation>
     </message>
@@ -570,131 +570,120 @@
 <context>
     <name>CommitEditor</name>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="622"/>
+        <location filename="../src/ui/DetailView.cpp" line="1017"/>
         <source>Commit Message:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="673"/>
-        <source>Subject Line Length Warning</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/DetailView.cpp" line="682"/>
-        <source>Avoid Subject Line Length Violation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/DetailView.cpp" line="698"/>
+        <location filename="../src/ui/DetailView.cpp" line="1116"/>
         <source>Insert Blank Line between Subject and Body</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="708"/>
-        <source>Body Text Length Warning</source>
+        <location filename="../src/ui/DetailView.cpp" line="1098"/>
+        <source>Subject Line Length Check</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="717"/>
-        <source>Body Text Wordwrap</source>
+        <location filename="../src/ui/DetailView.cpp" line="1127"/>
+        <source>Body Text Length Check</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="779"/>
+        <location filename="../src/ui/DetailView.cpp" line="1190"/>
         <source>Stage All</source>
         <translation>Preparar Todo</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="783"/>
+        <location filename="../src/ui/DetailView.cpp" line="1194"/>
         <source>Unstage All</source>
         <translation>No Preparar Nada</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="786"/>
-        <location filename="../src/ui/DetailView.cpp" line="972"/>
+        <location filename="../src/ui/DetailView.cpp" line="1197"/>
+        <location filename="../src/ui/DetailView.cpp" line="1383"/>
         <source>Commit</source>
         <translation>Confirmar</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="915"/>
+        <location filename="../src/ui/DetailView.cpp" line="1326"/>
         <source>Update %1</source>
         <translation>Actualizar %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="919"/>
+        <location filename="../src/ui/DetailView.cpp" line="1330"/>
         <source>Update %1 and %2</source>
         <translation>Actualizar %1 y %2</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="923"/>
+        <location filename="../src/ui/DetailView.cpp" line="1334"/>
         <source>Update %1, %2, and %3</source>
         <translation>Actualizar %1, %2 y %3</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="928"/>
+        <location filename="../src/ui/DetailView.cpp" line="1339"/>
         <source>Update %1, %2, and %3 more files...</source>
         <translation>Actualizar %1, %2 y %3 más archivos...</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="944"/>
+        <location filename="../src/ui/DetailView.cpp" line="1355"/>
         <source>Nothing staged</source>
         <translation>Nada preparado</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="947"/>
+        <location filename="../src/ui/DetailView.cpp" line="1358"/>
         <source>%1 of %2 file staged</source>
         <translation>Archivo preparado: %1 de %2</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="947"/>
+        <location filename="../src/ui/DetailView.cpp" line="1358"/>
         <source>%1 of %2 files staged</source>
         <translation>Archivo preparado: %1 de %2</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="952"/>
+        <location filename="../src/ui/DetailView.cpp" line="1363"/>
         <source>%1 file partially staged</source>
         <translation>%1 archivo parcialmente preparado</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="952"/>
+        <location filename="../src/ui/DetailView.cpp" line="1363"/>
         <source>%1 files partially staged</source>
         <translation>%1 archivos parcialmente preparados</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="958"/>
+        <location filename="../src/ui/DetailView.cpp" line="1369"/>
         <source>%1 unresolved conflict</source>
         <translation>%1 conflicto sin resolver</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="958"/>
+        <location filename="../src/ui/DetailView.cpp" line="1369"/>
         <source>%1 unresolved conflicts</source>
         <translation>%1 conflictos sin resolver</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="961"/>
+        <location filename="../src/ui/DetailView.cpp" line="1372"/>
         <source>all conflicts resolved</source>
         <translation>todos los conflictos resueltos</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="972"/>
+        <location filename="../src/ui/DetailView.cpp" line="1383"/>
         <source>Commit Merge</source>
         <translation>Confirmación de Fusión</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="991"/>
-        <source>Subject:</source>
+        <location filename="../src/ui/DetailView.cpp" line="1400"/>
+        <source>Subject</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="996"/>
-        <source>Blank:</source>
+        <location filename="../src/ui/DetailView.cpp" line="1410"/>
+        <source>Blank</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1001"/>
-        <location filename="../src/ui/DetailView.cpp" line="1006"/>
-        <source>Body:</source>
-        <translation type="unfinished"></translation>
+        <location filename="../src/ui/DetailView.cpp" line="1422"/>
+        <source>Body</source>
+        <translation type="unfinished">Cuerpo</translation>
     </message>
 </context>
 <context>
@@ -1216,12 +1205,12 @@
 <context>
     <name>DiffView</name>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="2965"/>
+        <location filename="../src/ui/DiffView.cpp" line="2967"/>
         <source>Add new file</source>
         <translation>Añadir nuevo archivo</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="2979"/>
+        <location filename="../src/ui/DiffView.cpp" line="2981"/>
         <source>Or drag files here to copy into the repository</source>
         <translation>O arrastra archivos aquí para copiarlos al repositorio</translation>
     </message>
@@ -1609,58 +1598,63 @@
     </message>
     <message>
         <location filename="../src/ui/DiffView.cpp" line="2338"/>
-        <location filename="../src/ui/DiffView.cpp" line="2688"/>
+        <location filename="../src/ui/DiffView.cpp" line="2690"/>
         <source>Show Object</source>
         <translation>Mostrar Objeto</translation>
     </message>
     <message>
         <location filename="../src/ui/DiffView.cpp" line="2312"/>
-        <location filename="../src/ui/DiffView.cpp" line="2601"/>
+        <location filename="../src/ui/DiffView.cpp" line="2605"/>
         <source>Show Picture/Icon</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="2344"/>
-        <location filename="../src/ui/DiffView.cpp" line="2639"/>
-        <location filename="../src/ui/DiffView.cpp" line="2724"/>
+        <location filename="../src/ui/DiffView.cpp" line="2342"/>
+        <source>Submodule</source>
+        <translation type="unfinished">Submódulo</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DiffView.cpp" line="2348"/>
+        <location filename="../src/ui/DiffView.cpp" line="2642"/>
+        <location filename="../src/ui/DiffView.cpp" line="2726"/>
         <source>Show Info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="2352"/>
+        <location filename="../src/ui/DiffView.cpp" line="2356"/>
         <source>Edit File</source>
         <translation>Editar Archivo</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="2358"/>
+        <location filename="../src/ui/DiffView.cpp" line="2362"/>
         <source>Discard File</source>
         <translation>Descartar Archivo</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="2374"/>
-        <location filename="../src/ui/DiffView.cpp" line="2377"/>
+        <location filename="../src/ui/DiffView.cpp" line="2378"/>
+        <location filename="../src/ui/DiffView.cpp" line="2381"/>
         <source>Collapse File</source>
         <translation>Ocultar Archivo</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="2374"/>
-        <location filename="../src/ui/DiffView.cpp" line="2377"/>
+        <location filename="../src/ui/DiffView.cpp" line="2378"/>
+        <location filename="../src/ui/DiffView.cpp" line="2381"/>
         <source>Expand File</source>
         <translation>Expandir Archivo</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="2601"/>
+        <location filename="../src/ui/DiffView.cpp" line="2605"/>
         <source>Hide Picture/Icon</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="2639"/>
-        <location filename="../src/ui/DiffView.cpp" line="2724"/>
+        <location filename="../src/ui/DiffView.cpp" line="2642"/>
+        <location filename="../src/ui/DiffView.cpp" line="2726"/>
         <source>Hide Info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="2688"/>
+        <location filename="../src/ui/DiffView.cpp" line="2690"/>
         <source>Show Pointer</source>
         <translation>Mostrar Puntero</translation>
     </message>
@@ -4888,6 +4882,54 @@ Esto revierte la confirmación %2.</translation>
         <location filename="../src/dialogs/SettingsDialog.cpp" line="806"/>
         <source>Uninstall</source>
         <translation>Desinstalar</translation>
+    </message>
+</context>
+<context>
+    <name>TextEdit</name>
+    <message>
+        <location filename="../src/ui/DetailView.cpp" line="713"/>
+        <source>Replace...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DetailView.cpp" line="714"/>
+        <source>Replace All...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DetailView.cpp" line="741"/>
+        <source>Ignore</source>
+        <translation type="unfinished">Ignorar</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DetailView.cpp" line="760"/>
+        <source>Ignore All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DetailView.cpp" line="766"/>
+        <source>Add to User Dictionary</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DetailView.cpp" line="782"/>
+        <source>Do not Ignore</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DetailView.cpp" line="822"/>
+        <source>Truncate Line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DetailView.cpp" line="824"/>
+        <source>Insert Wordwrap</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DetailView.cpp" line="834"/>
+        <source>Insert All Wordwraps</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
