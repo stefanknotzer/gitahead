@@ -572,12 +572,12 @@
         <translation>Commit-Nachricht:</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1123"/>
+        <location filename="../src/ui/DetailView.cpp" line="1116"/>
         <source>Insert Blank Line between Subject and Body</source>
         <translation>Leerzeile zwischen Betreff und Nachricht einfügen</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1105"/>
+        <location filename="../src/ui/DetailView.cpp" line="1098"/>
         <source>Subject Line Length Check</source>
         <translation>Länge der Betreffzeile prüfen</translation>
     </message>
@@ -592,103 +592,103 @@
         <translation>Rechtschreibprüfung Sprache</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1134"/>
+        <location filename="../src/ui/DetailView.cpp" line="1127"/>
         <source>Body Text Length Check</source>
         <translation>Nachrichtentext Zeilenlänge prüfen</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1197"/>
+        <location filename="../src/ui/DetailView.cpp" line="1190"/>
         <source>Stage All</source>
         <translation>Alles stagen</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1201"/>
+        <location filename="../src/ui/DetailView.cpp" line="1194"/>
         <source>Unstage All</source>
         <translation>Alles unstagen</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1204"/>
-        <location filename="../src/ui/DetailView.cpp" line="1390"/>
+        <location filename="../src/ui/DetailView.cpp" line="1197"/>
+        <location filename="../src/ui/DetailView.cpp" line="1383"/>
         <source>Commit</source>
         <translation>Committen</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1333"/>
+        <location filename="../src/ui/DetailView.cpp" line="1326"/>
         <source>Update %1</source>
         <translation>%1 aktualisiert</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1337"/>
+        <location filename="../src/ui/DetailView.cpp" line="1330"/>
         <source>Update %1 and %2</source>
         <translation>%1 und %2 aktualisiert</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1341"/>
+        <location filename="../src/ui/DetailView.cpp" line="1334"/>
         <source>Update %1, %2, and %3</source>
         <translation>%1, %2 und %3 aktualisiert</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1346"/>
+        <location filename="../src/ui/DetailView.cpp" line="1339"/>
         <source>Update %1, %2, and %3 more files...</source>
         <translation>%1, %2 und %3 weitere Dateien aktualisiert...</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1362"/>
+        <location filename="../src/ui/DetailView.cpp" line="1355"/>
         <source>Nothing staged</source>
         <translation>Nichts gestaged</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1365"/>
+        <location filename="../src/ui/DetailView.cpp" line="1358"/>
         <source>%1 of %2 file staged</source>
         <translation>%1 von %2 Datei gestaged</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1365"/>
+        <location filename="../src/ui/DetailView.cpp" line="1358"/>
         <source>%1 of %2 files staged</source>
         <translation>%1 von %2 Dateien gestaged</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1370"/>
+        <location filename="../src/ui/DetailView.cpp" line="1363"/>
         <source>%1 file partially staged</source>
         <translation>%1 Datei teilweise gestaged</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1370"/>
+        <location filename="../src/ui/DetailView.cpp" line="1363"/>
         <source>%1 files partially staged</source>
         <translation>%1 Dateien teilweise gestaged</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1376"/>
+        <location filename="../src/ui/DetailView.cpp" line="1369"/>
         <source>%1 unresolved conflict</source>
         <translation>%1 ungelöster Konflikt</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1376"/>
+        <location filename="../src/ui/DetailView.cpp" line="1369"/>
         <source>%1 unresolved conflicts</source>
         <translation>%1 ungelöste Konflikte</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1379"/>
+        <location filename="../src/ui/DetailView.cpp" line="1372"/>
         <source>all conflicts resolved</source>
         <translation>Alle Konflikte gelöst</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1390"/>
+        <location filename="../src/ui/DetailView.cpp" line="1383"/>
         <source>Commit Merge</source>
         <translation>Merge committen</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1407"/>
+        <location filename="../src/ui/DetailView.cpp" line="1400"/>
         <source>Subject:</source>
         <translation>Betreff:</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1417"/>
+        <location filename="../src/ui/DetailView.cpp" line="1410"/>
         <source>Blank:</source>
         <translation>Leerzeile:</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1429"/>
+        <location filename="../src/ui/DetailView.cpp" line="1422"/>
         <source>Body:</source>
         <translation>Nachricht:</translation>
     </message>

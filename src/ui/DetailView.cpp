@@ -1087,13 +1087,6 @@ public:
       updateChecks(true, false);
     });
 
-//    // Label, Spinbox and ComboBox fontsize adaption.
-//    QFont font = mLengthSpin->font();
-//    font.setPointSize(font.pointSize() - 1);
-//    mLengthLabel->setFont(font);
-//    mLengthSpin->setFont(font);
-//    mDictBox->setFont(font);
-
     mStatus = new ElidedLabel(QString(), Qt::ElideRight, this);
     mStatus->setAlignment(Qt::AlignRight);
 
