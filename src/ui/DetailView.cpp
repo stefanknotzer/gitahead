@@ -63,14 +63,6 @@ const QString kAuthorFmt = "<b>%1 &lt;%2&gt;</b>";
 const QString kAltFmt = "<span style='color: %1'>%2</span>";
 const QString kUrl = "http://www.gravatar.com/avatar/%1?s=%2&d=mm";
 
-const QString kLimitFmt =
-  "QLabel {"
-  "  border: 1px solid %1;"
-  "}";
-const QString kMessageFmt =
-  "QTextEdit {"
-  "  border: 3px solid %1;"
-  "}";
 const QString kSpin =
   "QSpinBox {"
   "  border: none;"
@@ -80,6 +72,12 @@ const QString kSpin =
   "}"
   "QSpinBox::down-button {"
   "  bottom: 0px;"
+  "}";
+
+const QString kComboBox =
+  "QComboBox {"
+  "  border: none;"
+  "  padding: 1px, 1px, 1px, 1px;"
   "}";
 
 const QString kSubjectCheckKey = "commit.subject.lengthcheck";
@@ -97,13 +95,6 @@ QString brightText(const QString &text)
   return kAltFmt.arg(QPalette().color(QPalette::BrightText).name(), text);
 }
 
-QString warningStyle(const QString &style, bool warning)
-{
-  if (warning)
-    return style.arg(Application::theme()->diff(Theme::Diff::Warning).name());
-  else
-    return style.arg("none");
-}
 class MessageLabel : public QTextEdit
 {
 public:
@@ -618,23 +609,14 @@ class TextEdit : public QTextEdit
   Q_OBJECT
 
 public:
-  TextEdit(QWidget *parent = nullptr)
+  explicit TextEdit(QWidget *parent = nullptr)
     : QTextEdit(parent)
   {
-    // Spell check with timeout.
+    // Spell check with delay timeout.
     connect(&mTimer, &QTimer::timeout, [this] {
       mTimer.stop();
       if (mSpellCheckValid)
         checkspelling();
-    });
-    connect(this, &QTextEdit::textChanged, [this] {
-      mTimer.start(500);
-    });
-
-    // Line length check.
-    connect(this, &QTextEdit::textChanged, [this] {
-      if (mLineLengthCheckValid)
-        checklength();
     });
   }
 
@@ -663,7 +645,7 @@ public:
   }
 
   void LineLengthSetup(const QList<int> &lineLength,
-                       const QList<int> blankLines,
+                       const QList<int> &blankLines,
                        const QTextCharFormat &lineFormat)
   {
     // Length set or blank line enabled.
@@ -846,6 +828,26 @@ private:
     delete menu;
   }
 
+  void keyPressEvent(QKeyEvent *event) override
+  {
+    QTextEdit::keyPressEvent(event);
+
+    QString text = event->text();
+    if (text.length()) {
+      QChar chr = text.at(0);
+
+      // Spell check.
+      if (chr.isLetter() || chr.isNumber())
+        mTimer.start(500);
+      else if (mSpellCheckValid && !event->isAutoRepeat())
+        checkspelling();
+
+      // Line length check.
+      if (mLineLengthCheckValid)
+        checklength();
+    }
+  }
+
   void checkspelling(void)
   {
     QTextCursor cursor(document());
@@ -856,7 +858,7 @@ private:
       QString word = getword(cursor);
       if (!word.isEmpty() && !mSpellChecker->spell(word)) {
 
-        // Highlight the unknown word.
+        // Highlight the unknown or ignored word.
         QTextEdit::ExtraSelection es;
         es.cursor = cursor;
         if (ignoredword(cursor))
@@ -885,7 +887,7 @@ private:
   {
     QString word = cursor.selectedText();
 
-    // WORKAROUND: for better recognition of words
+    // For a better recognition of words
     // punctuation etc. does not belong to words.
     while (!word.isEmpty() && !word.at(0).isLetter() &&
            (cursor.anchor() < cursor.position())) {
@@ -975,11 +977,10 @@ private:
     while (index < mLineList.count()) {
       QTextEdit::ExtraSelection es = mLineList.at(index);
       int row = es.cursor.blockNumber();
-      if (!wordwrap(es.cursor, row, false)) {
+      if (!wordwrap(es.cursor, row, false))
         index += 1;
-      } else {
+      else
         checklength();
-      }
     }
   }
 
@@ -1019,7 +1020,7 @@ public:
 
     // Read configuration.
     git::Config appconfig = repo.appConfig();
-    mDict = appconfig.value<QString>(kDictKey, "---");
+    mDict = appconfig.value<QString>(kDictKey, "-----");
     mDictPath = Settings::dictionariesDir().path();
     mUserDict = Settings::userDir().path() + "/user.dic";
     QFile userdict(mUserDict);
@@ -1028,12 +1029,12 @@ public:
       userdict.close();
     }
 
-    // Style setup for checks.
-    mSpellError.setUnderlineColor(QColor("red"));
+    // Style and color setup for checks.
+    mSpellError.setUnderlineColor(Application::theme()->diff(Theme::Diff::Error));
     mSpellError.setUnderlineStyle(QTextCharFormat::SpellCheckUnderline);
-    mSpellIgnore.setUnderlineColor(QPalette().color(QPalette::BrightText));
+    mSpellIgnore.setUnderlineColor(Application::theme()->diff(Theme::Diff::Note));
     mSpellIgnore.setUnderlineStyle(QTextCharFormat::WaveUnderline);
-    mLineLengthWarn.setBackground(QPalette().color(QPalette::Dark));
+    mLineLengthWarn.setBackground(Application::theme()->diff(Theme::Diff::Warning));
 
     mLengthLabel = new ElidedLabel(QString(), QString(), Qt::ElideLeft, this);
     mLengthLabel->setAlignment(Qt::AlignRight);
@@ -1042,6 +1043,7 @@ public:
     mLengthSpin->setRange(0, 999);
     mLengthSpin->setValue(mSubjectLimit);
     mLengthSpin->setStyleSheet(kSpin);
+    mLengthSpin->setToolTip(tr("Line Length Limit"));
     connect(mLengthSpin, QOverload<int>::of(&QSpinBox::valueChanged), [this](int value) {
       int row = mMessage->textCursor().blockNumber();
       if (row == (mInsertBlank->isChecked() ? 1 : -1))
@@ -1063,12 +1065,17 @@ public:
 
     // Dictionary.
     mDictBox = new QComboBox(this);
-    mDictBox->addItem("---");
+    mDictBox->setStyleSheet(kComboBox);
+    mDictBox->setToolTip(tr("Spell Check Language"));
     QDir dictdir = Settings::dictionariesDir();
     QStringList dictlist = dictdir.entryList({"*.dic"}, QDir::Files, QDir::Name);
-    dictlist.replaceInStrings(".dic", "");
-    mDictBox->addItems(dictlist);
-    mDictBox->setCurrentText(mDict);
+    if (dictlist.count() > 0) {
+      mDictBox->addItem("-----");
+      dictlist.replaceInStrings(".dic", "");
+      mDictBox->addItems(dictlist);
+      mDictBox->setCurrentText(mDict);
+    }
+    mDictBox->setVisible(mDictBox->count() > 0);
     connect(mDictBox, &QComboBox::currentTextChanged, [this](QString text) {
       mDict = text;
 
@@ -1080,12 +1087,12 @@ public:
       updateChecks(true, false);
     });
 
-    // Label, Spinbox and ComboBox fontsize adaption.
-    QFont font = mLengthSpin->font();
-    font.setPointSize(font.pointSize() - 1);
-    mLengthLabel->setFont(font);
-    mLengthSpin->setFont(font);
-    mDictBox->setFont(font);
+//    // Label, Spinbox and ComboBox fontsize adaption.
+//    QFont font = mLengthSpin->font();
+//    font.setPointSize(font.pointSize() - 1);
+//    mLengthLabel->setFont(font);
+//    mLengthSpin->setFont(font);
+//    mDictBox->setFont(font);
 
     mStatus = new ElidedLabel(QString(), Qt::ElideRight, this);
     mStatus->setAlignment(Qt::AlignRight);
