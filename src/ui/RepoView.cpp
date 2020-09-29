@@ -470,7 +470,8 @@ void RepoView::clean(const QStringList &untracked)
     }
   }
 
-  QMessageBox mb(QMessageBox::Warning, tr("Remove Untracked Files"),
+  QMessageBox mb(QMessageBox::Warning,
+                 tr("Remove Untracked Files"),
                  tr("Remove %1 %2?").arg(
                    QString::number(untracked.count()), phrase));
   mb.setInformativeText(tr("This action cannot be undone."));
@@ -486,7 +487,7 @@ void RepoView::clean(const QStringList &untracked)
 
     foreach (const QString &name, untracked) {
       if (repo().clean(name))
-        entry->addEntry(LogEntry::File, name)->setStatus('D');
+        entry->addEntry(LogEntry::File, name)->setStatus('?');
       else
         entry->addEntry(LogEntry::Error, tr("%1 failed").arg(name));
     }
@@ -1940,7 +1941,7 @@ void RepoView::promptToDiscard(
     QString text = tr("%1 - %2 %3").arg(commit.link(), count, name);
     LogEntry *entry = addLogEntry(text, tr("Discard"));
 
-    CheckoutCallbacks callbacks(entry, GIT_CHECKOUT_NOTIFY_DIRTY | GIT_CHECKOUT_NOTIFY_UPDATED);
+    CheckoutCallbacks callbacks(entry, GIT_CHECKOUT_NOTIFY_DIRTY);
     int strategy = GIT_CHECKOUT_FORCE;
     mRepo.checkout(commit, &callbacks,
                    all ? QStringList() : paths,

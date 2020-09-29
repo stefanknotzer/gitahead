@@ -156,8 +156,10 @@ FileContextMenu::FileContextMenu(
           continue;
 
         switch (diff.status(index)) {
+          case GIT_DELTA_ADDED:
           case GIT_DELTA_DELETED:
           case GIT_DELTA_MODIFIED:
+          case GIT_DELTA_RENAMED:
             modified.append(file);
             break;
 

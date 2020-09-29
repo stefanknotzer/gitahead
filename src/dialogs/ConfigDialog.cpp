@@ -861,7 +861,7 @@ ConfigDialog::ConfigDialog(RepoView *view, Index index)
   QMenu *editMenu = new QMenu(edit);
   QAction *editGit = editMenu->addAction(tr("Edit git Config File"));
   QAction *editGitAhead = editMenu->addAction(tr("Edit GitAhead Config File"));
-  QAction *removeGitAhead = editMenu->addAction(tr("Remove GitAhead Config File"));
+  QAction *discardGitAhead = editMenu->addAction(tr("Discard GitAhead Config File"));
   edit->setMenu(editMenu);
 
   buttons->addButton(edit, QDialogButtonBox::ResetRole);
@@ -898,17 +898,17 @@ ConfigDialog::ConfigDialog(RepoView *view, Index index)
   }
 
   // Add app config remove.
-  connect(removeGitAhead, &QAction::triggered, [view, generalPanel, diffPanel, searchPanel, pluginsPanel] {
+  connect(discardGitAhead, &QAction::triggered, [view, generalPanel, diffPanel, searchPanel, pluginsPanel] {
     QMessageBox msg(QMessageBox::Question,
-                    tr("Remove GitAhead Config File?"),
-                    tr("Are you sure you want to remove the local GitAhead configuration?"),
+                    tr("Discard GitAhead Config File?"),
+                    tr("Are you sure you want to discard the local GitAhead configuration?"),
                     QMessageBox::Cancel);
     msg.setInformativeText(
       tr("If the local configuration is invalid or missing, "
          "the global GitAhead configuration is used. "
          "The global configuration remains unchanged when removing "
          "the local configuration."));
-    QPushButton *remove = msg.addButton(tr("Remove"), QMessageBox::AcceptRole);
+    QPushButton *remove = msg.addButton(tr("Discard"), QMessageBox::AcceptRole);
     connect(remove, &QPushButton::clicked, [view, generalPanel, diffPanel, searchPanel, pluginsPanel] {
       QFile file(view->repo().dir().filePath("gitahead/config"));
       file.open(QIODevice::ReadWrite);
@@ -934,7 +934,7 @@ ConfigDialog::ConfigDialog(RepoView *view, Index index)
   layout->addWidget(buttons);
 
   // Track actions in a group.
-  connect(mActions, &QActionGroup::triggered, [this, description, editGit, editGitAhead, removeGitAhead](QAction *action) {
+  connect(mActions, &QActionGroup::triggered, [this, description, editGit, editGitAhead, discardGitAhead](QAction *action) {
     int index = mActions->actions().indexOf(action);
     bool gitconfig = (index != Search && index != Plugins);
     bool gitaheadconfig = (index < Remotes || index == Search || index == Plugins);
@@ -942,7 +942,7 @@ ConfigDialog::ConfigDialog(RepoView *view, Index index)
     description->setVisible(gitaheadconfig);
     editGit->setEnabled(gitconfig);
     editGitAhead->setEnabled(gitaheadconfig);
-    removeGitAhead->setEnabled(gitaheadconfig);
+    discardGitAhead->setEnabled(gitaheadconfig);
     mStack->setCurrentIndex(index);
     setWindowTitle(tr("Repository:") + " " + action->text());
   });
