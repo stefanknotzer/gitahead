@@ -387,7 +387,7 @@ RepoView::RepoView(const git::Repository &repo, MainWindow *parent)
   connect(mLogRoot, &LogEntry::errorInserted,
           this, &RepoView::suspendLogTimer);
 
-  mLogView = new LogView(mLogRoot, this);
+  mLogView = new LogView(mLogRoot, &repo, this);
   connect(mLogView, &LogView::linkActivated,
           this, &RepoView::visitLink);
   connect(mLogView, &LogView::operationCanceled,
@@ -453,7 +453,7 @@ RepoView::~RepoView()
   mCommits->clearFocus();
 }
 
-void RepoView::clean(const QStringList &untracked)
+void RepoView::promptToRemove(const QStringList &untracked)
 {
   QString phrase = tr("untracked files");
 

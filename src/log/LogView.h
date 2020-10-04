@@ -10,6 +10,9 @@
 #ifndef LOGVIEW_H
 #define LOGVIEW_H
 
+#include "git/Repository.h"
+#include <QDir>
+#include <QTimer>
 #include <QTreeView>
 
 class LogEntry;
@@ -19,11 +22,18 @@ class LogView : public QTreeView
   Q_OBJECT
 
 public:
-  LogView(LogEntry *root, QWidget *parent = nullptr);
+  LogView(LogEntry *root,
+          const git::Repository *repo,
+          QWidget *parent = nullptr);
 
   QSize minimumSizeHint() const override;
 
-  void copy();
+  void copy(bool selection = true);
+  void clear(bool selection = true);
+
+  void load();
+  void save(bool as = false);
+
   void setCollapseEnabled(bool collapse); 
 
   void setEntryExpanded(LogEntry *entry, bool expanded);
@@ -33,6 +43,7 @@ signals:
   void operationCanceled(const QModelIndex &index);
 
 protected:
+  void selectionChanged(const QItemSelection &selected, const QItemSelection &deselected) override;
   void mouseMoveEvent(QMouseEvent *event) override;
   void mousePressEvent(QMouseEvent *event) override;
   void mouseReleaseEvent(QMouseEvent *event) override;
@@ -41,9 +52,15 @@ private:
   QString linkAt(const QModelIndex &index, const QPoint &pos);
   bool isDecoration(const QModelIndex &index, const QPoint &pos);
 
+  LogEntry *mRoot;
+  git::Repository mRepo;
   QString mLink;
   QModelIndex mCancel;
   bool mCollapse = true;
+
+  QAction *mCopyAction;
+  QAction *mClearAction;
+  QTimer mLogTimer;
 };
 
 #endif

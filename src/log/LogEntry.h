@@ -35,6 +35,12 @@ public:
     const QString &text,
     const QString &title,
     LogEntry *parent = nullptr);
+  LogEntry(
+    Kind kind,
+    const QString &text,
+    const QString &title,
+    const QDateTime &timestamp,
+    LogEntry *parent = nullptr);
 
   Kind kind() const { return mKind; }
 
@@ -54,14 +60,21 @@ public:
 
   void addEntries(const QList<LogEntry *> &entries);
   LogEntry *addEntry(Kind kind, const QString &text);
-  LogEntry *addEntry(const QString &text, const QString &title = QString());
+  LogEntry *addEntry(
+    const QString &text,
+    const QString &title = QString(),
+    const QDateTime &timestamp = QDateTime::currentDateTime());
 
   void insertEntries(int row, const QList<LogEntry *> &entries);
   LogEntry *insertEntry(
     int row,
     Kind kind,
     const QString &text,
-    const QString &title = QString());
+    const QString &title = QString(),
+    const QDateTime &timestamp = QDateTime::currentDateTime());
+
+  void delEntry(const LogEntry *entry);
+  void removeEntry(int row);
 
   int progress() const { return mProgress; }
   void setBusy(bool busy);
@@ -71,6 +84,8 @@ signals:
   void entriesAboutToBeInserted(LogEntry *entry, int row, int count = 1);
   void entriesInserted();
   void errorInserted();
+  void entriesAboutToBeRemoved(LogEntry *entry, int row, int count = 1);
+  void entriesRemoved();
 
 private:
   Kind mKind = Entry;

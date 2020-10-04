@@ -146,7 +146,7 @@ FileContextMenu::FileContextMenu(
       addSeparator();
     }
 
-    // Discard
+    // Remove and discard
     QStringList modified;
     QStringList untracked;
     if (diff.isValid()) {
@@ -155,34 +155,22 @@ FileContextMenu::FileContextMenu(
         if (index < 0)
           continue;
 
-        switch (diff.status(index)) {
-          case GIT_DELTA_ADDED:
-          case GIT_DELTA_DELETED:
-          case GIT_DELTA_MODIFIED:
-          case GIT_DELTA_RENAMED:
-            modified.append(file);
-            break;
-
-          case GIT_DELTA_UNTRACKED:
-            untracked.append(file);
-            break;
-
-          default:
-            break;
-        }
+        if (diff.status(index) == GIT_DELTA_UNTRACKED)
+          untracked.append(file);
+        else if (diff.status(index) != GIT_DELTA_UNMODIFIED)
+          modified.append(file);
       }
     }
+
+    QAction *remove = addAction(tr("Remove Untracked Files"), [view, untracked] {
+      view->promptToRemove(untracked);
+    });
+    remove->setEnabled(!untracked.isEmpty());
 
     QAction *discard = addAction(tr("Discard Changes"), [view, modified] {
       view->promptToDiscard(view->repo().head().target(), modified);
     });
-
-    QAction *remove = addAction(tr("Remove Untracked Files"), [view, untracked] {
-      view->clean(untracked);
-    });
-
     discard->setEnabled(!modified.isEmpty());
-    remove->setEnabled(!untracked.isEmpty());
 
     // Ignore
     QAction *ignore = addAction(tr("Ignore"), [view, files] {

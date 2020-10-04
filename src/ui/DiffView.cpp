@@ -2367,7 +2367,7 @@ public:
           QString name = mPatch.name();
 
           if (mPatch.isUntracked())
-            view->clean({name});
+            view->promptToRemove({name});
           else
             view->promptToDiscard(view->repo().head().target(), {name});
         });

@@ -1532,17 +1532,15 @@ void CommitList::contextMenuEvent(QContextMenuEvent *event)
     });
     menu.addSeparator();
 
-    QAction *clean = menu.addAction(tr("Remove Untracked Files"),
+    QAction *remove = menu.addAction(tr("Remove Untracked Files"),
     [view, untracked] {
-      view->clean(untracked);
+      view->promptToRemove(untracked);
     });
-
-    clean->setEnabled(!untracked.isEmpty());
+    remove->setEnabled(!untracked.isEmpty());
 
     QAction *discard = menu.addAction(tr("Discard All Changes"), [view, modified] {
       view->promptToDiscard(view->repo().head().target(), modified, true);
     });
-
     discard->setEnabled(!modified.isEmpty() && view->repo().isValid());
 
     menu.exec(event->globalPos());
