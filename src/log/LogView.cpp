@@ -298,7 +298,7 @@ void LogView::save(bool as)
   if (as) {
     QStringList filter = { tr("Text Log (*.json)"), tr("Binary Log (*.dat)") };
     filename = QFileDialog::getSaveFileName(nullptr,
-                                            tr("Save Log as"),
+                                            tr("Save Log"),
                                             QDir::homePath() + "/log.json",
                                             filter.join(";;"),
                                             &filter.first());
@@ -308,11 +308,19 @@ void LogView::save(bool as)
   if (filename.isEmpty())
     return;
 
+  QModelIndexList indexes = collectIndexes(this, QModelIndex());
+
+  // Check if last entry is busy
+  if (!indexes.isEmpty()) {
+    LogEntry *entry = static_cast<LogEntry *>(indexes.last().internalPointer());
+    if (entry->progress() >= 0)
+      return;
+  }
+
   // Disable save() timer.
   mLogTimer.blockSignals(true);
 
   QJsonArray jsonarr;
-  QModelIndexList indexes = collectIndexes(this, QModelIndex());
   foreach (const QModelIndex &index, indexes) {
     LogEntry *entry = static_cast<LogEntry *>(index.internalPointer());
     QModelIndex currentParent = index.parent();

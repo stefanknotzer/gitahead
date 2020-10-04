@@ -701,131 +701,131 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1542"/>
+        <location filename="../src/ui/CommitList.cpp" line="1541"/>
         <source>Discard All Changes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1558"/>
+        <location filename="../src/ui/CommitList.cpp" line="1556"/>
         <source>Apply</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1562"/>
+        <location filename="../src/ui/CommitList.cpp" line="1560"/>
         <source>Pop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1566"/>
+        <location filename="../src/ui/CommitList.cpp" line="1564"/>
         <source>Drop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1580"/>
+        <location filename="../src/ui/CommitList.cpp" line="1578"/>
         <source>Unstar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1580"/>
+        <location filename="../src/ui/CommitList.cpp" line="1578"/>
         <source>Star</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1590"/>
+        <location filename="../src/ui/CommitList.cpp" line="1588"/>
         <source>Add Tag...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/CommitList.cpp" line="1530"/>
-        <location filename="../src/ui/CommitList.cpp" line="1594"/>
+        <location filename="../src/ui/CommitList.cpp" line="1592"/>
         <source>New Branch...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1605"/>
+        <location filename="../src/ui/CommitList.cpp" line="1603"/>
         <source>Delete Tag %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1615"/>
+        <location filename="../src/ui/CommitList.cpp" line="1613"/>
         <source>Delete Branch %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1623"/>
+        <location filename="../src/ui/CommitList.cpp" line="1621"/>
         <source>Merge...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1638"/>
+        <location filename="../src/ui/CommitList.cpp" line="1636"/>
         <source>Rebase...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1653"/>
+        <location filename="../src/ui/CommitList.cpp" line="1651"/>
         <source>Squash...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1670"/>
+        <location filename="../src/ui/CommitList.cpp" line="1668"/>
         <source>Revert</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1674"/>
+        <location filename="../src/ui/CommitList.cpp" line="1672"/>
         <source>Cherry-pick</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1683"/>
-        <location filename="../src/ui/CommitList.cpp" line="1699"/>
-        <location filename="../src/ui/CommitList.cpp" line="1733"/>
+        <location filename="../src/ui/CommitList.cpp" line="1681"/>
+        <location filename="../src/ui/CommitList.cpp" line="1697"/>
+        <location filename="../src/ui/CommitList.cpp" line="1731"/>
         <source>Checkout %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1690"/>
-        <location filename="../src/ui/CommitList.cpp" line="1719"/>
-        <location filename="../src/ui/CommitList.cpp" line="1740"/>
+        <location filename="../src/ui/CommitList.cpp" line="1688"/>
+        <location filename="../src/ui/CommitList.cpp" line="1717"/>
+        <location filename="../src/ui/CommitList.cpp" line="1738"/>
         <source>HEAD is invalid</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1693"/>
-        <location filename="../src/ui/CommitList.cpp" line="1722"/>
-        <location filename="../src/ui/CommitList.cpp" line="1743"/>
+        <location filename="../src/ui/CommitList.cpp" line="1691"/>
+        <location filename="../src/ui/CommitList.cpp" line="1720"/>
+        <location filename="../src/ui/CommitList.cpp" line="1741"/>
         <source>Local branch is already checked out</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1696"/>
-        <location filename="../src/ui/CommitList.cpp" line="1727"/>
-        <location filename="../src/ui/CommitList.cpp" line="1746"/>
+        <location filename="../src/ui/CommitList.cpp" line="1694"/>
+        <location filename="../src/ui/CommitList.cpp" line="1725"/>
+        <location filename="../src/ui/CommitList.cpp" line="1744"/>
         <source>This is a bare repository</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1724"/>
+        <location filename="../src/ui/CommitList.cpp" line="1722"/>
         <source>Checkout %1 and Reset local branch %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1751"/>
+        <location filename="../src/ui/CommitList.cpp" line="1749"/>
         <source>Reset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1752"/>
+        <location filename="../src/ui/CommitList.cpp" line="1750"/>
         <source>Soft</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1753"/>
+        <location filename="../src/ui/CommitList.cpp" line="1751"/>
         <source>Mixed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1754"/>
+        <location filename="../src/ui/CommitList.cpp" line="1752"/>
         <source>Hard</source>
         <translation type="unfinished"></translation>
     </message>
@@ -889,97 +889,97 @@
 <context>
     <name>ConfigDialog</name>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="755"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="771"/>
         <source>Esc</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="775"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="791"/>
         <source>General</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="783"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="799"/>
         <source>Diff</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="791"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="807"/>
         <source>Remotes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="799"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="815"/>
         <source>Branches</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="807"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="823"/>
         <source>Submodules</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="814"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="830"/>
         <source>Search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="822"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="838"/>
         <source>Plugins</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="830"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="846"/>
         <source>LFS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="840"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="856"/>
         <source>Repository settings for git and GitAhead override global settings. Remove the repository settings to restore the global setting.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="859"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="875"/>
         <source>Edit Config File...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="862"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="878"/>
         <source>Edit git Config File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="863"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="879"/>
         <source>Edit GitAhead Config File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="864"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="880"/>
         <source>Discard GitAhead Config File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="903"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="919"/>
         <source>Discard GitAhead Config File?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="904"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="920"/>
         <source>Are you sure you want to discard the local GitAhead configuration?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="911"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="927"/>
         <source>Discard</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="907"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="923"/>
         <source>If the local configuration is invalid or missing, the global GitAhead configuration is used. The global configuration remains unchanged when removing the local configuration.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="947"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="963"/>
         <source>Repository:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1256,47 +1256,47 @@
 <context>
     <name>EditorPanel</name>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="604"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="623"/>
         <source>Tabs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="605"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="624"/>
         <source>Spaces</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="613"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="632"/>
         <source>Show heat map</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="616"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="635"/>
         <source>Font:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="617"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="636"/>
         <source>Font size:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="618"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="637"/>
         <source>Indent using:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="619"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="638"/>
         <source>Indent width:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="620"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="639"/>
         <source>Tab width:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="621"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="640"/>
         <source>Blame margin:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1393,102 +1393,102 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="176"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="170"/>
         <source>Discard Changes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="180"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="165"/>
         <source>Remove Untracked Files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="188"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="176"/>
         <source>Ignore</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="210"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="198"/>
         <source>Checkout</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="238"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="226"/>
         <source>Unlock</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="238"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="226"/>
         <source>Lock</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="253"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="241"/>
         <source>Copy File Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="269"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="257"/>
         <source>Filter History</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="274"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="262"/>
         <source>Navigate to</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="275"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="263"/>
         <source>Next Revision</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="280"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="268"/>
         <source>next</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="284"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="272"/>
         <source>Previous Revision</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="289"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="277"/>
         <source>previous</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="299"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="287"/>
         <source>Unset Executable</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="299"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="287"/>
         <source>Set Executable</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="328"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="316"/>
         <source>edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="332"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="320"/>
         <source>diff</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="336"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="324"/>
         <source>merge</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="340"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="328"/>
         <source>External Tool Not Found</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="341"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="329"/>
         <source>Failed to execute external %1 tool.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1732,60 +1732,78 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="103"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="106"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="125"/>
+        <source>Retain</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="108"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="127"/>
+        <source>entrys</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="112"/>
         <source>Repository alias:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="120"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="119"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="149"/>
+        <source>Logging:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="130"/>
         <source>No translation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="123"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="133"/>
         <source>Store credentials in secure storage</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="126"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="136"/>
         <source>Allow collection of usage data</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="127"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="137"/>
         <source>&lt;a href=&apos;view&apos;&gt;View privacy policy&lt;/a&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="104"/>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="133"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="113"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="143"/>
         <source>User name:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="105"/>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="134"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="114"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="144"/>
         <source>User email:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="106"/>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="135"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="115"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="145"/>
         <source>Automatic actions:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="139"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="150"/>
         <source>Language:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="140"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="151"/>
         <source>Credentials:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="141"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="152"/>
         <source>Usage reporting:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2035,12 +2053,12 @@
 <context>
     <name>LfsPanel</name>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="508"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="524"/>
         <source>Initialize LFS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="544"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="560"/>
         <source>Specify a glob pattern for tracking large files.
 
 Generally, large files are greater than 500kB, change frequently,
@@ -2055,82 +2073,82 @@ Examples
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="559"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="575"/>
         <source>Pattern:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="564"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="580"/>
         <source>Track</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="638"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="654"/>
         <source>days</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="643"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="659"/>
         <source>Fetch LFS objects from all references for the past</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="663"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="679"/>
         <source>reference days or</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="680"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="696"/>
         <source>commit days</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="684"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="700"/>
         <source>View Environment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="689"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="705"/>
         <source>git-lfs env (read only)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="705"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="721"/>
         <source>Deinitialize LFS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="707"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="723"/>
         <source>Deinitialize LFS?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="709"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="725"/>
         <source>Are you sure you want uninstall LFS from this repository?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="715"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="731"/>
         <source>Deinitialize</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="726"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="742"/>
         <source>Server URL:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="727"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="743"/>
         <source>Prune Offset:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="728"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="744"/>
         <source>Fetch Recent:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="731"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="747"/>
         <source>Advanced:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2214,8 +2232,43 @@ Examples
 <context>
     <name>LogView</name>
     <message>
-        <location filename="../src/log/LogView.cpp" line="54"/>
-        <source>Copy</source>
+        <location filename="../src/log/LogView.cpp" line="79"/>
+        <source>Copy Selection to Clipboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/log/LogView.cpp" line="86"/>
+        <source>Copy Log to Clipboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/log/LogView.cpp" line="93"/>
+        <source>Clear Selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/log/LogView.cpp" line="100"/>
+        <source>Clear Log</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/log/LogView.cpp" line="107"/>
+        <source>Save Log as...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/log/LogView.cpp" line="299"/>
+        <source>Text Log (*.json)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/log/LogView.cpp" line="299"/>
+        <source>Binary Log (*.dat)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/log/LogView.cpp" line="301"/>
+        <source>Save Log</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2927,12 +2980,12 @@ Examples
 <context>
     <name>MiscPanel</name>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="731"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="750"/>
         <source>Path to SSH config file:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="732"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="751"/>
         <source>Path to default / fallback SSH key file:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3412,17 +3465,17 @@ Examples
 <context>
     <name>RemotesPanel</name>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="213"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="229"/>
         <source>Delete Remote?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="214"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="230"/>
         <source>Are you sure you want to delete &apos;%1&apos;?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="219"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="235"/>
         <source>Delete</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4429,32 +4482,32 @@ This reverts commit %2.</source>
 <context>
     <name>SearchPanel</name>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="401"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="417"/>
         <source>Enable indexing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="408"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="424"/>
         <source>terms</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="417"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="433"/>
         <source>lines</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="427"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="443"/>
         <source>Limit commits to:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="428"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="444"/>
         <source>Diff context:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ConfigDialog.cpp" line="445"/>
+        <location filename="../src/dialogs/ConfigDialog.cpp" line="461"/>
         <source>Remove Index</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4495,77 +4548,77 @@ This reverts commit %2.</source>
 <context>
     <name>SettingsDialog</name>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="827"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="846"/>
         <source>Esc</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="842"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="861"/>
         <source>Global git and GitAhead settings can be overridden for each repository in the corresponding repository configuration page.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="861"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="880"/>
         <source>Edit Config File...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="864"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="883"/>
         <source>Edit git Config File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="865"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="884"/>
         <source>Edit GitAhead Config File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="866"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="885"/>
         <source>Edit GitAhead Global Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="905"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="924"/>
         <source>General</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="914"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="933"/>
         <source>Diff</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="923"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="942"/>
         <source>Tools</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="934"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="953"/>
         <source>Window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="943"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="962"/>
         <source>Editor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="952"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="971"/>
         <source>Update</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="961"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="980"/>
         <source>Plugins</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="970"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="989"/>
         <source>Misc</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="980"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="999"/>
         <source>Terminal</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4857,23 +4910,23 @@ This reverts commit %2.</source>
 <context>
     <name>TerminalPanel</name>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="781"/>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="806"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="800"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="825"/>
         <source>Install</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="794"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="813"/>
         <source>Name:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="795"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="814"/>
         <source>Location:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="806"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="825"/>
         <source>Uninstall</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5031,32 +5084,32 @@ This reverts commit %2.</source>
 <context>
     <name>ToolsPanel</name>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="245"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="264"/>
         <source>Keep backup of merge files (.orig)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="248"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="267"/>
         <source>External editor:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="249"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="268"/>
         <source>External diff:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="250"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="269"/>
         <source>External merge:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="251"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="270"/>
         <source>Backup files:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="306"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="325"/>
         <source>Configure</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5118,22 +5171,22 @@ This reverts commit %2.</source>
 <context>
     <name>UpdatePanel</name>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="680"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="699"/>
         <source>Check for updates automatically</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="683"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="702"/>
         <source>Automatically download and install updates</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="686"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="705"/>
         <source>Check Now</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="691"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="710"/>
         <source>Software Update:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5212,92 +5265,92 @@ This reverts commit %2.</source>
 <context>
     <name>WindowPanel</name>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="381"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="400"/>
         <source>Add New Theme</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="382"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="401"/>
         <source>Edit Current Theme</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="431"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="450"/>
         <source>Create Theme</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="440"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="459"/>
         <source>Theme Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="471"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="490"/>
         <source>Restart?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="472"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="491"/>
         <source>The application must be restarted for the theme change to take effect.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="474"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="493"/>
         <source>Do you want to restart now?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="476"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="495"/>
         <source>Restart</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="477"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="496"/>
         <source>Later</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="391"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="410"/>
         <source>Show full repository path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="392"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="411"/>
         <source>Hide automatically</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="393"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="412"/>
         <source>Open submodules in tabs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="394"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="413"/>
         <source>Open all repositories in tabs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="403"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="422"/>
         <source>Theme:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="404"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="423"/>
         <source>Title:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="405"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="424"/>
         <source>Log:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="406"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="425"/>
         <source>Tabs:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/SettingsDialog.cpp" line="408"/>
+        <location filename="../src/dialogs/SettingsDialog.cpp" line="427"/>
         <source>Prompt:</source>
         <translation type="unfinished"></translation>
     </message>
