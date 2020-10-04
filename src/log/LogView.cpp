@@ -26,7 +26,7 @@
 #include <QMouseEvent>
 
 const int kIndentSpaces = 4;
-const int kSaveDelay = 3000;
+const int kSaveDelay = 1000;
 
 namespace {
 
@@ -56,6 +56,19 @@ QModelIndexList collectIndexes(
     QModelIndex index = model->index(i, 0, parent);
     selection.append(index);
     selection.append(collectIndexes(view, index));
+  }
+  return selection;
+}
+
+QModelIndexList collectLogIndexes(
+  QTreeView *view,
+  const QModelIndex &parent)
+{
+  QModelIndexList selection;
+  QAbstractItemModel *model = view->model();
+  for (int i = 0; i < model->rowCount(parent); ++i) {
+    QModelIndex index = model->index(i, 0, parent);
+    selection.append(index);
   }
   return selection;
 }
@@ -308,11 +321,11 @@ void LogView::save(bool as)
   if (filename.isEmpty())
     return;
 
-  QModelIndexList indexes = collectIndexes(this, QModelIndex());
+  QModelIndexList logs = collectLogIndexes(this, QModelIndex());
 
   // Check if last entry is busy
-  if (!indexes.isEmpty()) {
-    LogEntry *entry = static_cast<LogEntry *>(indexes.last().internalPointer());
+  if (!logs.isEmpty()) {
+    LogEntry *entry = static_cast<LogEntry *>(logs.last().internalPointer());
     if (entry->progress() >= 0)
       return;
   }
@@ -321,6 +334,7 @@ void LogView::save(bool as)
   mLogTimer.blockSignals(true);
 
   QJsonArray jsonarr;
+  QModelIndexList indexes = collectIndexes(this, QModelIndex());
   foreach (const QModelIndex &index, indexes) {
     LogEntry *entry = static_cast<LogEntry *>(index.internalPointer());
     QModelIndex currentParent = index.parent();
