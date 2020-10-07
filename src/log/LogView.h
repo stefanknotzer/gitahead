@@ -43,10 +43,10 @@ signals:
   void operationCanceled(const QModelIndex &index);
 
 protected:
-  void selectionChanged(const QItemSelection &selected, const QItemSelection &deselected) override;
   void mouseMoveEvent(QMouseEvent *event) override;
   void mousePressEvent(QMouseEvent *event) override;
   void mouseReleaseEvent(QMouseEvent *event) override;
+  void selectionChanged(const QItemSelection &selected, const QItemSelection &deselected) override;
 
 private:
   QString linkAt(const QModelIndex &index, const QPoint &pos);

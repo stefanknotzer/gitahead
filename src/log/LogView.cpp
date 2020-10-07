@@ -28,6 +28,10 @@
 const int kIndentSpaces = 4;
 const int kSaveDelay = 1000;
 
+const int kDefaultIndent = 1;
+const int kDefaultKind = 0;
+const int kDefaultStatus = 0;
+
 namespace {
 
 QModelIndexList collectSelectedIndexes(
@@ -60,17 +64,13 @@ QModelIndexList collectIndexes(
   return selection;
 }
 
-QModelIndexList collectLogIndexes(
+QModelIndex lastRootIndex(
   QTreeView *view,
   const QModelIndex &parent)
 {
-  QModelIndexList selection;
   QAbstractItemModel *model = view->model();
-  for (int i = 0; i < model->rowCount(parent); ++i) {
-    QModelIndex index = model->index(i, 0, parent);
-    selection.append(index);
-  }
-  return selection;
+  int i = model->rowCount(parent) - 1;
+  return model->index(i, 0, parent);
 }
 
 } // anon. namespace
@@ -78,7 +78,7 @@ QModelIndexList collectLogIndexes(
 LogView::LogView(LogEntry *root,
                  const git::Repository *repo,
                  QWidget *parent)
-  : QTreeView(parent), mRoot(root), mRepo(*repo)
+  : QTreeView(parent), mRoot(root)
 {
   setMouseTracking(true);
   setHeaderHidden(true);
@@ -141,6 +141,14 @@ LogView::LogView(LogEntry *root,
     copyAllAction->setEnabled(true);
     clearAllAction->setEnabled(true);
     saveAction->setEnabled(true);
+
+    if (mRepo.isValid()) {
+      // Max log entrys.
+      while (this->model()->rowCount() > mRepo.appConfig().value<int>("log.maxentrys", 300))
+        mRoot->removeEntry(0);
+
+      mLogTimer.start(kSaveDelay);
+    }
   });
 
   connect(model, &QAbstractItemModel::rowsRemoved,
@@ -150,25 +158,19 @@ LogView::LogView(LogEntry *root,
       clearAllAction->setEnabled(false);
       saveAction->setEnabled(false);
     }
+
+    if (mRepo.isValid())
+      mLogTimer.start(kSaveDelay);
   });
 
-  if (mRepo.isValid()) {
+  // Repository is valid.
+  if (repo != nullptr) {
+    mRepo = *repo;
+
     // Load log.
     load();
 
-    // Delayed save log on data change.
-    connect(model, &QAbstractItemModel::rowsInserted,
-    [this](const QModelIndex &parent, int first, int last) {
-      // Max entrys.
-      while (this->model()->rowCount() > mRepo.appConfig().value<int>("log.maxlogentrys", 300))
-        mRoot->removeEntry(0);
-
-      mLogTimer.start(kSaveDelay);
-    });
-    connect(model, &QAbstractItemModel::rowsRemoved,
-    [this](const QModelIndex &parent, int first, int last) {
-      mLogTimer.start(kSaveDelay);
-    });
+    // Save log on data change.
     connect(model, &QAbstractItemModel::dataChanged,
     [this](const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles) {
       mLogTimer.start(kSaveDelay);
@@ -268,19 +270,21 @@ void LogView::load()
   QJsonArray jsonarr = jsondoc.array();
   foreach (const QJsonValue &jsonval, jsonarr) {
     QJsonObject json = jsonval.toObject();
+
     if (json.contains("timestamp")) {
       QDateTime timestamp = QDateTime::fromString(json["timestamp"].toString(), Qt::ISODate);
       QString title = json["title"].toString();
       QString text = json["text"].toString();
       entry = mRoot->addEntry(text, title, timestamp);
       indent = 1;
+
     } else if (indent > 0) {
-      int _indent = json["indent"].toInt();
-      LogEntry::Kind kind = static_cast<LogEntry::Kind>(json["kind"].toInt());
-      char status = json["status"].toInt();
+      int childindent = json["indent"].toInt(kDefaultIndent);
+      LogEntry::Kind kind = static_cast<LogEntry::Kind>(json["kind"].toInt(kDefaultKind));
+      char status = json["status"].toInt(kDefaultStatus);
       QString text = json["text"].toString();
 
-      while ((indent > _indent) && (entry->parentEntry() != mRoot)) {
+      while ((indent > childindent) && (entry->parentEntry() != mRoot)) {
         entry = entry->parentEntry();
         indent--;
       }
@@ -295,8 +299,8 @@ void LogView::load()
       setEntryExpanded(entry->parentEntry(), false);
   }
 
-  // Max entrys.
-  while (this->model()->rowCount() > mRepo.appConfig().value<int>("log.maxlogentrys", 300))
+  // Max log entrys.
+  while (this->model()->rowCount() > mRepo.appConfig().value<int>("log.maxentrys", 300))
     mRoot->removeEntry(0);
 
   // Reset and restart save() timer.
@@ -321,17 +325,13 @@ void LogView::save(bool as)
   if (filename.isEmpty())
     return;
 
-  QModelIndexList logs = collectLogIndexes(this, QModelIndex());
-
-  // Check if last entry is busy
-  if (!logs.isEmpty()) {
-    LogEntry *entry = static_cast<LogEntry *>(logs.last().internalPointer());
+  // Last entry is busy.
+  QModelIndex last = lastRootIndex(this, QModelIndex());
+  if (last.isValid()) {
+    LogEntry *entry = static_cast<LogEntry *>(last.internalPointer());
     if (entry->progress() >= 0)
       return;
   }
-
-  // Disable save() timer.
-  mLogTimer.blockSignals(true);
 
   QJsonArray jsonarr;
   QModelIndexList indexes = collectIndexes(this, QModelIndex());
@@ -349,9 +349,12 @@ void LogView::save(bool as)
         indent += 1;
         currentParent = currentParent.parent();
       }
-      json.insert("indent", indent);
-      json.insert("kind", entry->kind());
-      json.insert("status", entry->status());
+      if (indent != kDefaultIndent)
+        json.insert("indent", indent);
+      if (entry->kind() != kDefaultKind)
+        json.insert("kind", entry->kind());
+      if (entry->status() != kDefaultStatus)
+        json.insert("status", entry->status());
     }
     json.insert("text", entry->text());
     jsonarr.append(json);
@@ -369,19 +372,6 @@ void LogView::save(bool as)
       log.close();
     }
   }
-
-  // Reset and restart save() timer.
-  mLogTimer.stop();
-  mLogTimer.blockSignals(false);
-}
-
-void LogView::selectionChanged(const QItemSelection &selected, const QItemSelection &deselected)
-{
-  bool enable = !selected.isEmpty();
-  mCopyAction->setEnabled(enable);
-  mClearAction->setEnabled(enable);
-
-  QTreeView::selectionChanged(selected, deselected);
 }
 
 QSize LogView::minimumSizeHint() const
@@ -444,6 +434,15 @@ void LogView::mouseReleaseEvent(QMouseEvent *event)
   }
 
   QTreeView::mouseReleaseEvent(event);
+}
+
+void LogView::selectionChanged(const QItemSelection &selected, const QItemSelection &deselected)
+{
+  bool enable = !selected.isEmpty();
+  mCopyAction->setEnabled(enable);
+  mClearAction->setEnabled(enable);
+
+  QTreeView::selectionChanged(selected, deselected);
 }
 
 QString LogView::linkAt(const QModelIndex &index, const QPoint &pos)

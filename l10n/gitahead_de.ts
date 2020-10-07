@@ -2242,42 +2242,42 @@ Beispiele
 <context>
     <name>LogView</name>
     <message>
-        <location filename="../src/log/LogView.cpp" line="79"/>
+        <location filename="../src/log/LogView.cpp" line="92"/>
         <source>Copy Selection to Clipboard</source>
         <translation>Auswahl in die Zwischenablage kopieren</translation>
     </message>
     <message>
-        <location filename="../src/log/LogView.cpp" line="86"/>
+        <location filename="../src/log/LogView.cpp" line="99"/>
         <source>Copy Log to Clipboard</source>
         <translation>Logbuch in die Zwischenablage kopieren</translation>
     </message>
     <message>
-        <location filename="../src/log/LogView.cpp" line="93"/>
+        <location filename="../src/log/LogView.cpp" line="106"/>
         <source>Clear Selection</source>
         <translation>Auswahl löschen</translation>
     </message>
     <message>
-        <location filename="../src/log/LogView.cpp" line="100"/>
+        <location filename="../src/log/LogView.cpp" line="113"/>
         <source>Clear Log</source>
         <translation>Logbuch löschen</translation>
     </message>
     <message>
-        <location filename="../src/log/LogView.cpp" line="107"/>
+        <location filename="../src/log/LogView.cpp" line="120"/>
         <source>Save Log as...</source>
         <translation>Logbuch speichern unter...</translation>
     </message>
     <message>
-        <location filename="../src/log/LogView.cpp" line="299"/>
+        <location filename="../src/log/LogView.cpp" line="316"/>
         <source>Text Log (*.json)</source>
         <translation>Text Logbuch (*.json)</translation>
     </message>
     <message>
-        <location filename="../src/log/LogView.cpp" line="299"/>
+        <location filename="../src/log/LogView.cpp" line="316"/>
         <source>Binary Log (*.dat)</source>
         <translation>Binäres Logbuch (*.dat)</translation>
     </message>
     <message>
-        <location filename="../src/log/LogView.cpp" line="301"/>
+        <location filename="../src/log/LogView.cpp" line="318"/>
         <source>Save Log</source>
         <translation>Logbuch speichern</translation>
     </message>
