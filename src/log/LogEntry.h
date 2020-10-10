@@ -34,12 +34,7 @@ public:
     Kind kind,
     const QString &text,
     const QString &title,
-    LogEntry *parent = nullptr);
-  LogEntry(
-    Kind kind,
-    const QString &text,
-    const QString &title,
-    const QDateTime &timestamp,
+    const QDateTime &timestamp = QDateTime::currentDateTime(),
     LogEntry *parent = nullptr);
 
   Kind kind() const { return mKind; }
@@ -59,7 +54,9 @@ public:
   const QList<LogEntry *> &entries() const { return mEntries; }
 
   void addEntries(const QList<LogEntry *> &entries);
-  LogEntry *addEntry(Kind kind, const QString &text);
+  LogEntry *addEntry(Kind kind,
+                     const QString &text,
+                     const QString &title = QString());
   LogEntry *addEntry(
     const QString &text,
     const QString &title = QString(),

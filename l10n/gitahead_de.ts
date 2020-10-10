@@ -2267,17 +2267,17 @@ Beispiele
         <translation>Logbuch speichern unter...</translation>
     </message>
     <message>
-        <location filename="../src/log/LogView.cpp" line="316"/>
+        <location filename="../src/log/LogView.cpp" line="317"/>
         <source>Text Log (*.json)</source>
         <translation>Text Logbuch (*.json)</translation>
     </message>
     <message>
-        <location filename="../src/log/LogView.cpp" line="316"/>
+        <location filename="../src/log/LogView.cpp" line="317"/>
         <source>Binary Log (*.dat)</source>
         <translation>Binäres Logbuch (*.dat)</translation>
     </message>
     <message>
-        <location filename="../src/log/LogView.cpp" line="318"/>
+        <location filename="../src/log/LogView.cpp" line="319"/>
         <source>Save Log</source>
         <translation>Logbuch speichern</translation>
     </message>
@@ -4138,7 +4138,6 @@ Dies reverted den Commit %2.</translation>
     </message>
     <message>
         <location filename="../src/ui/RepoView.cpp" line="1939"/>
-        <location filename="../src/ui/RepoView.cpp" line="1966"/>
         <source>all</source>
         <translation>alle</translation>
     </message>

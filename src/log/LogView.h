@@ -11,7 +11,6 @@
 #define LOGVIEW_H
 
 #include "git/Repository.h"
-#include <QDir>
 #include <QTimer>
 #include <QTreeView>
 

@@ -2260,17 +2260,17 @@ Examples
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/log/LogView.cpp" line="316"/>
+        <location filename="../src/log/LogView.cpp" line="317"/>
         <source>Text Log (*.json)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/log/LogView.cpp" line="316"/>
+        <location filename="../src/log/LogView.cpp" line="317"/>
         <source>Binary Log (*.dat)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/log/LogView.cpp" line="318"/>
+        <location filename="../src/log/LogView.cpp" line="319"/>
         <source>Save Log</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4160,7 +4160,6 @@ This reverts commit %2.</source>
     </message>
     <message>
         <location filename="../src/ui/RepoView.cpp" line="1939"/>
-        <location filename="../src/ui/RepoView.cpp" line="1966"/>
         <source>all</source>
         <translation type="unfinished"></translation>
     </message>

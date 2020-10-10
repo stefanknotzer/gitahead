@@ -1963,7 +1963,7 @@ void RepoView::promptToCheckout()
 
 void RepoView::checkout(const git::Commit &commit, const QStringList &paths)
 {
-  QString count = (paths.size() == 0) ? tr("all") : QString::number(paths.size());
+  QString count = QString::number(paths.size());
   QString name = (paths.size() == 1) ? tr("file") : tr("files");
   QString text = tr("%1 - %2 %3").arg(commit.link(), count, name);
   LogEntry *entry = addLogEntry(text, tr("Checkout"));
