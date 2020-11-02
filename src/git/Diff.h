@@ -32,7 +32,9 @@ public:
   enum SortRole
   {
     NameRole,
-    StatusRole
+    StatusRole,
+    BinaryRole,
+    ExtensionRole,
   };
 
   class Callbacks {
@@ -78,7 +80,7 @@ public:
   // Detect renames, copies, etc. This is expensive.
   void findSimilar(bool untracked = false);
 
-  void sort(SortRole role, Qt::SortOrder order = Qt::AscendingOrder);
+  void sort(SortRole role, Qt::SortOrder order = Qt::AscendingOrder, bool alphabetical = false);
 
   void setAllStaged(bool staged, bool yieldFocus = true);
 

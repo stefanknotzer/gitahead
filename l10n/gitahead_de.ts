@@ -1509,7 +1509,7 @@
         <translation>Sortieren nach</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="233"/>
+        <location filename="../src/ui/FileList.cpp" line="292"/>
         <source>Select</source>
         <translation>Auswählen</translation>
     </message>
@@ -1519,67 +1519,82 @@
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="246"/>
+        <location filename="../src/ui/FileList.cpp" line="247"/>
         <source>Status</source>
         <translation>Status</translation>
     </message>
     <message>
         <location filename="../src/ui/FileList.cpp" line="259"/>
+        <source>File Type</source>
+        <translation>Datei Typ</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/FileList.cpp" line="271"/>
+        <source>File Extension</source>
+        <translation>Datei Erweiterung</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/FileList.cpp" line="283"/>
+        <source>Sort Alphabetical</source>
+        <translation>Sortiere Alphabetisch</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/FileList.cpp" line="296"/>
         <source>Ignore Whitespace (-w)</source>
         <translation>Whitespace ignorieren (-w)</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="443"/>
+        <location filename="../src/ui/FileList.cpp" line="482"/>
         <source>Added</source>
         <translation>Hinzugefügt</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="444"/>
+        <location filename="../src/ui/FileList.cpp" line="483"/>
         <source>Deleted</source>
         <translation>Gelöscht</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="445"/>
+        <location filename="../src/ui/FileList.cpp" line="484"/>
         <source>Modified</source>
         <translation>Geändert</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="446"/>
+        <location filename="../src/ui/FileList.cpp" line="485"/>
         <source>Renamed</source>
         <translation>Umbenannt</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="447"/>
+        <location filename="../src/ui/FileList.cpp" line="486"/>
         <source>Copied</source>
         <translation>Kopiert</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="448"/>
+        <location filename="../src/ui/FileList.cpp" line="487"/>
         <source>Ignored</source>
         <translation>Ignoriert</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="449"/>
+        <location filename="../src/ui/FileList.cpp" line="488"/>
         <source>Untracked</source>
         <translation>ungetrackt</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="450"/>
+        <location filename="../src/ui/FileList.cpp" line="489"/>
         <source>Unreadable</source>
         <translation>Unlesbar</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="451"/>
+        <location filename="../src/ui/FileList.cpp" line="490"/>
         <source>Conflicted</source>
         <translation>Mit konflikten</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="452"/>
+        <location filename="../src/ui/FileList.cpp" line="491"/>
         <source>Unmodified</source>
         <translation>Unverändert</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="453"/>
+        <location filename="../src/ui/FileList.cpp" line="492"/>
         <source>Type Change</source>
         <translation>Typen-Änderung</translation>
     </message>

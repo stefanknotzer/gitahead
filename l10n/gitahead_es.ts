@@ -1512,7 +1512,7 @@
         <translation>Ordenar Por</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="233"/>
+        <location filename="../src/ui/FileList.cpp" line="292"/>
         <source>Select</source>
         <translation>Seleccionar</translation>
     </message>
@@ -1522,67 +1522,82 @@
         <translation>Nombre</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="246"/>
+        <location filename="../src/ui/FileList.cpp" line="247"/>
         <source>Status</source>
         <translation>Estado</translation>
     </message>
     <message>
         <location filename="../src/ui/FileList.cpp" line="259"/>
+        <source>File Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/FileList.cpp" line="271"/>
+        <source>File Extension</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/FileList.cpp" line="283"/>
+        <source>Sort Alphabetical</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/FileList.cpp" line="296"/>
         <source>Ignore Whitespace (-w)</source>
         <translation>Ignorar Espacio en Blanco (-w)</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="443"/>
+        <location filename="../src/ui/FileList.cpp" line="482"/>
         <source>Added</source>
         <translation>Añadido</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="444"/>
+        <location filename="../src/ui/FileList.cpp" line="483"/>
         <source>Deleted</source>
         <translation>Borrado</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="445"/>
+        <location filename="../src/ui/FileList.cpp" line="484"/>
         <source>Modified</source>
         <translation>Modificado</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="446"/>
+        <location filename="../src/ui/FileList.cpp" line="485"/>
         <source>Renamed</source>
         <translation>Renombrado</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="447"/>
+        <location filename="../src/ui/FileList.cpp" line="486"/>
         <source>Copied</source>
         <translation>Copiado</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="448"/>
+        <location filename="../src/ui/FileList.cpp" line="487"/>
         <source>Ignored</source>
         <translation>Ignorado</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="449"/>
+        <location filename="../src/ui/FileList.cpp" line="488"/>
         <source>Untracked</source>
         <translation>Sin seguimiento</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="450"/>
+        <location filename="../src/ui/FileList.cpp" line="489"/>
         <source>Unreadable</source>
         <translation>Ilegible</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="451"/>
+        <location filename="../src/ui/FileList.cpp" line="490"/>
         <source>Conflicted</source>
         <translation>Con Conflicto</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="452"/>
+        <location filename="../src/ui/FileList.cpp" line="491"/>
         <source>Unmodified</source>
         <translation>Sin modificar</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="453"/>
+        <location filename="../src/ui/FileList.cpp" line="492"/>
         <source>Type Change</source>
         <translation>Tipo de Cambio</translation>
     </message>

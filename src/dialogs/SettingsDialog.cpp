@@ -437,7 +437,7 @@ public:
     auto signal = QOverload<int>::of(&QComboBox::currentIndexChanged);
     connect(mComboBox, signal, [this, parent] {
 
-      //Add new theme.
+      // Add new theme.
       if (mComboBox->currentIndex() == mComboBox->count() - 2) {
         QDialog dialog;
 

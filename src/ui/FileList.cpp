@@ -230,8 +230,8 @@ FileList::FileList(const git::Repository &repo, QWidget *parent)
   mButton->setMenu(menu);
 
   mSortMenu = menu->addMenu(tr("Sort By"));
-  mSelectMenu = menu->addMenu(tr("Select"));
 
+  // Sort by filename
   mSortName = mSortMenu->addAction(tr("Name"), [this] {
     Settings *settings = Settings::instance();
     Qt::SortOrder order = Qt::AscendingOrder;
@@ -243,6 +243,7 @@ FileList::FileList(const git::Repository &repo, QWidget *parent)
     emit sortRequested();
   });
 
+  // Sort by status
   mSortStatus = mSortMenu->addAction(tr("Status"), [this] {
     Settings *settings = Settings::instance();
     Qt::SortOrder order = Qt::AscendingOrder;
@@ -253,6 +254,42 @@ FileList::FileList(const git::Repository &repo, QWidget *parent)
     settings->setValue("sort/role", git::Diff::StatusRole);
     emit sortRequested();
   });
+
+  // Sort by file type: text/binary
+  mSortType = mSortMenu->addAction(tr("File Type"), [this] {
+    Settings *settings = Settings::instance();
+    Qt::SortOrder order = Qt::AscendingOrder;
+    if (settings->value("sort/role").toInt() == git::Diff::BinaryRole &&
+        settings->value("sort/order").toInt() == Qt::AscendingOrder)
+      order = Qt::DescendingOrder;
+    settings->setValue("sort/order", order);
+    settings->setValue("sort/role", git::Diff::BinaryRole);
+    emit sortRequested();
+  });
+
+  // Sort by file extension
+  mSortFile = mSortMenu->addAction(tr("File Extension"), [this] {
+    Settings *settings = Settings::instance();
+    Qt::SortOrder order = Qt::AscendingOrder;
+    if (settings->value("sort/role").toInt() == git::Diff::ExtensionRole &&
+        settings->value("sort/order").toInt() == Qt::AscendingOrder)
+      order = Qt::DescendingOrder;
+    settings->setValue("sort/order", order);
+    settings->setValue("sort/role", git::Diff::ExtensionRole);
+    emit sortRequested();
+  });
+
+  // Sort alphabetical
+  mSortAlphabetical = menu->addAction(tr("Sort Alphabetical"));
+  mSortAlphabetical->setCheckable(true);
+  connect(mSortAlphabetical, &QAction::triggered, [this](bool checked) {
+    Settings *settings = Settings::instance();
+    settings->setValue("sort/alphabetical", checked);
+    emit sortRequested();
+  });
+  mSortAlphabetical->setChecked(Settings::instance()->value("sort/alphabetical").toBool());
+
+  mSelectMenu = menu->addMenu(tr("Select"));
 
   menu->addSeparator();
 
@@ -431,6 +468,8 @@ void FileList::updateMenu(const git::Diff &diff)
 
   mSortName->setIcon(role == git::Diff::NameRole ? icon : spacer);
   mSortStatus->setIcon(role == git::Diff::StatusRole ? icon : spacer);
+  mSortType->setIcon(role == git::Diff::BinaryRole ? icon : spacer);
+  mSortFile->setIcon(role == git::Diff::ExtensionRole ? icon : spacer);
 
   // select
   mSelectMenu->clear();

@@ -1512,7 +1512,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="233"/>
+        <location filename="../src/ui/FileList.cpp" line="292"/>
         <source>Select</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1522,67 +1522,82 @@
         <translation type="unfinished">Nome</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="246"/>
+        <location filename="../src/ui/FileList.cpp" line="247"/>
         <source>Status</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/FileList.cpp" line="259"/>
+        <source>File Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/FileList.cpp" line="271"/>
+        <source>File Extension</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/FileList.cpp" line="283"/>
+        <source>Sort Alphabetical</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/FileList.cpp" line="296"/>
         <source>Ignore Whitespace (-w)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="443"/>
+        <location filename="../src/ui/FileList.cpp" line="482"/>
         <source>Added</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="444"/>
+        <location filename="../src/ui/FileList.cpp" line="483"/>
         <source>Deleted</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="445"/>
+        <location filename="../src/ui/FileList.cpp" line="484"/>
         <source>Modified</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="446"/>
+        <location filename="../src/ui/FileList.cpp" line="485"/>
         <source>Renamed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="447"/>
+        <location filename="../src/ui/FileList.cpp" line="486"/>
         <source>Copied</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="448"/>
+        <location filename="../src/ui/FileList.cpp" line="487"/>
         <source>Ignored</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="449"/>
+        <location filename="../src/ui/FileList.cpp" line="488"/>
         <source>Untracked</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="450"/>
+        <location filename="../src/ui/FileList.cpp" line="489"/>
         <source>Unreadable</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="451"/>
+        <location filename="../src/ui/FileList.cpp" line="490"/>
         <source>Conflicted</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="452"/>
+        <location filename="../src/ui/FileList.cpp" line="491"/>
         <source>Unmodified</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="453"/>
+        <location filename="../src/ui/FileList.cpp" line="492"/>
         <source>Type Change</source>
         <translation type="unfinished"></translation>
     </message>

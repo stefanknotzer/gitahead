@@ -140,11 +140,11 @@ void Diff::findSimilar(bool untracked)
   d->resetMap();
 }
 
-void Diff::sort(SortRole role, Qt::SortOrder order)
+void Diff::sort(SortRole role, Qt::SortOrder order, bool alphabetical)
 {
   bool ascending = (order == Qt::AscendingOrder);
   std::sort(d->map.begin(), d->map.end(),
-  [this, role, ascending](int lhs, int rhs) {
+  [this, role, ascending, alphabetical](int lhs, int rhs) {
     switch (role) {
       case NameRole: {
         QString lhsName = git_diff_get_delta(d->diff, lhs)->new_file.path;
@@ -155,7 +155,41 @@ void Diff::sort(SortRole role, Qt::SortOrder order)
       case StatusRole: {
         git_delta_t lhsStatus = git_diff_get_delta(d->diff, lhs)->status;
         git_delta_t rhsStatus = git_diff_get_delta(d->diff, rhs)->status;
-        return ascending ? (lhsStatus < rhsStatus) : (rhsStatus < lhsStatus);
+        bool comp = ascending ? (lhsStatus < rhsStatus) : (rhsStatus < lhsStatus);
+        if (alphabetical && (lhsStatus == rhsStatus)) {
+          QString lhsName = git_diff_get_delta(d->diff, lhs)->new_file.path;
+          QString rhsName = git_diff_get_delta(d->diff, rhs)->new_file.path;
+          return lhsName < rhsName;
+        } else {
+          return comp;
+        }
+      }
+
+      case BinaryRole: {
+        uint16_t lhsFlags = git_diff_get_delta(d->diff, lhs)->flags & GIT_DIFF_FLAG_BINARY;
+        uint16_t rhsFlags = git_diff_get_delta(d->diff, rhs)->flags & GIT_DIFF_FLAG_BINARY;
+        bool comp = ascending ? (lhsFlags < rhsFlags) : (rhsFlags < lhsFlags);
+        if (alphabetical && (lhsFlags == rhsFlags)) {
+          QString lhsName = git_diff_get_delta(d->diff, lhs)->new_file.path;
+          QString rhsName = git_diff_get_delta(d->diff, rhs)->new_file.path;
+          return lhsName < rhsName;
+        } else {
+          return comp;
+        }
+      }
+
+      case ExtensionRole: {
+        QString lhsName = git_diff_get_delta(d->diff, lhs)->new_file.path;
+        QString rhsName = git_diff_get_delta(d->diff, rhs)->new_file.path;
+        bool alphabetical = lhsName < rhsName;
+        lhsName.remove(0, lhsName.lastIndexOf('.'));
+        rhsName.remove(0, rhsName.lastIndexOf('.'));
+        bool comp = ascending ? (lhsName < rhsName) : (rhsName < lhsName);
+        if (alphabetical && (lhsName == rhsName)) {
+          return alphabetical;
+        } else {
+          return comp;
+        }
       }
     }
   });

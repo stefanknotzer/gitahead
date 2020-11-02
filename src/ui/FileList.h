@@ -50,8 +50,11 @@ private:
 
   QAction *mSortName;
   QAction *mSortStatus;
+  QAction *mSortType;
+  QAction *mSortFile;
   QMenu *mSelectMenu;
   QMenu *mSortMenu;
+  QAction *mSortAlphabetical;
   QAction *mIgnoreWs;
   QModelIndex mPressedIndex;
   QToolButton *mButton;
