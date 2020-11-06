@@ -14,7 +14,6 @@
 #include "MenuBar.h"
 #include "SpellChecker.h"
 #include "TreeWidget.h"
-#include "app/Application.h"
 #include "conf/Settings.h"
 #include "git/Branch.h"
 #include "git/Commit.h"
@@ -27,11 +26,11 @@
 #include <QAbstractTextDocumentLayout>
 #include <QApplication>
 #include <QClipboard>
-#include <QComboBox>
 #include <QCryptographicHash>
 #include <QDateTime>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QMessageBox>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QNetworkRequest>
@@ -39,10 +38,8 @@
 #include <QPainterPath>
 #include <QPushButton>
 #include <QRegularExpression>
-#include <QSpinBox>
 #include <QStackedWidget>
 #include <QStyle>
-#include <QTextDocumentFragment>
 #include <QTextEdit>
 #include <QToolButton>
 #include <QUrl>
@@ -62,23 +59,6 @@ const QString kLinkFmt = "<a href='%1'>%2</a>";
 const QString kAuthorFmt = "<b>%1 &lt;%2&gt;</b>";
 const QString kAltFmt = "<span style='color: %1'>%2</span>";
 const QString kUrl = "http://www.gravatar.com/avatar/%1?s=%2&d=mm";
-
-const QString kSpin =
-  "QSpinBox {"
-  "  border: none;"
-  "}"
-  "QSpinBox::up-button {"
-  "  top: 0px;"
-  "}"
-  "QSpinBox::down-button {"
-  "  bottom: 0px;"
-  "}";
-
-const QString kComboBox =
-  "QComboBox {"
-  "  border: none;"
-  "  padding: 1px, 1px, 1px, 1px;"
-  "}";
 
 const QString kSubjectCheckKey = "commit.subject.lengthcheck";
 const QString kSubjectLimitKey = "commit.subject.limit";
@@ -497,113 +477,6 @@ private:
   QFutureWatcher<QString> mWatcher;
 };
 
-class ElidedLabel : public QLabel
-{
-public:
-  ElidedLabel(const QString &text,
-              const QString &shorttext = QString(),
-              const Qt::TextElideMode &elidemode = Qt::ElideMiddle,
-              QWidget *parent = nullptr)
-    : QLabel(parent), mText(text), mShortText(shorttext), mElideMode(elidemode)
-  {
-    QLabel(text, parent);
-    setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Fixed);
-  }
-
-  ElidedLabel(const QString &text,
-              const Qt::TextElideMode &elidemode = Qt::ElideMiddle,
-              QWidget *parent = nullptr)
-    : QLabel(parent), mText(text), mElideMode(elidemode)
-  {
-    QLabel(text, parent);
-    setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Fixed);
-  }
-
-  void setText(const QString &text,
-               const QString &shorttext = QString())
-  {
-    mText = text;
-    mShortText = shorttext;
-
-    QFontMetrics fm = getFontMetric();
-    QString plain = QTextDocumentFragment::fromHtml(text).toPlainText();
-    mWidth = fm.boundingRect(plain).width() + fm.averageCharWidth();
-
-    QLabel::setText(text);
-  }
-
-  void setElideMode(const Qt::TextElideMode &elidemode)
-  {
-    mElideMode = elidemode;
-    repaint();
-  }
-
-  QSize sizeHint() const override
-  {
-    if (mElided)
-      return QSize(mWidth, QLabel::sizeHint().height());
-
-    return QLabel::sizeHint();
-  }
-
-  QSize minimumSizeHint() const override
-  {
-    if (mElided && !mShortText.isEmpty())
-      return QLabel::minimumSizeHint();
-
-    QFontMetrics fm = getFontMetric();
-
-    return QSize(fm.boundingRect("...").width() + fm.averageCharWidth(), QLabel::minimumSizeHint().height());
-  }
-
-protected:
-  void paintEvent(QPaintEvent *event) override
-  {
-    QFontMetrics fm = getFontMetric();
-    QString plain = QTextDocumentFragment::fromHtml(mText).toPlainText();
-    QString elide = fm.elidedText(plain, mElideMode, width());
-    if (plain.length() > elide.length()) {
-      // Use short text or elide text.
-      if (!mShortText.isEmpty())
-        QLabel::setText(mShortText);
-      else {
-        QString text = mText;
-        QLabel::setText(text.replace(plain, elide));
-      }
-      mElided = true;
-    } else {
-      // Use text.
-      QLabel::setText(mText);
-      mElided = false;
-      mWidth = QLabel::width();
-    }
-
-    QLabel::paintEvent(event);
-  }
-
-private:
-  QFontMetrics getFontMetric(void) const
-  {
-    QFont font = QLabel::font();
-
-    // Detect common HTML tags.
-    font.setBold(font.bold() || mText.contains("<b>"));
-    font.setItalic(font.italic() || mText.contains("<i>"));
-
-    QFontMetrics fm(font);
-
-    return fm;
-  }
-
-  QString mText;
-  QString mShortText;
-
-  Qt::TextElideMode mElideMode = Qt::ElideMiddle;
-
-  bool mElided = false;
-  int mWidth = 10000;
-};
-
 class TextEdit : public QTextEdit
 {
   Q_OBJECT
@@ -616,11 +489,18 @@ public:
     connect(&mTimer, &QTimer::timeout, [this] {
       mTimer.stop();
       if (mSpellCheckValid)
-        checkspelling();
+        checkSpelling();
+    });
+
+    // Spell and linelength check on textchange.
+    connect(this, &QTextEdit::textChanged, [this] {
+      mTimer.start(500);
+      if (mLineLengthCheckValid)
+        checkLength();
     });
   }
 
-  void SpellCheckSetup(const QString &dictPath,
+  bool SpellCheckSetup(const QString &dictPath,
                        const QString &userDict,
                        const QTextCharFormat &spellFormat,
                        const QTextCharFormat &ignoredFormat)
@@ -629,35 +509,36 @@ public:
     if (mSpellChecker->isValid()) {
       mSpellFormat = spellFormat;
       mIgnoredFormat = ignoredFormat;
-      checkspelling();
+      checkSpelling();
       mSpellCheckValid = true;
     } else {
       mSpellList.clear();
-      setselections();
+      setSelections();
       mSpellCheckValid = false;
     }
+    return mSpellCheckValid;
   }
 
   void SpellCheck(void)
   {
     if (mSpellCheckValid)
-      checkspelling();
+      checkSpelling();
   }
 
-  void LineLengthSetup(const QList<int> &lineLength,
-                       const QList<int> &blankLines,
-                       const QTextCharFormat &lineFormat)
+  void LengthSetup(const QList<int> &lineLength,
+                   const QList<int> &blankLines,
+                   const QTextCharFormat &lineFormat)
   {
     // Length set or blank line enabled.
-    if (lineLength.count() || mBlankLines.count()) {
+    if (!lineLength.isEmpty() && !blankLines.isEmpty()) {
       mLineLength = lineLength;
       mBlankLines = blankLines;
       mLineFormat = lineFormat;
-      checklength();
+      checkLength();
       mLineLengthCheckValid = true;
     } else {
       mLineList.clear();
-      setselections();
+      setSelections();
       mLineLengthCheckValid = false;
     }
   }
@@ -665,7 +546,7 @@ public:
   void LineLengthCheck(void)
   {
     if (mLineLengthCheckValid)
-      checklength();
+      checkLength();
   }
 
 private:
@@ -700,21 +581,24 @@ private:
                   QTextCursor cursor = cursorForPosition(event->pos());
                   cursor.select(QTextCursor::WordUnderCursor);
                   cursor.insertText(str);
-                  checkspelling();
+                  checkSpelling();
                 });
 
                 QAction *replaceAll = spellReplaceAll->addAction(str);
                   connect(replaceAll, &QAction::triggered, [this, word, str] {
                   QTextCursor cursor(document());
                   while (!cursor.atEnd()) {
-                    cursor.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor, 1);
-                    QString search = getword(cursor);
-                    if (!search.isEmpty() && (search == word) && !ignoredword(cursor))
+                    cursor.movePosition(QTextCursor::EndOfWord,
+                                        QTextCursor::KeepAnchor, 1);
+                    QString search = wordAt(cursor);
+                    if (!search.isEmpty() && (search == word) &&
+                        !ignoredAt(cursor))
                       cursor.insertText(str);
 
-                    cursor.movePosition(QTextCursor::NextWord, QTextCursor::MoveAnchor, 1);
+                    cursor.movePosition(QTextCursor::NextWord,
+                                        QTextCursor::MoveAnchor, 1);
                   }
-                  checkspelling();
+                  checkSpelling();
                 });
               }
               menu->addSeparator();
@@ -732,23 +616,23 @@ private:
                   es.format = mIgnoredFormat;
                   mSpellList << es;
 
-                  setselections();
+                  setSelections();
                   break;
                 }
               }
-              checkspelling();
+              checkSpelling();
             });
 
             QAction *spellIgnoreAll = menu->addAction(tr("Ignore All"));
             connect(spellIgnoreAll, &QAction::triggered, [this, word] {
               mSpellChecker->ignoreWord(word);
-              checkspelling();
+              checkSpelling();
             });
 
             QAction *spellAdd = menu->addAction(tr("Add to User Dictionary"));
             connect(spellAdd, &QAction::triggered, [this, word] {
               mSpellChecker->addToUserDict(word);
-              checkspelling();
+              checkSpelling();
             });
             break;
           }
@@ -771,11 +655,11 @@ private:
                 if (es.cursor == cursor) {
                   mSpellList.removeAt(i);
 
-                  setselections();
+                  setSelections();
                   break;
                 }
               }
-              checkspelling();
+              checkSpelling();
             });
             break;
           }
@@ -807,17 +691,17 @@ private:
 
           cursor = es.cursor;
           connect(lineWrap, &QAction::triggered, [this, cursor, row] {
-            wordwrap(cursor, row, true);
-            checklength();
-            checkspelling();
+            wordWrap(cursor, row, true);
+            checkLength();
+            checkSpelling();
           });
 
           if (!mBlankLines.contains(row + 1)) {
             QAction *lineAll = menu->addAction(tr("Insert All Wordwraps"));
             connect(lineAll, &QAction::triggered, [this] {
-              wordwraps();
-              checklength();
-              checkspelling();
+              wordWraps();
+              checkLength();
+              checkSpelling();
             });
           }
           break;
@@ -836,44 +720,44 @@ private:
     if (text.length()) {
       QChar chr = text.at(0);
 
-      // Spell check.
+      // Spell check:
+      //   delayed check while writing
+      //   immediate check if space, comma, ... is pressed
       if (chr.isLetter() || chr.isNumber())
         mTimer.start(500);
       else if (mSpellCheckValid && !event->isAutoRepeat())
-        checkspelling();
-
-      // Line length check.
-      if (mLineLengthCheckValid)
-        checklength();
+        checkSpelling();
     }
   }
 
-  void checkspelling(void)
+  void checkSpelling(void)
   {
     QTextCursor cursor(document());
     mSpellList.clear();
 
     while (!cursor.atEnd()) {
-      cursor.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor, 1);
-      QString word = getword(cursor);
+      cursor.movePosition(QTextCursor::EndOfWord,
+                          QTextCursor::KeepAnchor, 1);
+      QString word = wordAt(cursor);
       if (!word.isEmpty() && !mSpellChecker->spell(word)) {
 
         // Highlight the unknown or ignored word.
         QTextEdit::ExtraSelection es;
         es.cursor = cursor;
-        if (ignoredword(cursor))
+        if (ignoredAt(cursor))
           es.format = mIgnoredFormat;
         else
           es.format = mSpellFormat;
 
         mSpellList << es;
       }
-      cursor.movePosition(QTextCursor::NextWord, QTextCursor::MoveAnchor, 1);
+      cursor.movePosition(QTextCursor::NextWord,
+                          QTextCursor::MoveAnchor, 1);
     }
-    setselections();
+    setSelections();
   }
 
-  bool ignoredword(const QTextCursor &cursor)
+  bool ignoredAt(const QTextCursor &cursor)
   {
     foreach (const QTextEdit::ExtraSelection &es, extraSelections()) {
       if ((es.cursor == cursor) &&
@@ -883,7 +767,7 @@ private:
     return false;
   }
 
-  const QString getword(QTextCursor &cursor)
+  const QString wordAt(QTextCursor &cursor)
   {
     QString word = cursor.selectedText();
 
@@ -899,7 +783,7 @@ private:
     return word;
   }
 
-  void checklength(void)
+  void checkLength(void)
   {
     QTextCursor cursor(document());
     QStringList strlist = toPlainText().split('\n');
@@ -920,9 +804,11 @@ private:
       else
         limit = mLineLength.at(row);
 
-      cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::MoveAnchor, 1);
+      cursor.movePosition(QTextCursor::EndOfBlock,
+                          QTextCursor::MoveAnchor, 1);
       if ((limit > 0) && (len > limit)) {
-        cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, len - limit);
+        cursor.movePosition(QTextCursor::Left,
+                            QTextCursor::KeepAnchor, len - limit);
 
         // Highlight length violation.
         QTextEdit::ExtraSelection es;
@@ -930,14 +816,16 @@ private:
         es.format = mLineFormat;
         mLineList << es;
 
-        cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::MoveAnchor, 1);
+        cursor.movePosition(QTextCursor::EndOfBlock,
+                            QTextCursor::MoveAnchor, 1);
       }
-      cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::MoveAnchor, 1);
+      cursor.movePosition(QTextCursor::NextCharacter,
+                          QTextCursor::MoveAnchor, 1);
     }
-    setselections();
+    setSelections();
   }
 
-  bool wordwrap(QTextCursor cursor, int row, bool truncate)
+  bool wordWrap(QTextCursor cursor, int row, bool truncate)
   {
     QStringList strlist = toPlainText().split('\n');
     if (row <= strlist.count()) {
@@ -957,12 +845,15 @@ private:
       } else {
 
         // Insert Wordwrap.
-        cursor.movePosition(QTextCursor::PreviousWord, QTextCursor::MoveAnchor, 1);
+        cursor.movePosition(QTextCursor::PreviousWord,
+                            QTextCursor::MoveAnchor, 1);
         if (cursor.positionInBlock() > 0) {
-          cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, 1);
+          cursor.movePosition(QTextCursor::Left,
+                              QTextCursor::KeepAnchor, 1);
           cursor.insertText("\n");
         } else {
-          cursor.movePosition(QTextCursor::Right, QTextCursor::MoveAnchor, limit);
+          cursor.movePosition(QTextCursor::Right,
+                              QTextCursor::MoveAnchor, limit);
           cursor.insertText("\n");
         }
       }
@@ -971,20 +862,20 @@ private:
     return false;
   }
 
-  void wordwraps(void)
+  void wordWraps(void)
   {
     int index = 0;
     while (index < mLineList.count()) {
       QTextEdit::ExtraSelection es = mLineList.at(index);
       int row = es.cursor.blockNumber();
-      if (!wordwrap(es.cursor, row, false))
+      if (!wordWrap(es.cursor, row, false))
         index += 1;
       else
-        checklength();
+        checkLength();
     }
   }
 
-  void setselections(void)
+  void setSelections(void)
   {
     QList<QTextEdit::ExtraSelection> esList;
     esList.append(mLineList);
@@ -1007,6 +898,40 @@ private:
   bool mLineLengthCheckValid = false;
 };
 
+class Menu : public QMenu
+{
+  Q_OBJECT
+
+public:
+  Menu(QMenu *parent = nullptr)
+    : QMenu(parent)
+  {}
+
+signals:
+  void mouseWheel(QAction *action, int wheel);
+
+private:
+  void wheelEvent(QWheelEvent *e) override
+  {
+    QPoint degrees = e->angleDelta();
+    if (!degrees.isNull()) {
+
+      // Degrees in 1/8 of a degree
+      degrees /= 8;
+
+      // Default wheel step = 15 degrees
+      QPoint numSteps = degrees / 15;
+      if (numSteps.y() != 0) {
+        QAction *action = actionAt(e->pos());
+        if (action != nullptr)
+          emit mouseWheel(action, numSteps.y());
+      }
+    }
+
+    QMenu::wheelEvent(e);
+  }
+};
+
 class CommitEditor : public QFrame
 {
   Q_OBJECT
@@ -1015,139 +940,276 @@ public:
   CommitEditor(const git::Repository &repo, QWidget *parent = nullptr)
     : QFrame(parent), mRepo(repo)
   {
-    ElidedLabel *label = new ElidedLabel(kBoldFmt.arg(tr("Commit Message:")), Qt::ElideLeft, this);
-    label->setAlignment(Qt::AlignLeft);
-
-    // Read configuration.
-    git::Config appconfig = repo.appConfig();
-    mDict = appconfig.value<QString>(kDictKey, "-----");
-    mDictPath = Settings::dictionariesDir().path();
-    mUserDict = Settings::userDir().path() + "/user.dic";
-    QFile userdict(mUserDict);
-    if (!userdict.exists()) {
-      userdict.open(QIODevice::WriteOnly);
-      userdict.close();
-    }
+    QLabel *label = new QLabel(tr("<b>Commit Message:</b>"), this);
 
     // Style and color setup for checks.
-    mSpellError.setUnderlineColor(Application::theme()->diff(Theme::Diff::Error));
+    mSpellError.setUnderlineColor(Application::theme()->commitEditor(
+                                    Theme::CommitEditor::SpellError));
     mSpellError.setUnderlineStyle(QTextCharFormat::SpellCheckUnderline);
-    mSpellIgnore.setUnderlineColor(Application::theme()->diff(Theme::Diff::Note));
+    mSpellIgnore.setUnderlineColor(Application::theme()->commitEditor(
+                                     Theme::CommitEditor::SpellIgnore));
     mSpellIgnore.setUnderlineStyle(QTextCharFormat::WaveUnderline);
-    mLineLengthWarn.setBackground(Application::theme()->diff(Theme::Diff::Warning));
+    mLineLengthWarn.setBackground(Application::theme()->commitEditor(
+                                    Theme::CommitEditor::LengthWarning));
 
-    mLengthLabel = new ElidedLabel(QString(), QString(), Qt::ElideLeft, this);
-    mLengthLabel->setAlignment(Qt::AlignRight);
+    // Spell check configuration
+    git::Config appconfig = repo.appConfig();
+    mDictName = appconfig.value<QString>(kDictKey, "system");
+    mDictPath = Settings::dictionariesDir().path();
+    mUserDict = Settings::userDir().path() + "/user.dic";
+    QFile userDict(mUserDict);
+    if (!userDict.exists()) {
+      userDict.open(QIODevice::WriteOnly);
+      userDict.close();
+    }
 
-    mLengthSpin = new QSpinBox(this);
-    mLengthSpin->setRange(0, 999);
-    mLengthSpin->setValue(mSubjectLimit);
-    mLengthSpin->setStyleSheet(kSpin);
-    mLengthSpin->setToolTip(tr("Line Length Limit"));
-    connect(mLengthSpin, QOverload<int>::of(&QSpinBox::valueChanged), [this](int value) {
-      int row = mMessage->textCursor().blockNumber();
-      if (row == (mInsertBlank->isChecked() ? 1 : -1))
-        return;
+    // Find installed Dictionaries.
+    QDir dictDir = Settings::dictionariesDir();
+    QStringList dictNameList = dictDir.entryList({"*.dic"},
+                                                 QDir::Files,
+                                                 QDir::Name);
+    dictNameList.replaceInStrings(".dic", "");
+
+    // Spell check language menu actions.
+    bool selected = false;
+    QList<QAction*> actionList;
+    foreach (const QString &dict, dictNameList) {
+      QLocale locale(dict);
+
+      // Convert language_COUNTRY format from dictionary filename to string
+      QString language = QLocale::languageToString(locale.language());
+      QString country = QLocale::countryToString(locale.country());
+      QString text;
+
+      if (language != "C") {
+        text = language;
+        if (country != "Default")
+          text.append(QString(" (%1)").arg(country));
+      } else {
+        text = dict;
+        while (text.count("_") > 1)
+          text = text.left(text.lastIndexOf("_"));
+      }
+
+      QAction *action = new QAction(text);
+      action->setData(dict);
+      action->setCheckable(true);
+      actionList.append(action);
+
+      if (dict.startsWith(mDictName)) {
+        action->setChecked(true);
+        mDictName = dict;
+        selected = true;
+      }
+    }
+
+    // Sort menu entries alphabetical.
+    std::sort(actionList.begin(), actionList.end(),
+    [actionList](QAction *la, QAction *ra) {
+      return la->text() < ra->text();
+    });
+
+    QActionGroup *dictActionGroup = new QActionGroup(this);
+    dictActionGroup->setExclusive(true);
+    foreach (QAction *action, actionList)
+      dictActionGroup->addAction(action);
+
+    // No dictionary set: select dictionary for system language and country
+    if ((!selected) && (mDictName != "none")) {
+      QString name = QLocale::system().name();
+      foreach (QAction *action, dictActionGroup->actions()) {
+        if (action->data().toString().startsWith(name)) {
+          action->setChecked(true);
+          mDictName = action->data().toString();
+          selected = true;
+          break;
+        }
+      }
+
+      // Fallback: ignore country (e.g.: use de_DE instead of de_AT)
+      if (!selected) {
+        foreach (QAction *action, dictActionGroup->actions()) {
+          if (action->data().toString().startsWith(name.left(2))) {
+            action->setChecked(true);
+            mDictName = action->data().toString();
+            selected = true;
+            break;
+          }
+        }
+      }
+    }
+
+    connect(dictActionGroup, &QActionGroup::triggered,
+    [this](QAction *action) {
+      QString dict = action->data().toString();
+      if (mDictName == dict) {
+        action->setChecked(false);
+
+        // Disable spell checking.
+        mDictName = "none";
+      } else {
+        mDictName = dict;
+      }
+
+      // Apply changes, disable invalid dictionary.
+      bool valid = mMessage->SpellCheckSetup(mDictPath + "/" + mDictName,
+                                             mUserDict,
+                                             mSpellError, mSpellIgnore);
+      if ((!valid) && (mDictName != "none")) {
+        QMessageBox mb(QMessageBox::Critical,
+                       tr("Spell Check Language"),
+                       tr("The dictionary '%1' is invalid").arg(action->text()));
+        mb.setInformativeText(tr("Spell checking is disabled."));
+        mb.setDetailedText(tr("The choosen dictionary '%1.dic' is not a "
+                              "valid hunspell dictionary.").arg(mDictName));
+        mb.exec();
+
+        action->setChecked(false);
+        action->setEnabled(false);
+        action->setToolTip(tr("Invalid dictionary '%1.dic'").arg(mDictName));
+        mDictName = "none";
+      }
 
       // Save settings.
       git::Config appconfig = mRepo.appConfig();
-      if (row == 0) {
-        mSubjectLimit = value;
-        appconfig.setValue(kSubjectLimitKey, value);
-      } else {
-        mBodyLimit = value;
-        appconfig.setValue(kBodyLimitKey, value);
+      appconfig.setValue(kDictKey, mDictName);
+    });
+
+    // Line length limit configuration.
+    mSubjectLimit = appconfig.value<int>(kSubjectLimitKey, 50);
+    mBodyLimit = appconfig.value<int>(kBodyLimitKey, 72);
+
+    Menu *lineLengthChecks = new Menu();
+    lineLengthChecks->setTitle(tr("Line Length Checks"));
+
+    mSubjectCheck = lineLengthChecks->addAction(
+    tr("Subject Line Length Check: %1").arg(mSubjectLimit), [this] {
+      // Save settings.
+      git::Config appconfig = mRepo.appConfig();
+      appconfig.setValue(kSubjectCheckKey, mSubjectCheck->isChecked());
+
+      // Apply changes.
+      mMessage->LengthSetup({mSubjectCheck->isChecked() ? mSubjectLimit : 0,
+                             mBodyCheck->isChecked() ? mBodyLimit : 0},
+                            {mInsertBlank->isChecked() ? 1 : -1},
+                            mLineLengthWarn);
+    });
+    mSubjectCheck->setData(1);
+    mSubjectCheck->setCheckable(true);
+    mSubjectCheck->setChecked(appconfig.value<bool>(kSubjectCheckKey, false));
+
+    mInsertBlank = lineLengthChecks->addAction(
+    tr("Insert Blank Line between Subject and Body"), [this] {
+      // Save settings.
+      git::Config appconfig = mRepo.appConfig();
+      appconfig.setValue(kBlankKey, mInsertBlank->isChecked());
+
+      // Apply changes.
+      mMessage->LengthSetup({mSubjectCheck->isChecked() ? mSubjectLimit : 0,
+                             mBodyCheck->isChecked() ? mBodyLimit : 0},
+                            {mInsertBlank->isChecked() ? 1 : -1},
+                            mLineLengthWarn);
+    });
+    mInsertBlank->setData(2);
+    mInsertBlank->setCheckable(true);
+    mInsertBlank->setChecked(appconfig.value<bool>(kBlankKey, false));
+
+    mBodyCheck = lineLengthChecks->addAction(
+    tr("Body Text Length Check: %1").arg(mBodyLimit), [this] {
+      // Save settings.
+      git::Config appconfig = mRepo.appConfig();
+      appconfig.setValue(kBodyCheckKey, mBodyCheck->isChecked());
+
+      // Apply changes.
+      mMessage->LengthSetup({mSubjectCheck->isChecked() ? mSubjectLimit : 0,
+                             mBodyCheck->isChecked() ? mBodyLimit : 0},
+                            {mInsertBlank->isChecked() ? 1 : -1},
+                            mLineLengthWarn);
+    });
+    mBodyCheck->setData(3);
+    mBodyCheck->setCheckable(true);
+    mBodyCheck->setChecked(appconfig.value<bool>(kBodyCheckKey, false));
+
+    connect(lineLengthChecks, &Menu::mouseWheel,
+    [this](QAction *action, int wheel) {
+      git::Config appconfig = mRepo.appConfig();
+      int nr = action->data().toInt();
+      bool saved = false;
+
+      // Mouse wheel value change action.
+      switch (nr) {
+        case 1: // Subject text
+          mSubjectLimit += wheel;
+          if (mSubjectLimit > 255)
+            mSubjectLimit = 255;
+          if (mSubjectLimit <= 0) {
+            action->setChecked(false);
+            mSubjectLimit = 0;
+          } else {
+            action->setChecked(true);
+          }
+          action->setText(tr("Subject Line Length Check: %1")
+                            .arg(mSubjectLimit));
+
+          // Save settings.
+          appconfig.setValue(kSubjectCheckKey, action->isChecked());
+          appconfig.setValue(kSubjectLimitKey, mSubjectLimit);
+          saved = true;
+          break;
+        case 2: // Blank line insertion
+          break;
+        case 3: // Body text
+          mBodyLimit += wheel;
+          if (mBodyLimit > 255)
+            mBodyLimit = 255;
+          if (mBodyLimit < 1) {
+            mBodyLimit = 0;
+            action->setChecked(false);
+          } else {
+            action->setChecked(true);
+          }
+          action->setText(tr("Body Text Length Check: %1").arg(mBodyLimit));
+
+          // Save settings.
+          appconfig.setValue(kBodyCheckKey, action->isChecked());
+          appconfig.setValue(kBodyLimitKey, mBodyLimit);
+          saved = true;
+          break;
       }
 
       // Apply changes.
-      updateChecks(false, true);
+      if (saved) {
+        mMessage->LengthSetup({mSubjectCheck->isChecked() ? mSubjectLimit : 0,
+                               mBodyCheck->isChecked() ? mBodyLimit : 0},
+                              {mInsertBlank->isChecked() ? 1 : -1},
+                              mLineLengthWarn);
+      }
     });
 
-    // Dictionary.
-    mDictBox = new QComboBox(this);
-    mDictBox->setStyleSheet(kComboBox);
-    mDictBox->setToolTip(tr("Spell Check Language"));
-    QDir dictdir = Settings::dictionariesDir();
-    QStringList dictlist = dictdir.entryList({"*.dic"}, QDir::Files, QDir::Name);
-    if (dictlist.count() > 0) {
-      mDictBox->addItem("-----");
-      dictlist.replaceInStrings(".dic", "");
-      mDictBox->addItems(dictlist);
-      mDictBox->setCurrentText(mDict);
-    }
-    mDictBox->setVisible(mDictBox->count() > 0);
-    connect(mDictBox, &QComboBox::currentTextChanged, [this](QString text) {
-      mDict = text;
-
-      // Save settings.
-      git::Config appconfig = mRepo.appConfig();
-      appconfig.setValue(kDictKey, text);
-
-      // Apply changes.
-      updateChecks(true, false);
-    });
-
-    mStatus = new ElidedLabel(QString(), Qt::ElideRight, this);
-    mStatus->setAlignment(Qt::AlignRight);
+    mStatus = new QLabel(QString(), this);
 
     // Context button.
     ContextMenuButton *button = new ContextMenuButton(this);
     QMenu *menu = new QMenu(this);
     button->setMenu(menu);
 
-    mSubjectCheck = menu->addAction(tr("Subject Line Length Check"), [this] {
-      // Save settings.
-      git::Config appconfig = mRepo.appConfig();
-      appconfig.setValue(kSubjectCheckKey, mSubjectCheck->isChecked());
+    // Spell check language menu.
+    QMenu *spellCheckLanguage = menu->addMenu(tr("Spell Check Language"));
+    spellCheckLanguage->setEnabled(!dictNameList.isEmpty());
+    spellCheckLanguage->setToolTipsVisible(true);
+    spellCheckLanguage->addActions(dictActionGroup->actions());
 
-      // Apply changes.
-      if (mSubjectCheck->isChecked())
-        mSubjectLimit = appconfig.value<int>(kSubjectLimitKey, 0);
-      else
-        mSubjectLimit = 0;
-
-      updateChecks(false, true);
+    // User dictionary.
+    menu->addAction(tr("Edit User Dictionary"), [this] {
+      RepoView *view = RepoView::parentView(this);
+      view->openEditor(mUserDict);
     });
-    mSubjectCheck->setCheckable(true);
-    mSubjectCheck->setChecked(appconfig.value<bool>(kSubjectCheckKey, false));
-    if (mSubjectCheck->isChecked())
-      mSubjectLimit = appconfig.value<int>(kSubjectLimitKey, 0);
 
-    mInsertBlank = menu->addAction(tr("Insert Blank Line between Subject and Body"), [this] {
-      // Save settings.
-      git::Config appconfig = mRepo.appConfig();
-      appconfig.setValue(kBlankKey, mInsertBlank->isChecked());
-
-      // Apply changes.
-      updateChecks(false, true);
-    });
-    mInsertBlank->setCheckable(true);
-    mInsertBlank->setChecked(appconfig.value<bool>(kBlankKey, false));
-
-    mBodyCheck = menu->addAction(tr("Body Text Length Check"), [this] {
-      // Save settings.
-      git::Config appconfig = mRepo.appConfig();
-      appconfig.setValue(kBodyCheckKey, mBodyCheck->isChecked());
-
-      // Apply changes.
-      if (mBodyCheck->isChecked())
-        mBodyLimit = appconfig.value<int>(kBodyLimitKey, 0);
-      else
-        mBodyLimit = 0;
-
-      updateChecks(false, true);
-    });
-    mBodyCheck->setCheckable(true);
-    mBodyCheck->setChecked(appconfig.value<bool>(kBodyCheckKey, false));
-    if (mBodyCheck->isChecked())
-      mBodyLimit = appconfig.value<int>(kBodyLimitKey, 0);
+    // Line length check menu.
+    menu->addMenu(lineLengthChecks);
 
     QHBoxLayout *labelLayout = new QHBoxLayout;
     labelLayout->addWidget(label);
-    labelLayout->addStretch();
-    labelLayout->addWidget(mLengthLabel);
-    labelLayout->addWidget(mLengthSpin);
-    labelLayout->addWidget(mDictBox);
     labelLayout->addStretch();
     labelLayout->addWidget(mStatus);
     labelLayout->addWidget(button);
@@ -1167,11 +1229,29 @@ public:
       mPopulate = mMessage->toPlainText().isEmpty();
     });
 
-    // Update header on cursor position change.
-    connect(mMessage, &QTextEdit::cursorPositionChanged, [this] {
-      updateChecks(false, false);
-    });
-    updateChecks(true, true);
+    // Setup spell check.
+    if (mDictName != "none") {
+      bool valid = mMessage->SpellCheckSetup(mDictPath + "/" + mDictName,
+                                             mUserDict,
+                                             mSpellError, mSpellIgnore);
+      if (!valid) {
+        foreach (QAction *action, dictActionGroup->actions()) {
+          action->setChecked(false);
+          if (mDictName == action->data().toString()) {
+            action->setEnabled(false);
+            action->setToolTip(tr("Invalid dictionary '%1.dic'")
+                                 .arg(mDictName));
+          }
+        }
+        mDictName = "none";
+      }
+    }
+
+    // Setup line length check.
+    mMessage->LengthSetup({mSubjectCheck->isChecked() ? mSubjectLimit : 0,
+                           mBodyCheck->isChecked() ? mBodyLimit : 0},
+                          {mInsertBlank->isChecked() ? 1 : -1},
+                          mLineLengthWarn);
 
     // Update menu items.
     MenuBar *menuBar = MenuBar::instance(this);
@@ -1386,68 +1466,10 @@ private:
     MenuBar::instance(this)->updateRepository();
   }
 
-  void updateChecks(bool spellchecker, bool linelengthchecker)
-  {
-    int row = mMessage->textCursor().blockNumber();
-    QStringList strlist = mMessage->toPlainText().split('\n');
-    int len = strlist[row].length();
-
-    // Setup header.
-    switch (row) {
-      case 0:
-        if (mSubjectCheck->isChecked()) {
-          QString text = QString::number(len) + "/";
-          mLengthLabel->setText(tr("Subject:") + " " + text, text);
-          mLengthSpin->setValue(mSubjectLimit);
-        }
-        mLengthLabel->setVisible(mSubjectCheck->isChecked());
-        mLengthSpin->setVisible(mSubjectCheck->isChecked());
-        mLengthSpin->setEnabled(true);
-        break;
-
-      case 1:
-        if (mInsertBlank->isChecked()) {
-          mLengthLabel->setText(tr("Blank:") + " 0/", QString("0 /"));
-          mLengthSpin->setValue(0);
-          mLengthLabel->setVisible(true);
-          mLengthSpin->setVisible(true);
-          mLengthSpin->setEnabled(false);
-          break;
-        }
-        // Fall through.
-
-      default:
-        if (mBodyCheck->isChecked()) {
-          QString text = QString::number(len) + "/";
-          mLengthLabel->setText(tr("Body:") + " " + text, text);
-          mLengthSpin->setValue(mBodyLimit);
-        }
-        mLengthLabel->setVisible(mBodyCheck->isChecked());
-        mLengthSpin->setVisible(mBodyCheck->isChecked());
-        mLengthSpin->setEnabled(true);
-        break;
-    }
-
-    // Setup checks.
-    if (spellchecker)
-      mMessage->SpellCheckSetup(mDictPath + "/" + mDict,
-                                mUserDict,
-                                mSpellError,
-                                mSpellIgnore);
-
-    if (linelengthchecker)
-      mMessage->LineLengthSetup({mSubjectLimit, mBodyLimit},
-                                {mInsertBlank->isChecked() ? 1 : -1},
-                                mLineLengthWarn);
-  }
-
   git::Repository mRepo;
   git::Diff mDiff;
 
-  ElidedLabel *mLengthLabel;
-  QSpinBox *mLengthSpin;
-  QComboBox *mDictBox;
-  ElidedLabel *mStatus;
+  QLabel *mStatus;
 
   QAction *mSubjectCheck;
   QAction *mInsertBlank;
@@ -1460,11 +1482,13 @@ private:
 
   bool mEditorEmpty = true;
   bool mPopulate = true;
-  int mSubjectLimit = 0;
-  int mBodyLimit = 0;
-  QString mDict;
+
+  QString mDictName;
   QString mDictPath;
   QString mUserDict;
+
+  int mSubjectLimit;
+  int mBodyLimit;
 
   QTextCharFormat mSpellError;
   QTextCharFormat mSpellIgnore;
