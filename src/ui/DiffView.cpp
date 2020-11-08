@@ -1001,6 +1001,18 @@ public:
       content += " (" + fromFilemode(newmode) + ")\n";
     }
 
+    // Add filetime.
+    if ((newmode != GIT_FILEMODE_UNREADABLE) && (diff.isStatusDiff())) {
+      QFileInfo info(patch.repo().workdir().filePath(newfile.path));
+      QDateTime newtime = info.fileTime(QFile::FileModificationTime);
+      if (newmode != oldmode)
+        lines << Line(GIT_DIFF_LINE_ADDITION, -1, 4);
+      else
+        lines << Line(GIT_DIFF_LINE_CONTEXT, -1, 4);
+      content += InfoWidget::tr("time:");
+      content += " " + QLocale::system().toString(newtime) + "\n";
+    }
+
     // Find matching lines.
     int count = lines.size();
     for (int lidx = 0; lidx < count; ++lidx) {

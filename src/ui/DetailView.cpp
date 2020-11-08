@@ -14,6 +14,7 @@
 #include "MenuBar.h"
 #include "SpellChecker.h"
 #include "TreeWidget.h"
+#include "app/Application.h"
 #include "conf/Settings.h"
 #include "git/Branch.h"
 #include "git/Commit.h"
@@ -60,12 +61,12 @@ const QString kAuthorFmt = "<b>%1 &lt;%2&gt;</b>";
 const QString kAltFmt = "<span style='color: %1'>%2</span>";
 const QString kUrl = "http://www.gravatar.com/avatar/%1?s=%2&d=mm";
 
+const QString kDictKey = "commit.spellcheck.dict";
 const QString kSubjectCheckKey = "commit.subject.lengthcheck";
 const QString kSubjectLimitKey = "commit.subject.limit";
 const QString kBlankKey = "commit.blank.insert";
 const QString kBodyCheckKey = "commit.body.lengthcheck";
 const QString kBodyLimitKey = "commit.body.limit";
-const QString kDictKey = "commit.spellcheck.dict";
 
 const Qt::TextInteractionFlags kTextFlags =
   Qt::TextSelectableByMouse | Qt::LinksAccessibleByMouse;
@@ -908,9 +909,38 @@ public:
   {}
 
 signals:
-  void mouseWheel(QAction *action, int wheel);
+  void keyPressed(QAction *action, int key, ulong msDiff);
+  void mouseWheel(QAction *action, int wheelX, int wheelY);
 
 private:
+  void actionEvent(QActionEvent *e) override
+  {
+    QMenu::actionEvent(e);
+
+    if (e->type() == QEvent::ActionAdded) {
+      QAction *action = e->action();
+      connect(action, &QAction::hovered, [this, action] {
+        mAction = action;
+      });
+    }
+  }
+
+  void keyPressEvent(QKeyEvent *e) override
+  {
+    if (mAction != nullptr) {
+      ulong timestamp = e->timestamp();
+      emit keyPressed(mAction, e->key(), timestamp - mTimeStamp);
+      mTimeStamp = timestamp;
+    }
+    QMenu::keyPressEvent(e);
+  }
+
+  void mouseMoveEvent(QMouseEvent *e) override
+  {
+    mAction = actionAt(e->pos());
+    QMenu::mouseMoveEvent(e);
+  }
+
   void wheelEvent(QWheelEvent *e) override
   {
     QPoint degrees = e->angleDelta();
@@ -921,15 +951,16 @@ private:
 
       // Default wheel step = 15 degrees
       QPoint numSteps = degrees / 15;
-      if (numSteps.y() != 0) {
-        QAction *action = actionAt(e->pos());
-        if (action != nullptr)
-          emit mouseWheel(action, numSteps.y());
+      if ((numSteps.x() != 0) || (numSteps.y() != 0)) {
+        if (mAction != nullptr)
+          emit mouseWheel(mAction, numSteps.x(), numSteps.y());
       }
     }
-
     QMenu::wheelEvent(e);
   }
+
+  QAction *mAction = nullptr;
+  ulong mTimeStamp;
 };
 
 class CommitEditor : public QFrame
@@ -1131,58 +1162,47 @@ public:
     mBodyCheck->setChecked(appconfig.value<bool>(kBodyCheckKey, false));
 
     connect(lineLengthChecks, &Menu::mouseWheel,
-    [this](QAction *action, int wheel) {
-      git::Config appconfig = mRepo.appConfig();
-      int nr = action->data().toInt();
-      bool saved = false;
+    [this](QAction *action, int wheelX, int wheelY) {
+      updateLineSettings(action, wheelY);
+    });
 
-      // Mouse wheel value change action.
-      switch (nr) {
-        case 1: // Subject text
-          mSubjectLimit += wheel;
-          if (mSubjectLimit > 255)
-            mSubjectLimit = 255;
-          if (mSubjectLimit <= 0) {
-            action->setChecked(false);
-            mSubjectLimit = 0;
-          } else {
-            action->setChecked(true);
-          }
-          action->setText(tr("Subject Line Length Check: %1")
-                            .arg(mSubjectLimit));
+    connect(lineLengthChecks, &Menu::keyPressed,
+    [this](QAction *action, int key, ulong msDiff) {
+      int value = 0;
+      if (key == Qt::Key_Plus)
+        value = 1;
+      if (key == Qt::Key_Minus)
+        value = -1;
 
-          // Save settings.
-          appconfig.setValue(kSubjectCheckKey, action->isChecked());
-          appconfig.setValue(kSubjectLimitKey, mSubjectLimit);
-          saved = true;
-          break;
-        case 2: // Blank line insertion
-          break;
-        case 3: // Body text
-          mBodyLimit += wheel;
-          if (mBodyLimit > 255)
-            mBodyLimit = 255;
-          if (mBodyLimit < 1) {
-            mBodyLimit = 0;
-            action->setChecked(false);
-          } else {
-            action->setChecked(true);
-          }
-          action->setText(tr("Body Text Length Check: %1").arg(mBodyLimit));
-
-          // Save settings.
-          appconfig.setValue(kBodyCheckKey, action->isChecked());
-          appconfig.setValue(kBodyLimitKey, mBodyLimit);
-          saved = true;
-          break;
+      // +/- key for increment/decrement
+      if (value != 0) {
+        updateLineSettings(action, value);
+        return;
       }
 
-      // Apply changes.
-      if (saved) {
-        mMessage->LengthSetup({mSubjectCheck->isChecked() ? mSubjectLimit : 0,
-                               mBodyCheck->isChecked() ? mBodyLimit : 0},
-                              {mInsertBlank->isChecked() ? 1 : -1},
-                              mLineLengthWarn);
+      // 0..9 keys for value input
+      int diff = 0;
+      if ((key >= Qt::Key_0) && (key <= Qt::Key_9)) {
+        switch (action->data().toInt()) {
+          case 1:
+            value = mSubjectLimit;
+            break;
+          case 2:
+            break;
+          case 3:
+            value = mBodyLimit;
+        }
+        if (msDiff > 500) {
+          diff = key - Qt::Key_0;
+          diff -= value;
+        } else {
+          diff = value * 10;
+          diff += key - Qt::Key_0;
+          diff -= value;
+        }
+
+        if (diff != 0)
+          updateLineSettings(action, diff);
       }
     });
 
@@ -1464,6 +1484,62 @@ private:
 
     // Update menu actions.
     MenuBar::instance(this)->updateRepository();
+  }
+
+  void updateLineSettings(QAction *action, int value)
+  {
+    git::Config appconfig = mRepo.appConfig();
+    int nr = action->data().toInt();
+    bool saved = false;
+
+    // Mouse wheel / keyboard value change action.
+    switch (nr) {
+      case 1: // Subject text
+        mSubjectLimit += value;
+        if (mSubjectLimit > 255)
+          mSubjectLimit = 255;
+        if (mSubjectLimit <= 0) {
+          action->setChecked(false);
+          mSubjectLimit = 0;
+        } else {
+          action->setChecked(true);
+        }
+        action->setText(tr("Subject Line Length Check: %1")
+                          .arg(mSubjectLimit));
+
+        // Save settings.
+        appconfig.setValue(kSubjectCheckKey, action->isChecked());
+        appconfig.setValue(kSubjectLimitKey, mSubjectLimit);
+        saved = true;
+        break;
+      case 2: // Blank line insertion
+        break;
+      case 3: // Body text
+        mBodyLimit += value;
+        if (mBodyLimit > 255)
+          mBodyLimit = 255;
+        if (mBodyLimit < 1) {
+          mBodyLimit = 0;
+          action->setChecked(false);
+        } else {
+          action->setChecked(true);
+        }
+        action->setText(tr("Body Text Length Check: %1").arg(mBodyLimit));
+
+        // Save settings.
+        appconfig.setValue(kBodyCheckKey, action->isChecked());
+        appconfig.setValue(kBodyLimitKey, mBodyLimit);
+        saved = true;
+        break;
+    }
+
+    // Apply changes.
+    if (saved) {
+      mMessage->LengthSetup({mSubjectCheck->isChecked() ? mSubjectLimit : 0,
+                             mBodyCheck->isChecked() ? mBodyLimit : 0},
+                            {mInsertBlank->isChecked() ? 1 : -1},
+                            mLineLengthWarn);
+    }
   }
 
   git::Repository mRepo;

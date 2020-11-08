@@ -231,7 +231,7 @@ FileList::FileList(const git::Repository &repo, QWidget *parent)
 
   mSortMenu = menu->addMenu(tr("Sort By"));
 
-  // Sort by filename
+  // Sort by filename.
   mSortName = mSortMenu->addAction(tr("Name"), [this] {
     Settings *settings = Settings::instance();
     Qt::SortOrder order = Qt::AscendingOrder;
@@ -243,7 +243,7 @@ FileList::FileList(const git::Repository &repo, QWidget *parent)
     emit sortRequested();
   });
 
-  // Sort by status
+  // Sort by status.
   mSortStatus = mSortMenu->addAction(tr("Status"), [this] {
     Settings *settings = Settings::instance();
     Qt::SortOrder order = Qt::AscendingOrder;
@@ -255,7 +255,7 @@ FileList::FileList(const git::Repository &repo, QWidget *parent)
     emit sortRequested();
   });
 
-  // Sort by file type: text/binary
+  // Sort by file type: text/binary.
   mSortType = mSortMenu->addAction(tr("File Type"), [this] {
     Settings *settings = Settings::instance();
     Qt::SortOrder order = Qt::AscendingOrder;
@@ -267,7 +267,7 @@ FileList::FileList(const git::Repository &repo, QWidget *parent)
     emit sortRequested();
   });
 
-  // Sort by file extension
+  // Sort by file extension.
   mSortFile = mSortMenu->addAction(tr("File Extension"), [this] {
     Settings *settings = Settings::instance();
     Qt::SortOrder order = Qt::AscendingOrder;
@@ -279,7 +279,7 @@ FileList::FileList(const git::Repository &repo, QWidget *parent)
     emit sortRequested();
   });
 
-  // Sort alphabetical
+  // Sort alphabetical.
   mSortAlphabetical = menu->addAction(tr("Sort Alphabetical"));
   mSortAlphabetical->setCheckable(true);
   connect(mSortAlphabetical, &QAction::triggered, [this](bool checked) {
