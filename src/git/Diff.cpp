@@ -11,6 +11,7 @@
 #include "Patch.h"
 #include "git2/patch.h"
 #include <algorithm>
+#include <QFileInfo>
 
 namespace git {
 
@@ -140,11 +141,11 @@ void Diff::findSimilar(bool untracked)
   d->resetMap();
 }
 
-void Diff::sort(SortRole role, Qt::SortOrder order, bool alphabetical)
+void Diff::sort(SortRole role, Qt::SortOrder order)
 {
   bool ascending = (order == Qt::AscendingOrder);
   std::sort(d->map.begin(), d->map.end(),
-  [this, role, ascending, alphabetical](int lhs, int rhs) {
+  [this, role, ascending](int lhs, int rhs) {
     switch (role) {
       case NameRole: {
         QString lhsName = git_diff_get_delta(d->diff, lhs)->new_file.path;
@@ -152,46 +153,100 @@ void Diff::sort(SortRole role, Qt::SortOrder order, bool alphabetical)
         return ascending ? (lhsName < rhsName) : (rhsName < lhsName);
       }
 
+      case PathRole: {
+        QFileInfo lhsInfo(git_diff_get_delta(d->diff, lhs)->new_file.path);
+        QFileInfo rhsInfo(git_diff_get_delta(d->diff, rhs)->new_file.path);
+        QString lhsPath = lhsInfo.path();
+        QString rhsPath = rhsInfo.path();
+        return ascending ? (lhsPath < rhsPath) : (rhsPath < lhsPath);
+      }
+
       case StatusRole: {
         git_delta_t lhsStatus = git_diff_get_delta(d->diff, lhs)->status;
         git_delta_t rhsStatus = git_diff_get_delta(d->diff, rhs)->status;
-        bool comp = ascending ? (lhsStatus < rhsStatus) : (rhsStatus < lhsStatus);
-        if (alphabetical && (lhsStatus == rhsStatus)) {
-          QString lhsName = git_diff_get_delta(d->diff, lhs)->new_file.path;
-          QString rhsName = git_diff_get_delta(d->diff, rhs)->new_file.path;
-          return lhsName < rhsName;
-        } else {
-          return comp;
-        }
+        return ascending ? (lhsStatus < rhsStatus) : (rhsStatus < lhsStatus);
       }
 
       case BinaryRole: {
         uint16_t lhsFlags = git_diff_get_delta(d->diff, lhs)->flags & GIT_DIFF_FLAG_BINARY;
         uint16_t rhsFlags = git_diff_get_delta(d->diff, rhs)->flags & GIT_DIFF_FLAG_BINARY;
-        bool comp = ascending ? (lhsFlags < rhsFlags) : (rhsFlags < lhsFlags);
-        if (alphabetical && (lhsFlags == rhsFlags)) {
-          QString lhsName = git_diff_get_delta(d->diff, lhs)->new_file.path;
-          QString rhsName = git_diff_get_delta(d->diff, rhs)->new_file.path;
-          return lhsName < rhsName;
-        } else {
-          return comp;
-        }
+        return ascending ? (lhsFlags < rhsFlags) : (rhsFlags < lhsFlags);
       }
 
       case ExtensionRole: {
         QString lhsName = git_diff_get_delta(d->diff, lhs)->new_file.path;
         QString rhsName = git_diff_get_delta(d->diff, rhs)->new_file.path;
-        bool alphabetical = lhsName < rhsName;
         lhsName.remove(0, lhsName.lastIndexOf('.'));
         rhsName.remove(0, rhsName.lastIndexOf('.'));
-        bool comp = ascending ? (lhsName < rhsName) : (rhsName < lhsName);
-        if (alphabetical && (lhsName == rhsName)) {
-          return alphabetical;
-        } else {
-          return comp;
-        }
+        return ascending ? (lhsName < rhsName) : (rhsName < lhsName);
       }
     }
+  });
+}
+
+void Diff::sort(QList<SortRole> roleList, QList<Qt::SortOrder> orderList)
+{
+  std::sort(d->map.begin(), d->map.end(),
+  [this, roleList, orderList](int lhs, int rhs) {
+    QString lhsName = git_diff_get_delta(d->diff, lhs)->new_file.path;
+    QString rhsName = git_diff_get_delta(d->diff, rhs)->new_file.path;
+    QFileInfo lhsInfo(lhsName);
+    QFileInfo rhsInfo(rhsName);
+    QString lhsPath = lhsInfo.path();
+    QString rhsPath = rhsInfo.path();
+    git_delta_t lhsStatus = git_diff_get_delta(d->diff, lhs)->status;
+    git_delta_t rhsStatus = git_diff_get_delta(d->diff, rhs)->status;
+    uint16_t lhsFlags = git_diff_get_delta(d->diff, lhs)->flags & GIT_DIFF_FLAG_BINARY;
+    uint16_t rhsFlags = git_diff_get_delta(d->diff, rhs)->flags & GIT_DIFF_FLAG_BINARY;
+    QString lhsExt = lhsName;
+    QString rhsExt = rhsName;
+
+    bool comp = false;
+
+    lhsExt.remove(0, lhsExt.lastIndexOf('.'));
+    rhsExt.remove(0, rhsExt.lastIndexOf('.'));
+
+    for (int i = 0; i < roleList.count(); i++) {
+      bool asc = orderList.at(i) == Qt::AscendingOrder;
+      bool des = orderList.at(i) == Qt::DescendingOrder;
+
+      // Sort order is not set, skip this sort role.
+      if (!asc && !des)
+        continue;
+
+      // Sort role.
+      switch (roleList.at(i)) {
+        case git::Diff::NameRole:
+          comp = asc ? (lhsName < rhsName) : (rhsName < lhsName);
+          if (lhsName != rhsName)
+            return comp;
+          break;
+        case git::Diff::PathRole:
+          comp = asc ? (lhsPath < rhsPath) : (rhsPath < lhsPath);
+          if (lhsPath != rhsPath)
+            return comp;
+          break;
+        case git::Diff::StatusRole:
+          comp = asc ? (lhsStatus < rhsStatus) : (rhsStatus < lhsStatus);
+          if (lhsStatus != rhsStatus)
+            return comp;
+          break;
+        case git::Diff::BinaryRole:
+          comp = asc ? (lhsFlags < rhsFlags) : (rhsFlags < lhsFlags);
+          if (lhsFlags != rhsFlags)
+            return comp;
+          break;
+        case git::Diff::ExtensionRole:
+          comp = asc ? (lhsExt < rhsExt) : (rhsExt < lhsExt);
+          if (lhsExt != rhsExt)
+            return comp;
+          break;
+        default:
+          break;
+      }
+    }
+
+    return comp;
   });
 }
 

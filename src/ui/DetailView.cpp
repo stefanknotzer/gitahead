@@ -1127,6 +1127,7 @@ public:
     });
     mSubjectCheck->setData(1);
     mSubjectCheck->setCheckable(true);
+    mSubjectCheck->setToolTip(tr("Use mouse wheel or numeric keys"));
     mSubjectCheck->setChecked(appconfig.value<bool>(kSubjectCheckKey, false));
 
     mInsertBlank = lineLengthChecks->addAction(
@@ -1159,10 +1160,16 @@ public:
     });
     mBodyCheck->setData(3);
     mBodyCheck->setCheckable(true);
+    mBodyCheck->setToolTip(tr("Use mouse wheel or numeric keys"));
     mBodyCheck->setChecked(appconfig.value<bool>(kBodyCheckKey, false));
 
     connect(lineLengthChecks, &Menu::mouseWheel,
     [this](QAction *action, int wheelX, int wheelY) {
+      QWidget *widget = action->parentWidget();
+      if (widget) {
+        Menu *menu = static_cast<Menu*>(widget);
+        menu->setToolTipsVisible(false);
+      }
       updateLineSettings(action, wheelY);
     });
 
@@ -1204,6 +1211,10 @@ public:
         if (diff != 0)
           updateLineSettings(action, diff);
       }
+    });
+
+    connect(lineLengthChecks, &QMenu::aboutToShow, [lineLengthChecks] {
+      lineLengthChecks->setToolTipsVisible(true);
     });
 
     mStatus = new QLabel(QString(), this);

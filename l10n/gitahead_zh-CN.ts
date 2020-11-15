@@ -568,12 +568,12 @@
     <name>CommitEditor</name>
     <message>
         <location filename="../src/ui/DetailView.cpp" line="1091"/>
-        <location filename="../src/ui/DetailView.cpp" line="1217"/>
+        <location filename="../src/ui/DetailView.cpp" line="1228"/>
         <source>Spell Check Language</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1133"/>
+        <location filename="../src/ui/DetailView.cpp" line="1134"/>
         <source>Insert Blank Line between Subject and Body</source>
         <translation type="unfinished"></translation>
     </message>
@@ -599,7 +599,7 @@
     </message>
     <message>
         <location filename="../src/ui/DetailView.cpp" line="1100"/>
-        <location filename="../src/ui/DetailView.cpp" line="1262"/>
+        <location filename="../src/ui/DetailView.cpp" line="1273"/>
         <source>Invalid dictionary &apos;%1.dic&apos;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -610,99 +610,105 @@
     </message>
     <message>
         <location filename="../src/ui/DetailView.cpp" line="1117"/>
-        <location filename="../src/ui/DetailView.cpp" line="1507"/>
+        <location filename="../src/ui/DetailView.cpp" line="1518"/>
         <source>Subject Line Length Check: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1149"/>
-        <location filename="../src/ui/DetailView.cpp" line="1527"/>
+        <location filename="../src/ui/DetailView.cpp" line="1130"/>
+        <location filename="../src/ui/DetailView.cpp" line="1163"/>
+        <source>Use mouse wheel or numeric keys</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/DetailView.cpp" line="1150"/>
+        <location filename="../src/ui/DetailView.cpp" line="1538"/>
         <source>Body Text Length Check: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1223"/>
+        <location filename="../src/ui/DetailView.cpp" line="1234"/>
         <source>Edit User Dictionary</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1290"/>
+        <location filename="../src/ui/DetailView.cpp" line="1301"/>
         <source>Stage All</source>
         <translation>全部暂存</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1294"/>
+        <location filename="../src/ui/DetailView.cpp" line="1305"/>
         <source>Unstage All</source>
         <translation>全部取消暂存</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1297"/>
-        <location filename="../src/ui/DetailView.cpp" line="1483"/>
+        <location filename="../src/ui/DetailView.cpp" line="1308"/>
+        <location filename="../src/ui/DetailView.cpp" line="1494"/>
         <source>Commit</source>
         <translation>提交</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1426"/>
+        <location filename="../src/ui/DetailView.cpp" line="1437"/>
         <source>Update %1</source>
         <translation>更新%1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1430"/>
+        <location filename="../src/ui/DetailView.cpp" line="1441"/>
         <source>Update %1 and %2</source>
         <translation>更新%1和%2</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1434"/>
+        <location filename="../src/ui/DetailView.cpp" line="1445"/>
         <source>Update %1, %2, and %3</source>
         <translation>更新%1，%2和%3</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1439"/>
+        <location filename="../src/ui/DetailView.cpp" line="1450"/>
         <source>Update %1, %2, and %3 more files...</source>
         <translation>更新%1，%2和%3多个文件...</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1455"/>
+        <location filename="../src/ui/DetailView.cpp" line="1466"/>
         <source>Nothing staged</source>
         <translation>没有暂存</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1458"/>
+        <location filename="../src/ui/DetailView.cpp" line="1469"/>
         <source>%1 of %2 file staged</source>
         <translation>已暂存%2个文件中的%1个</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1458"/>
+        <location filename="../src/ui/DetailView.cpp" line="1469"/>
         <source>%1 of %2 files staged</source>
         <translation>已暂存%2个文件中的%1个</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1463"/>
+        <location filename="../src/ui/DetailView.cpp" line="1474"/>
         <source>%1 file partially staged</source>
         <translation>%1文件已部分暂存</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1463"/>
+        <location filename="../src/ui/DetailView.cpp" line="1474"/>
         <source>%1 files partially staged</source>
         <translation>部分暂存了%1个文件</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1469"/>
+        <location filename="../src/ui/DetailView.cpp" line="1480"/>
         <source>%1 unresolved conflict</source>
         <translation>%1个未解决的冲突</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1469"/>
+        <location filename="../src/ui/DetailView.cpp" line="1480"/>
         <source>%1 unresolved conflicts</source>
         <translation>%1个未解决的冲突</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1472"/>
+        <location filename="../src/ui/DetailView.cpp" line="1483"/>
         <source>all conflicts resolved</source>
         <translation>所有冲突已解决</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1483"/>
+        <location filename="../src/ui/DetailView.cpp" line="1494"/>
         <source>Commit Merge</source>
         <translation>提交合并</translation>
     </message>
@@ -1518,97 +1524,107 @@
 <context>
     <name>FileList</name>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="232"/>
+        <location filename="../src/ui/FileList.cpp" line="410"/>
         <source>Sort By</source>
         <translation>排序方式</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="292"/>
+        <location filename="../src/ui/FileList.cpp" line="576"/>
         <source>Select</source>
         <translation>选择</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="235"/>
+        <location filename="../src/ui/FileList.cpp" line="381"/>
+        <location filename="../src/ui/FileList.cpp" line="525"/>
         <source>Name</source>
         <translation>名称</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="247"/>
+        <location filename="../src/ui/FileList.cpp" line="384"/>
+        <location filename="../src/ui/FileList.cpp" line="528"/>
+        <source>Path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/FileList.cpp" line="387"/>
+        <location filename="../src/ui/FileList.cpp" line="531"/>
         <source>Status</source>
         <translation>状态</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="259"/>
-        <source>File Type</source>
+        <location filename="../src/ui/FileList.cpp" line="390"/>
+        <location filename="../src/ui/FileList.cpp" line="534"/>
+        <source>Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="271"/>
-        <source>File Extension</source>
+        <location filename="../src/ui/FileList.cpp" line="393"/>
+        <location filename="../src/ui/FileList.cpp" line="537"/>
+        <source>Extension</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="283"/>
-        <source>Sort Alphabetical</source>
+        <location filename="../src/ui/FileList.cpp" line="400"/>
+        <source>Use mouse wheel and &apos;+&apos;, &apos;-&apos;, space key</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="296"/>
+        <location filename="../src/ui/FileList.cpp" line="580"/>
         <source>Ignore Whitespace (-w)</source>
         <translation>忽略空格（-w）</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="482"/>
+        <location filename="../src/ui/FileList.cpp" line="800"/>
         <source>Added</source>
         <translation>添加的</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="483"/>
+        <location filename="../src/ui/FileList.cpp" line="801"/>
         <source>Deleted</source>
         <translation>删除的</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="484"/>
+        <location filename="../src/ui/FileList.cpp" line="802"/>
         <source>Modified</source>
         <translation>修改的</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="485"/>
+        <location filename="../src/ui/FileList.cpp" line="803"/>
         <source>Renamed</source>
         <translation>更名的</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="486"/>
+        <location filename="../src/ui/FileList.cpp" line="804"/>
         <source>Copied</source>
         <translation>复制的</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="487"/>
+        <location filename="../src/ui/FileList.cpp" line="805"/>
         <source>Ignored</source>
         <translation>忽略的</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="488"/>
+        <location filename="../src/ui/FileList.cpp" line="806"/>
         <source>Untracked</source>
         <translation>未追踪的</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="489"/>
+        <location filename="../src/ui/FileList.cpp" line="807"/>
         <source>Unreadable</source>
         <translation>不可读</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="490"/>
+        <location filename="../src/ui/FileList.cpp" line="808"/>
         <source>Conflicted</source>
         <translation>矛盾的</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="491"/>
+        <location filename="../src/ui/FileList.cpp" line="809"/>
         <source>Unmodified</source>
         <translation>未修改的</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="492"/>
+        <location filename="../src/ui/FileList.cpp" line="810"/>
         <source>Type Change</source>
         <translation>类型变更</translation>
     </message>
