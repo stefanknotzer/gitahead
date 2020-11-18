@@ -1127,7 +1127,7 @@ public:
     });
     mSubjectCheck->setData(1);
     mSubjectCheck->setCheckable(true);
-    mSubjectCheck->setToolTip(tr("Use mouse wheel or numeric keys"));
+    mSubjectCheck->setToolTip(tr("Use mouse wheel, numeric keys and space key"));
     mSubjectCheck->setChecked(appconfig.value<bool>(kSubjectCheckKey, false));
 
     mInsertBlank = lineLengthChecks->addAction(
@@ -1160,7 +1160,7 @@ public:
     });
     mBodyCheck->setData(3);
     mBodyCheck->setCheckable(true);
-    mBodyCheck->setToolTip(tr("Use mouse wheel or numeric keys"));
+    mBodyCheck->setToolTip(mSubjectCheck->toolTip());
     mBodyCheck->setChecked(appconfig.value<bool>(kBodyCheckKey, false));
 
     connect(lineLengthChecks, &Menu::mouseWheel,
@@ -1170,35 +1170,32 @@ public:
         Menu *menu = static_cast<Menu*>(widget);
         menu->setToolTipsVisible(false);
       }
+
       updateLineSettings(action, wheelY);
     });
 
     connect(lineLengthChecks, &Menu::keyPressed,
     [this](QAction *action, int key, ulong msDiff) {
-      int value = 0;
-      if (key == Qt::Key_Plus)
-        value = 1;
-      if (key == Qt::Key_Minus)
-        value = -1;
-
-      // +/- key for increment/decrement
-      if (value != 0) {
-        updateLineSettings(action, value);
-        return;
+      QWidget *widget = action->parentWidget();
+      if (widget) {
+        Menu *menu = static_cast<Menu*>(widget);
+        menu->setToolTipsVisible(false);
       }
 
       // 0..9 keys for value input
-      int diff = 0;
       if ((key >= Qt::Key_0) && (key <= Qt::Key_9)) {
+        int diff = 0;
+        int value;
         switch (action->data().toInt()) {
           case 1:
             value = mSubjectLimit;
             break;
           case 2:
-            break;
+            return;
           case 3:
             value = mBodyLimit;
         }
+
         if (msDiff > 500) {
           diff = key - Qt::Key_0;
           diff -= value;
@@ -1210,6 +1207,12 @@ public:
 
         if (diff != 0)
           updateLineSettings(action, diff);
+      }
+
+      // Space key: toggle checkbox
+      if (key == Qt::Key_Space) {
+        action->setChecked(!action->isChecked());
+        updateLineSettings(action, 0);
       }
     });
 
@@ -1512,8 +1515,6 @@ private:
         if (mSubjectLimit <= 0) {
           action->setChecked(false);
           mSubjectLimit = 0;
-        } else {
-          action->setChecked(true);
         }
         action->setText(tr("Subject Line Length Check: %1")
                           .arg(mSubjectLimit));
@@ -1524,6 +1525,9 @@ private:
         saved = true;
         break;
       case 2: // Blank line insertion
+        // Save settings.
+        appconfig.setValue(kBlankKey, action->isChecked());
+        saved = true;
         break;
       case 3: // Body text
         mBodyLimit += value;
@@ -1541,6 +1545,8 @@ private:
         appconfig.setValue(kBodyCheckKey, action->isChecked());
         appconfig.setValue(kBodyLimitKey, mBodyLimit);
         saved = true;
+        break;
+      default:
         break;
     }
 

@@ -1056,7 +1056,7 @@ public:
         });
 
         if (starred)
-          painter->setBrush(Application::theme()->star());
+          painter->setBrush(branchColor); //sk/build: painter->setBrush(Application::theme()->star());
 
         painter->setPen(QPen(branchColor, 1.25));
         painter->drawPolygon(polygon.translated(x, y));

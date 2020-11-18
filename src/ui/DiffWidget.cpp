@@ -97,8 +97,6 @@ void DiffWidget::setDiff(
 
   // Populate views.
   if (mDiff.isValid()) {
-    Qt::SortOrder order = Qt::DescendingOrder;
-    git::Diff::SortRole role = git::Diff::StatusRole;
     if (!mDiff.isConflicted()) {
       Settings *settings = Settings::instance();
       QMap<int, QByteArray> sortMap;
@@ -118,12 +116,10 @@ void DiffWidget::setDiff(
 
         mDiff.sort(roleList, orderList);
       } else {
-        role = static_cast<git::Diff::SortRole>(settings->value("sort/role").toInt());
-        order = static_cast<Qt::SortOrder>(settings->value("sort/order").toInt());
-        mDiff.sort(role, order);
+        mDiff.sort(git::Diff::NameRole, Qt::AscendingOrder);
       }
     } else {
-      mDiff.sort(role, order);
+      mDiff.sort(git::Diff::StatusRole, Qt::DescendingOrder);
     }
   }
 

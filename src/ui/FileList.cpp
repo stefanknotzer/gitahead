@@ -378,19 +378,19 @@ FileList::FileList(const git::Repository &repo, QWidget *parent)
     // Sort role.
     switch (ba[0]) {
       case git::Diff::NameRole:
-        action = new QAction(tr("Name"));
+        action = new QAction(tr("File Name"));
         break;
       case git::Diff::PathRole:
-        action = new QAction(tr("Path"));
+        action = new QAction(tr("File Path"));
         break;
       case git::Diff::StatusRole:
         action = new QAction(tr("Status"));
         break;
       case git::Diff::BinaryRole:
-        action = new QAction(tr("Type"));
+        action = new QAction(tr("Text/Binary"));
         break;
       case git::Diff::ExtensionRole:
-        action = new QAction(tr("Extension"));
+        action = new QAction(tr("File Extension"));
         break;
       default:
         action = new QAction("---");
@@ -522,19 +522,19 @@ FileList::FileList(const git::Repository &repo, QWidget *parent)
         // Sort role.
         switch (ba[0]) {
           case git::Diff::NameRole:
-            mActionList[i]->setText(tr("Name"));
+            mActionList[i]->setText(tr("File Name"));
             break;
           case git::Diff::PathRole:
-            mActionList[i]->setText(tr("Path"));
+            mActionList[i]->setText(tr("File Path"));
             break;
           case git::Diff::StatusRole:
             mActionList[i]->setText(tr("Status"));
             break;
           case git::Diff::BinaryRole:
-            mActionList[i]->setText(tr("Type"));
+            mActionList[i]->setText(tr("Text/Binary"));
             break;
           case git::Diff::ExtensionRole:
-            mActionList[i]->setText(tr("Extension"));
+            mActionList[i]->setText(tr("File Extension"));
             break;
           default:
             mActionList[i]->setText("---");

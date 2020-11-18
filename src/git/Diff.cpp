@@ -188,24 +188,21 @@ void Diff::sort(QList<SortRole> roleList, QList<Qt::SortOrder> orderList)
 {
   std::sort(d->map.begin(), d->map.end(),
   [this, roleList, orderList](int lhs, int rhs) {
-    QString lhsName = git_diff_get_delta(d->diff, lhs)->new_file.path;
-    QString rhsName = git_diff_get_delta(d->diff, rhs)->new_file.path;
-    QFileInfo lhsInfo(lhsName);
-    QFileInfo rhsInfo(rhsName);
+    QFileInfo lhsInfo(git_diff_get_delta(d->diff, lhs)->new_file.path);
+    QFileInfo rhsInfo(git_diff_get_delta(d->diff, rhs)->new_file.path);
     QString lhsPath = lhsInfo.path();
     QString rhsPath = rhsInfo.path();
+    QString lhsName = lhsInfo.baseName();
+    QString rhsName = rhsInfo.baseName();
+    QString lhsExt = lhsInfo.suffix();
+    QString rhsExt = rhsInfo.suffix();
+
     git_delta_t lhsStatus = git_diff_get_delta(d->diff, lhs)->status;
     git_delta_t rhsStatus = git_diff_get_delta(d->diff, rhs)->status;
     uint16_t lhsFlags = git_diff_get_delta(d->diff, lhs)->flags & GIT_DIFF_FLAG_BINARY;
     uint16_t rhsFlags = git_diff_get_delta(d->diff, rhs)->flags & GIT_DIFF_FLAG_BINARY;
-    QString lhsExt = lhsName;
-    QString rhsExt = rhsName;
 
     bool comp = false;
-
-    lhsExt.remove(0, lhsExt.lastIndexOf('.'));
-    rhsExt.remove(0, rhsExt.lastIndexOf('.'));
-
     for (int i = 0; i < roleList.count(); i++) {
       bool asc = orderList.at(i) == Qt::AscendingOrder;
       bool des = orderList.at(i) == Qt::DescendingOrder;
