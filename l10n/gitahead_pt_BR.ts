@@ -624,7 +624,7 @@
     </message>
     <message>
         <location filename="../src/ui/DetailView.cpp" line="1150"/>
-        <location filename="../src/ui/DetailView.cpp" line="1542"/>
+        <location filename="../src/ui/DetailView.cpp" line="1540"/>
         <source>Body Text Length Check: %1</source>
         <translation type="unfinished"></translation>
     </message>

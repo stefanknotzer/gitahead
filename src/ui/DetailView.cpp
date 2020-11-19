@@ -1510,11 +1510,11 @@ private:
     switch (nr) {
       case 1: // Subject text
         mSubjectLimit += value;
-        if (mSubjectLimit > 255)
-          mSubjectLimit = 255;
-        if (mSubjectLimit <= 0) {
-          action->setChecked(false);
+        if (mSubjectLimit > 200)
+          mSubjectLimit = 200;
+        if (mSubjectLimit < 1) {
           mSubjectLimit = 0;
+          action->setChecked(false);
         }
         action->setText(tr("Subject Line Length Check: %1")
                           .arg(mSubjectLimit));
@@ -1531,13 +1531,11 @@ private:
         break;
       case 3: // Body text
         mBodyLimit += value;
-        if (mBodyLimit > 255)
-          mBodyLimit = 255;
+        if (mBodyLimit > 200)
+          mBodyLimit = 200;
         if (mBodyLimit < 1) {
           mBodyLimit = 0;
           action->setChecked(false);
-        } else {
-          action->setChecked(true);
         }
         action->setText(tr("Body Text Length Check: %1").arg(mBodyLimit));
 
