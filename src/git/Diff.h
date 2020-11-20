@@ -32,9 +32,9 @@ public:
   enum SortRole
   {
     NameRole,
-    PathRole,
     StatusRole,
     BinaryRole,
+    PathRole,
     ExtensionRole,
   };
 

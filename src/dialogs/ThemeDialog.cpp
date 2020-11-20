@@ -8,16 +8,9 @@
 //
 
 #include "ThemeDialog.h"
-#include "app/Theme.h"
 #include "conf/Settings.h"
-#include <QIcon>
 #include <QLabel>
-#include <QPalette>
-#include <QPointer>
-#include <QProxyStyle>
 #include <QPushButton>
-#include <QStyle>
-#include <QToolButton>
 #include <QVBoxLayout>
 
 namespace {

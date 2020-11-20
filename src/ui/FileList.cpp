@@ -356,17 +356,20 @@ FileList::FileList(const git::Repository &repo, QWidget *parent)
   if (invalid) {
     QByteArray ba(2, -1);
     mSortMap.clear();
-    ba[0] = git::Diff::NameRole;
+    ba[0] = git::Diff::PathRole;
     ba[1] = Qt::AscendingOrder;
     mSortMap.insert(0, ba);
-    ba[0] = git::Diff::PathRole;
-    ba[1] = -1;
+    ba[0] = git::Diff::NameRole;
+    ba[1] = Qt::AscendingOrder;
     mSortMap.insert(1, ba);
-    ba[0] = git::Diff::StatusRole;
-    mSortMap.insert(2, ba);
-    ba[0] = git::Diff::BinaryRole;
-    mSortMap.insert(3, ba);
     ba[0] = git::Diff::ExtensionRole;
+    ba[1] = Qt::AscendingOrder;
+    mSortMap.insert(2, ba);
+    ba[0] = git::Diff::StatusRole;
+    ba[1] = -1;
+    mSortMap.insert(3, ba);
+    ba[0] = git::Diff::BinaryRole;
+    ba[1] = -1;
     mSortMap.insert(4, ba);
   }
 
