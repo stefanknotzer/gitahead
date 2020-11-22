@@ -66,13 +66,17 @@ public:
 
       case Qt::DecorationRole: {
         QString ret(git::Diff::statusChar(mDiff.status(index.row())));
-        if (mDiff.patch(index.row()).isLfsPointer())
+        QString name = mDiff.name(index.row());
+
+        // Append file type.
+        if (mRepo.lookupSubmodule(name).isValid())
+          ret.append(tr("Submodule"));
+        else if (mDiff.patch(index.row()).isLfsPointer())
           ret.append("LFS");
         else if (mDiff.isBinary(index.row()))
           ret.append("BIN");
         else if (mDiff.status(index.row()) == GIT_DELTA_UNTRACKED) {
           bool binary = false;
-          QString name = mDiff.name(index.row());
           QString path = mRepo.workdir().filePath(name);
           QFile dev(path);
           if (dev.open(QFile::ReadOnly)) {
@@ -192,7 +196,7 @@ public:
       info.setWidth(info.width() - (info.height() * 4 / 3));
       info.setTop(rect.y());
       info.setHeight(rect.height());
-      Badge::paint(painter, {{text.remove(0,1), Theme::BadgeState::Head}}, info, &opt);
+      Badge::paint(painter, {{text.remove(0, 1), Theme::BadgeState::Head}}, info, &opt);
     }
   }
 
@@ -203,6 +207,15 @@ public:
     // Increase spacing.
     QSize size = QStyledItemDelegate::sizeHint(option, index);
     size.setHeight(Badge::size(option.font).height() + 4);
+
+    // Add spacing for gear menu.
+    size.setWidth(size.width() + size.height());
+
+    // Add spacing for file type badge.
+    QString text = index.data(Qt::DecorationRole).toString();
+    if (text.length() > 1)
+      size.setWidth(size.width() + Badge::size(option.font, {text.remove(0, 1), Theme::BadgeState::Head}).width());
+
     return size;
   }
 

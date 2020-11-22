@@ -539,7 +539,7 @@ public:
       layout->addWidget(mButton);
     }
 
-    DisclosureButton *button() const { return mButton; }
+    DisclosureButton *disclosureButton() const { return mButton; }
 
   protected:
     void mouseDoubleClickEvent(QMouseEvent *event) override
@@ -680,11 +680,11 @@ public:
     mImage = new Image(oldpix, oldsize, oldmime,
                        newpix, newsize, newmime);
     layout->addWidget(mImage);
-    connect(mHeader->button(), &DisclosureButton::toggled,
+    connect(mHeader->disclosureButton(), &DisclosureButton::toggled,
             mImage, &QWidget::setVisible);
   }
 
-  DisclosureButton *button() const { return mHeader->button(); }
+  DisclosureButton *disclosureButton() const { return mHeader->disclosureButton(); }
 
 private:
   QPixmap loadPixmap(const git::Patch &patch, git::Diff::File type, QSize &size, QMimeType &mime, bool lfs, bool scaled)
@@ -832,7 +832,7 @@ public:
       layout->addWidget(mButton);
     }
 
-    DisclosureButton *button() const { return mButton; }
+    DisclosureButton *disclosureButton() const { return mButton; }
 
   protected:
     void mouseDoubleClickEvent(QMouseEvent *event) override
@@ -886,7 +886,7 @@ public:
     mEditor->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
     layout->addWidget(mEditor);
-    connect(mHeader->button(), &DisclosureButton::toggled,
+    connect(mHeader->disclosureButton(), &DisclosureButton::toggled,
             mEditor, &TextEditor::setVisible);
 
     // Filesize and mode.
@@ -1020,7 +1020,7 @@ public:
       else
         lines << Line(GIT_DIFF_LINE_CONTEXT, -1, 4);
       content += InfoWidget::tr("time:");
-      content += " " + QLocale::system().toString(newtime) + "\n";
+      content += " " + newtime.toString(Qt::DateFormat::DefaultLocaleShortDate) + "\n";
     }
 
     // Find matching lines.
@@ -1144,7 +1144,7 @@ public:
     mEditor->updateGeometry();
   }
 
-  DisclosureButton *button() const { return mHeader->button(); }
+  DisclosureButton *disclosureButton() const { return mHeader->disclosureButton(); }
 
 private:
   QString fromFilemode(const git_filemode_t mode)
@@ -1344,12 +1344,12 @@ public:
         });
       }
 
-      mButton = new DisclosureButton(this);
-      mButton->setToolTip(
-        mButton->isChecked() ? HunkWidget::tr("Collapse Hunk") : HunkWidget::tr("Expand Hunk"));
-      connect(mButton, &DisclosureButton::toggled, [this] {
-        mButton->setToolTip(
-          mButton->isChecked() ? HunkWidget::tr("Collapse Hunk") : HunkWidget::tr("Expand Hunk"));
+      mDisclosureButton = new DisclosureButton(this);
+      mDisclosureButton->setToolTip(
+        mDisclosureButton->isChecked() ? HunkWidget::tr("Collapse Hunk") : HunkWidget::tr("Expand Hunk"));
+      connect(mDisclosureButton, &DisclosureButton::toggled, [this] {
+        mDisclosureButton->setToolTip(
+          mDisclosureButton->isChecked() ? HunkWidget::tr("Collapse Hunk") : HunkWidget::tr("Expand Hunk"));
       });
 
       QHBoxLayout *buttons = new QHBoxLayout;
@@ -1368,7 +1368,7 @@ public:
       buttons->addWidget(edit);
       if (discard)
         buttons->addWidget(discard);
-      buttons->addWidget(mButton);
+      buttons->addWidget(mDisclosureButton);
 
       QHBoxLayout *layout = new QHBoxLayout(this);
       layout->setContentsMargins(4,4,4,4);
@@ -1379,13 +1379,13 @@ public:
 
       // Collapse on check.
       connect(mCheck, &QCheckBox::clicked, [this](bool staged) {
-        mButton->setChecked(!staged);
+        mDisclosureButton->setChecked(!staged);
       });
     }
 
     QCheckBox *check() const { return mCheck; }
 
-    DisclosureButton *button() const { return mButton; }
+    DisclosureButton *disclosureButton() const { return mDisclosureButton; }
 
     QToolButton *saveButton() const { return mSave; }
     QToolButton *undoButton() const { return mUndo; }
@@ -1395,13 +1395,13 @@ public:
   protected:
     void mouseDoubleClickEvent(QMouseEvent *event) override
     {
-      if (mButton->isEnabled())
-        mButton->toggle();
+      if (mDisclosureButton->isEnabled())
+        mDisclosureButton->toggle();
     }
 
   private:
     QCheckBox *mCheck;
-    DisclosureButton *mButton;
+    DisclosureButton *mDisclosureButton;
     QToolButton *mSave = nullptr;
     QToolButton *mUndo = nullptr;
     QToolButton *mOurs = nullptr;
@@ -1450,7 +1450,7 @@ public:
     mEditor->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
     layout->addWidget(mEditor);
-    connect(mHeader->button(), &DisclosureButton::toggled,
+    connect(mHeader->disclosureButton(), &DisclosureButton::toggled,
             mEditor, &TextEditor::setVisible);
 
     // Handle conflict resolution.
@@ -2124,16 +2124,6 @@ class ElidedLabel : public QLabel
 {
 public:
   ElidedLabel(const QString &text,
-              const QString &shorttext = QString(),
-              const Qt::TextElideMode &elidemode = Qt::ElideMiddle,
-              QWidget *parent = nullptr)
-    : QLabel(parent), mText(text), mShortText(shorttext), mElideMode(elidemode)
-  {
-    QLabel(text, parent);
-    setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Fixed);
-  }
-
-  ElidedLabel(const QString &text,
               const Qt::TextElideMode &elidemode = Qt::ElideMiddle,
               QWidget *parent = nullptr)
     : QLabel(parent), mText(text), mElideMode(elidemode)
@@ -2142,11 +2132,9 @@ public:
     setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Fixed);
   }
 
-  void setText(const QString &text,
-               const QString &shorttext = QString())
+  void setText(const QString &text)
   {
     mText = text;
-    mShortText = shorttext;
 
     QFontMetrics fm = getFontMetric();
     QString plain = QTextDocumentFragment::fromHtml(text).toPlainText();
@@ -2171,11 +2159,7 @@ public:
 
   QSize minimumSizeHint() const override
   {
-    if (mElided && !mShortText.isEmpty())
-      return QLabel::minimumSizeHint();
-
     QFontMetrics fm = getFontMetric();
-
     return QSize(fm.boundingRect("...").width() + fm.averageCharWidth(), QLabel::minimumSizeHint().height());
   }
 
@@ -2186,13 +2170,8 @@ protected:
     QString plain = QTextDocumentFragment::fromHtml(mText).toPlainText();
     QString elide = fm.elidedText(plain, mElideMode, width());
     if (plain.length() > elide.length()) {
-      // Use short text or elide text.
-      if (!mShortText.isEmpty())
-        QLabel::setText(mShortText);
-      else {
-        QString text = mText;
-        QLabel::setText(text.replace(plain, elide));
-      }
+      QString text = mText;
+      QLabel::setText(text.replace(plain, elide));
       mElided = true;
     } else {
       // Use text.
@@ -2219,7 +2198,6 @@ private:
   }
 
   QString mText;
-  QString mShortText;
 
   Qt::TextElideMode mElideMode = Qt::ElideMiddle;
 
@@ -2258,7 +2236,7 @@ public:
     // New name, hyperlink if this is a submodule.
     if (submodule) {
       mUrlName = newname;
-      newlabel->setText("<a href=\"submodule\">" + newname + "</a>", QString());
+      newlabel->setText("<a href=\"submodule\">" + newname + "</a>");
       newlabel->setToolTip(FileLabel::tr("Open Submodule"));
       connect(newlabel, &QLabel::linkActivated, [this] {
         QUrl url;
@@ -2404,6 +2382,32 @@ public:
       });
       buttons->addWidget(mDisclosureButton);
 
+      // Dummy buttons for context menu signals.
+      mDisclosureHunks = new QToolButton(this);
+      mDisclosureHunks->setVisible(false);
+      mDisclosureHunks->setCheckable(true);
+      buttons->addWidget(mDisclosureHunks);
+
+      mDisclosureContents = new QToolButton(this);
+      mDisclosureContents->setVisible(false);
+      mDisclosureContents->setCheckable(true);
+      buttons->addWidget(mDisclosureContents);
+
+      mDisclosureAllHunks = new QToolButton(this);
+      mDisclosureAllHunks->setVisible(false);
+      mDisclosureAllHunks->setCheckable(true);
+      buttons->addWidget(mDisclosureAllHunks);
+
+      mDisclosureAllContents = new QToolButton(this);
+      mDisclosureAllContents->setVisible(false);
+      mDisclosureAllContents->setCheckable(true);
+      buttons->addWidget(mDisclosureAllContents);
+
+      mDisclosureAllFiles = new QToolButton(this);
+      mDisclosureAllFiles->setVisible(false);
+      mDisclosureAllFiles->setCheckable(true);
+      buttons->addWidget(mDisclosureAllFiles);
+
       if (!diff.isStatusDiff())
         return;
 
@@ -2430,6 +2434,13 @@ public:
     DisclosureButton *disclosureButton() const { return mDisclosureButton; }
 
     QToolButton *toolButton() const { return mToolButton; }
+    QToolButton *disclosureHunks() const { return mDisclosureHunks; }
+    QToolButton *disclosureContents() const { return mDisclosureContents; }
+    QToolButton *disclosureAllHunks() const { return mDisclosureAllHunks; }
+    QToolButton *disclosureAllContents() const { return mDisclosureAllContents; }
+    QToolButton *disclosureAllFiles() const { return mDisclosureAllFiles; }
+
+    void setEnableAll(bool enable) { mEnableAll = enable; }
 
   protected:
     void mouseDoubleClickEvent(QMouseEvent *event) override
@@ -2442,6 +2453,101 @@ public:
     {
       RepoView *view = RepoView::parentView(this);
       FileContextMenu menu(view, {mPatch.name()}, mDiff.index());
+
+      // Disclosure trigger signals.
+      QMenu *collapse = new QMenu(tr("Collapse"));
+      QMenu *expand = new QMenu(tr("Expand"));
+
+      QString title;
+      if (mPatch.isUntracked()) {
+        title = tr("Content");
+      } else if (mPatch.isBinary()) {
+        title = tr("Picture/Icon");
+      }
+      else if (mPatch.count() > 0) {
+        title = mPatch.count() == 1 ? tr("Hunk") : tr("Hunks");
+      }
+
+      // Collapse menu actions.
+      if (mPatch.isUntracked() || mPatch.isBinary()) {
+        collapse->addAction(title, [this] {
+          if (!mDisclosureContents->isChecked())
+            mDisclosureContents->setChecked(true);
+          mDisclosureContents->setChecked(false);
+        });
+      } else if (mPatch.count() > 0) {
+        collapse->addAction(title, [this] {
+          if (!mDisclosureHunks->isChecked())
+            mDisclosureHunks->setChecked(true);
+          mDisclosureHunks->setChecked(false);
+        });
+      }
+
+      if ((mDiff.count() > 1) && (mEnableAll)) {
+        if (!title.isEmpty())
+          collapse->addSeparator();
+
+        collapse->addAction(tr("All Hunks"), [this] {
+          if (!mDisclosureAllHunks->isChecked())
+            mDisclosureAllHunks->setChecked(true);
+          mDisclosureAllHunks->setChecked(false);
+        });
+        collapse->addAction(tr("All Pictures/Icons"), [this] {
+          if (!mDisclosureAllContents->isChecked())
+            mDisclosureAllContents->setChecked(true);
+          mDisclosureAllContents->setChecked(false);
+        });
+        collapse->addAction(tr("All Files"), [this] {
+          if (!mDisclosureAllFiles->isChecked())
+            mDisclosureAllFiles->setChecked(true);
+          mDisclosureAllFiles->setChecked(false);
+        });
+      }
+
+      // Expand menu actions.
+      if (mPatch.isUntracked() || mPatch.isBinary()) {
+        expand->addAction(title, [this] {
+          if (mDisclosureContents->isChecked())
+            mDisclosureContents->setChecked(false);
+          mDisclosureContents->setChecked(true);
+        });
+      } else if (mPatch.count() > 0) {
+        expand->addAction(title, [this] {
+          if (mDisclosureHunks->isChecked())
+            mDisclosureHunks->setChecked(false);
+          mDisclosureHunks->setChecked(true);
+        });
+      }
+
+      if ((mDiff.count() > 1) && (mEnableAll)) {
+        if (!title.isEmpty())
+          expand->addSeparator();
+
+        expand->addAction(tr("All Hunks"), [this] {
+          if (mDisclosureAllHunks->isChecked())
+            mDisclosureAllHunks->setChecked(false);
+          mDisclosureAllHunks->setChecked(true);
+        });
+        expand->addAction(tr("All Pictures/Icons"), [this] {
+          if (mDisclosureAllContents->isChecked())
+            mDisclosureAllContents->setChecked(false);
+          mDisclosureAllContents->setChecked(true);
+        });
+        expand->addAction(tr("All Files"), [this] {
+          if (mDisclosureAllFiles->isChecked())
+            mDisclosureAllFiles->setChecked(false);
+          mDisclosureAllFiles->setChecked(true);
+        });
+      }
+
+      // Add menus to FileContextMenu.
+      if (!collapse->isEmpty() || !expand->isEmpty())
+        menu.addSeparator();
+      if (!collapse->isEmpty())
+        menu.addMenu(collapse);
+      if (!expand->isEmpty())
+        menu.addMenu(expand);
+
       menu.exec(event->globalPos());
     }
 
@@ -2454,18 +2560,14 @@ public:
         case git::Index::Disabled:
           disabled = true;
           break;
-
         case git::Index::Unstaged:
           break;
-
         case git::Index::PartiallyStaged:
           state = Qt::PartiallyChecked;
           break;
-
         case git::Index::Staged:
           state = Qt::Checked;
           break;
-
         case git::Index::Conflicted:
           disabled = (mPatch.count() > 0);
           break;
@@ -2482,6 +2584,14 @@ public:
     QToolButton *mToolButton;
     EditButton *mEdit;
     DisclosureButton *mDisclosureButton;
+
+    QToolButton *mDisclosureHunks;
+    QToolButton *mDisclosureContents;
+    QToolButton *mDisclosureAllHunks;
+    QToolButton *mDisclosureAllContents;
+    QToolButton *mDisclosureAllFiles;
+
+    bool mEnableAll = true;
   };
 
   FileWidget(
@@ -2522,7 +2632,7 @@ public:
     mHeader = new Header(diff, patch, binary, lfs, submodule, parent);
     layout->addWidget(mHeader);
 
-    // File collapse.
+    // File collapse/expand.
     DisclosureButton *disclosureButton = mHeader->disclosureButton();
     connect(disclosureButton, &DisclosureButton::toggled, [this, lfs, binary](bool visible) {
       // LFS file expand/collapse.
@@ -2590,6 +2700,38 @@ public:
         hunk->setVisible(visible);
     });
 
+    // Hunks collapse/expand.
+    QToolButton *disclosureFileHunks = mHeader->disclosureHunks();
+    connect(disclosureFileHunks, &QAbstractButton::toggled, [this](bool checked) {
+      setDisclosureHunks(checked);
+    });
+
+    // Content collapse/expand.
+    QToolButton *disclosureFileContents = mHeader->disclosureContents();
+    connect(disclosureFileContents, &QAbstractButton::toggled, [this](bool checked) {
+      setDisclosureHunks(checked);
+      setDisclosureImages(checked);
+      setDisclosureInfos(checked);
+    });
+
+    // All hunks collapse/expand.
+    QToolButton *disclosureAllHunks = mHeader->disclosureAllHunks();
+    connect(disclosureAllHunks, &QAbstractButton::toggled, [this](bool checked) {
+      emit disclosureHunks(checked);
+    });
+
+    // All content collapse/expand.
+    QToolButton *disclosureAllContents = mHeader->disclosureAllContents();
+    connect(disclosureAllContents, &QAbstractButton::toggled, [this](bool checked) {
+      emit disclosureContents(checked);
+    });
+
+    // All files collapse/expand.
+    QToolButton *disclosureAllFiles = mHeader->disclosureAllFiles();
+    connect(disclosureAllFiles, &QAbstractButton::toggled, [this](bool checked) {
+      emit disclosureFiles(checked);
+    });
+
     if (diff.isStatusDiff()) {
       // Collapse on check.
       connect(mHeader->check(), &QCheckBox::stateChanged, [this](int state) {
@@ -2630,7 +2772,7 @@ public:
 
             // Picture/icon already loaded.
             mImages.first()->setVisible(checked);
-            mImages.first()->button()->setChecked(checked);
+            mImages.first()->disclosureButton()->setChecked(checked);
           } else if (checked) {
 
             // Load picture/icon.
@@ -2666,7 +2808,7 @@ public:
           if (!mInfos.isEmpty()) {
             // Info already loaded.
             mInfos.first()->setVisible(checked);
-            mInfos.first()->button()->setChecked(checked);
+            mInfos.first()->disclosureButton()->setChecked(checked);
           } else if (checked) {
             // Load file info.
             layout->addWidget(addInfo(mDiff, mPatch, false, lfs));
@@ -2711,13 +2853,13 @@ public:
           [this, layout, disclosureButton, toolButton, scalebinary](bool checked) {
             toolButton->setText(checked ? tr("Show Pointer") : tr("Show Object"));
             mHunks.first()->setVisible(!checked);
-            mHunks.first()->header()->button()->setChecked(!checked);
+            mHunks.first()->header()->disclosureButton()->setChecked(!checked);
 
             if (!mImages.isEmpty()) {
 
               // Picture/icon already loaded.
               mImages.first()->setVisible(checked);
-              mImages.first()->button()->setChecked(checked);
+              mImages.first()->disclosureButton()->setChecked(checked);
             } else if (checked) {
 
               // Load picture/icon.
@@ -2751,7 +2893,7 @@ public:
 
               // Info already loaded.
               mInfos.first()->setVisible(checked);
-              mInfos.first()->button()->setChecked(checked);
+              mInfos.first()->disclosureButton()->setChecked(checked);
             } else if (checked) {
 
               // Load file info.
@@ -2886,8 +3028,31 @@ public:
     index.add(mPatch.name(), buffer);
   }
 
+  void setDisclosureFile(bool expand) {
+    mHeader->disclosureButton()->setChecked(expand);
+  }
+
+  void setDisclosureHunks(bool expand) {
+    foreach (HunkWidget *hunk, mHunks)
+      hunk->header()->disclosureButton()->setChecked(expand);
+  }
+
+  void setDisclosureImages(bool expand) {
+    foreach (ImageWidget *image, mImages)
+      image->disclosureButton()->setChecked(expand);
+  }
+
+  void setDisclosureInfos(bool expand) {
+    foreach (InfoWidget *info, mInfos)
+      info->disclosureButton()->setChecked(expand);
+  }
+
 signals:
   void diagnosticAdded(TextEditor::DiagnosticKind kind);
+
+  void disclosureHunks(bool checked);
+  void disclosureContents(bool checked);
+  void disclosureFiles(bool checked);
 
 private:
   DiffView *mView;
@@ -3077,11 +3242,23 @@ bool DiffView::scrollToFile(int index)
 void DiffView::setFilter(const QStringList &paths)
 {
   fetchAll();
+
+  int visible = 0;
+  FileWidget *visibleFile = nullptr;
+
   QSet<QString> set = QSet<QString>::fromList(paths);
   foreach (QWidget *widget, mFiles) {
     FileWidget *file = static_cast<FileWidget *>(widget);
     file->setVisible(set.isEmpty() || set.contains(file->name()));
+    file->header()->setEnableAll(true);
+    if (file->isVisible()) {
+      visibleFile = file;
+      visible += 1;
+    }
   }
+
+  if (visible == 1)
+    visibleFile->header()->setEnableAll(false);
 }
 
 QList<TextEditor *> DiffView::editors()
@@ -3099,7 +3276,7 @@ QList<TextEditor *> DiffView::editors()
 void DiffView::ensureVisible(TextEditor *editor, int pos)
 {
   HunkWidget *hunk = static_cast<HunkWidget *>(editor->parentWidget());
-  hunk->header()->button()->setChecked(true);
+  hunk->header()->disclosureButton()->setChecked(true);
 
   FileWidget *file = static_cast<FileWidget *>(hunk->parentWidget());
   file->header()->disclosureButton()->setChecked(true);
@@ -3178,6 +3355,31 @@ void DiffView::fetchMore()
     // Respond to diagnostic signal.
     connect(file, &FileWidget::diagnosticAdded,
             this, &DiffView::diagnosticAdded);
+
+    // Respond to disclosure signals.
+    connect(file, &FileWidget::disclosureHunks, [this](bool checked) {
+      foreach (QWidget *widget, mFiles) {
+        FileWidget *file = static_cast<FileWidget *>(widget);
+        if (file->isVisible())
+          file->setDisclosureHunks(checked);
+      }
+    });
+    connect(file, &FileWidget::disclosureContents, [this](bool checked) {
+      foreach (QWidget *widget, mFiles) {
+        FileWidget *file = static_cast<FileWidget *>(widget);
+        if (file->isVisible()) {
+          file->setDisclosureImages(checked);
+          file->setDisclosureInfos(checked);
+        }
+      }
+    });
+    connect(file, &FileWidget::disclosureFiles, [this](bool checked) {
+      foreach (QWidget *widget, mFiles) {
+        FileWidget *file = static_cast<FileWidget *>(widget);
+        if (file->isVisible())
+          file->setDisclosureFile(checked);
+      }
+    });
   }
 
   // Finish layout.
