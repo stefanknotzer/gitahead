@@ -860,7 +860,10 @@ public:
     layout->setContentsMargins(0,0,0,0);
     layout->setSpacing(0);
 
+    // Check for valid index.
     int index = diff.indexOf(patch.name());
+    if (index < 0)
+      return;
 
     mHeader = new Header(binary, lfs, this);
     layout->addWidget(mHeader);
@@ -2455,17 +2458,18 @@ public:
       FileContextMenu menu(view, {mPatch.name()}, mDiff.index());
 
       // Disclosure trigger signals.
-      QMenu *collapse = new QMenu(tr("Collapse"));
-      QMenu *expand = new QMenu(tr("Expand"));
+      QMenu *collapse = new QMenu(FileContextMenu::tr("Collapse"));
+      QMenu *expand = new QMenu(FileContextMenu::tr("Expand"));
 
       QString title;
       if (mPatch.isUntracked()) {
-        title = tr("Content");
+        title = FileContextMenu::tr("Content");
       } else if (mPatch.isBinary()) {
-        title = tr("Picture/Icon");
+        title = FileContextMenu::tr("Picture/Icon");
       }
       else if (mPatch.count() > 0) {
-        title = mPatch.count() == 1 ? tr("Hunk") : tr("Hunks");
+        title = mPatch.count() == 1 ? FileContextMenu::tr("Hunk") :
+                                      FileContextMenu::tr("Hunks");
       }
 
       // Collapse menu actions.
@@ -2487,17 +2491,17 @@ public:
         if (!title.isEmpty())
           collapse->addSeparator();
 
-        collapse->addAction(tr("All Hunks"), [this] {
+        collapse->addAction(FileContextMenu::tr("All Hunks"), [this] {
           if (!mDisclosureAllHunks->isChecked())
             mDisclosureAllHunks->setChecked(true);
           mDisclosureAllHunks->setChecked(false);
         });
-        collapse->addAction(tr("All Pictures/Icons"), [this] {
+        collapse->addAction(FileContextMenu::tr("All Pictures/Icons"), [this] {
           if (!mDisclosureAllContents->isChecked())
             mDisclosureAllContents->setChecked(true);
           mDisclosureAllContents->setChecked(false);
         });
-        collapse->addAction(tr("All Files"), [this] {
+        collapse->addAction(FileContextMenu::tr("All Files"), [this] {
           if (!mDisclosureAllFiles->isChecked())
             mDisclosureAllFiles->setChecked(true);
           mDisclosureAllFiles->setChecked(false);
@@ -2523,17 +2527,17 @@ public:
         if (!title.isEmpty())
           expand->addSeparator();
 
-        expand->addAction(tr("All Hunks"), [this] {
+        expand->addAction(FileContextMenu::tr("All Hunks"), [this] {
           if (mDisclosureAllHunks->isChecked())
             mDisclosureAllHunks->setChecked(false);
           mDisclosureAllHunks->setChecked(true);
         });
-        expand->addAction(tr("All Pictures/Icons"), [this] {
+        expand->addAction(FileContextMenu::tr("All Pictures/Icons"), [this] {
           if (mDisclosureAllContents->isChecked())
             mDisclosureAllContents->setChecked(false);
           mDisclosureAllContents->setChecked(true);
         });
-        expand->addAction(tr("All Files"), [this] {
+        expand->addAction(FileContextMenu::tr("All Files"), [this] {
           if (mDisclosureAllFiles->isChecked())
             mDisclosureAllFiles->setChecked(false);
           mDisclosureAllFiles->setChecked(true);
@@ -3334,7 +3338,8 @@ void DiffView::fetchMore()
   RepoView *view = RepoView::parentView(this);
   for (int pidx = init; pidx < patchCount && pidx - init < 8; ++pidx) {
     git::Patch patch = mDiff.patch(pidx);
-    if (!patch.isValid()) {
+    if (!patch.isValid() &&
+        (mDiff.status(pidx) != GIT_DELTA_UNMODIFIED)) {
       // This diff is stale. Refresh the view.
       QTimer::singleShot(0, view, &RepoView::refresh);
       return;
@@ -3346,7 +3351,7 @@ void DiffView::fetchMore()
 
     mFiles.append(file);
 
-    if (file->isEmpty()) {
+    if (file->isEmpty() || !patch.isValid()) {
       DisclosureButton *button = file->header()->disclosureButton();
       button->setChecked(false);
       button->setEnabled(false);

@@ -67,11 +67,14 @@ public:
       case Qt::DecorationRole: {
         QString ret(git::Diff::statusChar(mDiff.status(index.row())));
         QString name = mDiff.name(index.row());
+        git::Patch patch = mDiff.patch(index.row());
 
         // Append file type.
         if (mRepo.lookupSubmodule(name).isValid())
           ret.append(tr("Submodule"));
-        else if (mDiff.patch(index.row()).isLfsPointer())
+        else if (!patch.isValid())
+          ret.append(tr("Invalid"));
+        else if (patch.isLfsPointer())
           ret.append("LFS");
         else if (mDiff.isBinary(index.row()))
           ret.append("BIN");
