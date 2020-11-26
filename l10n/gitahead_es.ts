@@ -1234,12 +1234,12 @@
 <context>
     <name>DiffView</name>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="3158"/>
+        <location filename="../src/ui/DiffView.cpp" line="3167"/>
         <source>Add new file</source>
         <translation>Añadir nuevo archivo</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="3172"/>
+        <location filename="../src/ui/DiffView.cpp" line="3181"/>
         <source>Or drag files here to copy into the repository</source>
         <translation>O arrastra archivos aquí para copiarlos al repositorio</translation>
     </message>
@@ -1731,13 +1731,13 @@
     </message>
     <message>
         <location filename="../src/ui/DiffView.cpp" line="2341"/>
-        <location filename="../src/ui/DiffView.cpp" line="2858"/>
+        <location filename="../src/ui/DiffView.cpp" line="2862"/>
         <source>Show Object</source>
         <translation>Mostrar Objeto</translation>
     </message>
     <message>
         <location filename="../src/ui/DiffView.cpp" line="2315"/>
-        <location filename="../src/ui/DiffView.cpp" line="2773"/>
+        <location filename="../src/ui/DiffView.cpp" line="2777"/>
         <source>Show Picture/Icon</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1748,8 +1748,8 @@
     </message>
     <message>
         <location filename="../src/ui/DiffView.cpp" line="2351"/>
-        <location filename="../src/ui/DiffView.cpp" line="2810"/>
-        <location filename="../src/ui/DiffView.cpp" line="2894"/>
+        <location filename="../src/ui/DiffView.cpp" line="2814"/>
+        <location filename="../src/ui/DiffView.cpp" line="2898"/>
         <source>Show Info</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1776,18 +1776,18 @@
         <translation>Expandir Archivo</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="2773"/>
+        <location filename="../src/ui/DiffView.cpp" line="2777"/>
         <source>Hide Picture/Icon</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="2810"/>
-        <location filename="../src/ui/DiffView.cpp" line="2894"/>
+        <location filename="../src/ui/DiffView.cpp" line="2814"/>
+        <location filename="../src/ui/DiffView.cpp" line="2898"/>
         <source>Hide Info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="2858"/>
+        <location filename="../src/ui/DiffView.cpp" line="2862"/>
         <source>Show Pointer</source>
         <translation>Mostrar Puntero</translation>
     </message>

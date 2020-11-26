@@ -2547,10 +2547,10 @@ public:
       // Add menus to FileContextMenu.
       if (!collapse->isEmpty() || !expand->isEmpty())
         menu.addSeparator();
-      if (!collapse->isEmpty())
-        menu.addMenu(collapse);
       if (!expand->isEmpty())
         menu.addMenu(expand);
+      if (!collapse->isEmpty())
+        menu.addMenu(collapse);
 
       menu.exec(event->globalPos());
     }
@@ -2564,14 +2564,18 @@ public:
         case git::Index::Disabled:
           disabled = true;
           break;
+
         case git::Index::Unstaged:
           break;
+
         case git::Index::PartiallyStaged:
           state = Qt::PartiallyChecked;
           break;
+
         case git::Index::Staged:
           state = Qt::Checked;
           break;
+
         case git::Index::Conflicted:
           disabled = (mPatch.count() > 0);
           break;
@@ -3054,9 +3058,9 @@ public:
 signals:
   void diagnosticAdded(TextEditor::DiagnosticKind kind);
 
-  void disclosureHunks(bool checked);
-  void disclosureContents(bool checked);
-  void disclosureFiles(bool checked);
+  void disclosureHunks(bool expand);
+  void disclosureContents(bool expand);
+  void disclosureFiles(bool expand);
 
 private:
   DiffView *mView;
@@ -3135,6 +3139,11 @@ void DiffView::setDiff(const git::Diff &diff)
   mFiles.clear();
   mStagedPatches.clear();
   mComments = Account::CommitComments();
+
+  // Clear disclosure states.
+  mDisclosureHunks = false;
+  mDisclosureContents = false;
+  mDisclosureFiles = false;
 
   // Set data.
   mDiff = diff;
@@ -3349,6 +3358,16 @@ void DiffView::fetchMore()
     FileWidget *file = new FileWidget(this, mDiff, patch, staged, widget());
     layout->addWidget(file);
 
+    // Disclosure states.
+    if (mDisclosureHunks)
+      file->setDisclosureHunks(false);
+    if (mDisclosureContents) {
+      file->setDisclosureImages(false);
+      file->setDisclosureInfos(false);
+    }
+    if (mDisclosureFiles)
+      file->setDisclosureFile(false);
+
     mFiles.append(file);
 
     if (file->isEmpty() || !patch.isValid()) {
@@ -3362,28 +3381,31 @@ void DiffView::fetchMore()
             this, &DiffView::diagnosticAdded);
 
     // Respond to disclosure signals.
-    connect(file, &FileWidget::disclosureHunks, [this](bool checked) {
+    connect(file, &FileWidget::disclosureHunks, [this](bool expand) {
       foreach (QWidget *widget, mFiles) {
         FileWidget *file = static_cast<FileWidget *>(widget);
         if (file->isVisible())
-          file->setDisclosureHunks(checked);
+          file->setDisclosureHunks(expand);
       }
+      mDisclosureHunks = !expand;
     });
-    connect(file, &FileWidget::disclosureContents, [this](bool checked) {
+    connect(file, &FileWidget::disclosureContents, [this](bool expand) {
       foreach (QWidget *widget, mFiles) {
         FileWidget *file = static_cast<FileWidget *>(widget);
         if (file->isVisible()) {
-          file->setDisclosureImages(checked);
-          file->setDisclosureInfos(checked);
+          file->setDisclosureImages(expand);
+          file->setDisclosureInfos(expand);
         }
       }
+      mDisclosureContents = !expand;
     });
-    connect(file, &FileWidget::disclosureFiles, [this](bool checked) {
+    connect(file, &FileWidget::disclosureFiles, [this](bool expand) {
       foreach (QWidget *widget, mFiles) {
         FileWidget *file = static_cast<FileWidget *>(widget);
         if (file->isVisible())
-          file->setDisclosureFile(checked);
+          file->setDisclosureFile(expand);
       }
+      mDisclosureFiles = !expand;
     });
   }
 

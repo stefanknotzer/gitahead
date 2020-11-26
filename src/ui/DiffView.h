@@ -64,6 +64,10 @@ private:
 
   QList<PluginRef> mPlugins;
   Account::CommitComments mComments;
+
+  bool mDisclosureHunks;
+  bool mDisclosureContents;
+  bool mDisclosureFiles;
 };
 
 #endif

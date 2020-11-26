@@ -1231,12 +1231,12 @@
 <context>
     <name>DiffView</name>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="3158"/>
+        <location filename="../src/ui/DiffView.cpp" line="3167"/>
         <source>Add new file</source>
         <translation>追加新文件</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="3172"/>
+        <location filename="../src/ui/DiffView.cpp" line="3181"/>
         <source>Or drag files here to copy into the repository</source>
         <translation>或将文件拖到此处以复制到仓库中</translation>
     </message>
@@ -1711,7 +1711,7 @@
     <name>FileWidget</name>
     <message>
         <location filename="../src/ui/DiffView.cpp" line="2315"/>
-        <location filename="../src/ui/DiffView.cpp" line="2773"/>
+        <location filename="../src/ui/DiffView.cpp" line="2777"/>
         <source>Show Picture/Icon</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1734,7 +1734,7 @@
     </message>
     <message>
         <location filename="../src/ui/DiffView.cpp" line="2341"/>
-        <location filename="../src/ui/DiffView.cpp" line="2858"/>
+        <location filename="../src/ui/DiffView.cpp" line="2862"/>
         <source>Show Object</source>
         <translation>显示对象</translation>
     </message>
@@ -1745,8 +1745,8 @@
     </message>
     <message>
         <location filename="../src/ui/DiffView.cpp" line="2351"/>
-        <location filename="../src/ui/DiffView.cpp" line="2810"/>
-        <location filename="../src/ui/DiffView.cpp" line="2894"/>
+        <location filename="../src/ui/DiffView.cpp" line="2814"/>
+        <location filename="../src/ui/DiffView.cpp" line="2898"/>
         <source>Show Info</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1773,18 +1773,18 @@
         <translation>展开文件</translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="2773"/>
+        <location filename="../src/ui/DiffView.cpp" line="2777"/>
         <source>Hide Picture/Icon</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="2810"/>
-        <location filename="../src/ui/DiffView.cpp" line="2894"/>
+        <location filename="../src/ui/DiffView.cpp" line="2814"/>
+        <location filename="../src/ui/DiffView.cpp" line="2898"/>
         <source>Hide Info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="2858"/>
+        <location filename="../src/ui/DiffView.cpp" line="2862"/>
         <source>Show Pointer</source>
         <translation>显示指针</translation>
     </message>
