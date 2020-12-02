@@ -1234,12 +1234,12 @@
 <context>
     <name>DiffView</name>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="3167"/>
+        <location filename="../src/ui/DiffView.cpp" line="3178"/>
         <source>Add new file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="3181"/>
+        <location filename="../src/ui/DiffView.cpp" line="3192"/>
         <source>Or drag files here to copy into the repository</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1580,6 +1580,11 @@
         <source>All Files</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../src/ui/DiffView.cpp" line="2555"/>
+        <source>Maintain collapsed View after Refresh</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>FileLabel</name>
@@ -1731,13 +1736,13 @@
     </message>
     <message>
         <location filename="../src/ui/DiffView.cpp" line="2341"/>
-        <location filename="../src/ui/DiffView.cpp" line="2862"/>
+        <location filename="../src/ui/DiffView.cpp" line="2870"/>
         <source>Show Object</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/DiffView.cpp" line="2315"/>
-        <location filename="../src/ui/DiffView.cpp" line="2777"/>
+        <location filename="../src/ui/DiffView.cpp" line="2785"/>
         <source>Show Picture/Icon</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1748,8 +1753,8 @@
     </message>
     <message>
         <location filename="../src/ui/DiffView.cpp" line="2351"/>
-        <location filename="../src/ui/DiffView.cpp" line="2814"/>
-        <location filename="../src/ui/DiffView.cpp" line="2898"/>
+        <location filename="../src/ui/DiffView.cpp" line="2822"/>
+        <location filename="../src/ui/DiffView.cpp" line="2906"/>
         <source>Show Info</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1776,18 +1781,18 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="2777"/>
+        <location filename="../src/ui/DiffView.cpp" line="2785"/>
         <source>Hide Picture/Icon</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="2814"/>
-        <location filename="../src/ui/DiffView.cpp" line="2898"/>
+        <location filename="../src/ui/DiffView.cpp" line="2822"/>
+        <location filename="../src/ui/DiffView.cpp" line="2906"/>
         <source>Hide Info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DiffView.cpp" line="2862"/>
+        <location filename="../src/ui/DiffView.cpp" line="2870"/>
         <source>Show Pointer</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1795,32 +1800,37 @@
 <context>
     <name>FindWidget</name>
     <message>
-        <location filename="../src/ui/FindWidget.cpp" line="109"/>
+        <location filename="../src/ui/FindWidget.cpp" line="110"/>
         <source>Search</source>
         <translation type="unfinished">Procurar</translation>
     </message>
     <message>
-        <location filename="../src/ui/FindWidget.cpp" line="114"/>
+        <location filename="../src/ui/FindWidget.cpp" line="115"/>
         <source>Done</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FindWidget.cpp" line="143"/>
+        <location filename="../src/ui/FindWidget.cpp" line="156"/>
         <source>Esc</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FindWidget.cpp" line="169"/>
+        <location filename="../src/ui/FindWidget.cpp" line="182"/>
+        <source>Selection: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/FindWidget.cpp" line="186"/>
         <source>Not found</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FindWidget.cpp" line="173"/>
+        <location filename="../src/ui/FindWidget.cpp" line="190"/>
         <source>%1 match</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FindWidget.cpp" line="177"/>
+        <location filename="../src/ui/FindWidget.cpp" line="194"/>
         <source>%1 matches</source>
         <translation type="unfinished"></translation>
     </message>

@@ -37,6 +37,7 @@ public:
 
   TextEditor *editor() const { return mEditor; }
   QList<TextEditor *> editors() override { return {mEditor}; }
+  bool isEditorSelection() override { return false; }
   void ensureVisible(TextEditor *editor, int pos) override {}
 
   bool load(

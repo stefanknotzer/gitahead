@@ -19,6 +19,7 @@
 #include <QShortcut>
 #include <QShowEvent>
 #include <QStyleOption>
+#include <QTimer>
 
 namespace {
 
@@ -120,9 +121,21 @@ FindWidget::FindWidget(EditorProvider *provider, QWidget *parent)
   mButtons->prev()->setMinimumHeight(height);
   mButtons->next()->setMinimumHeight(height);
 
+  QTimer *delay = new QTimer();
+
   // Show hit count whenever text is not empty.
-  connect(mField, &QLineEdit::textChanged, [this](const QString &text) {
+  connect(mField, &QLineEdit::textChanged, [delay](const QString &text) {
     sText = text;
+
+    // Add short delay to start search on words.
+    if (!text.isEmpty())
+      delay->start(500);
+    else
+      delay->start(0);
+  });
+
+  connect(delay, &QTimer::timeout, [this, delay]() {
+    delay->stop();
     highlightAll();
 
     if (MenuBar *menuBar = MenuBar::instance(this))
@@ -149,6 +162,7 @@ FindWidget::FindWidget(EditorProvider *provider, QWidget *parent)
 void FindWidget::reset()
 {
   mEditorIndex = 0;
+  mField->clear();
 }
 
 void FindWidget::clearHighlights()
@@ -164,17 +178,20 @@ void FindWidget::highlightAll()
     matches += editor->highlightAll(sText);
 
   QString text;
+  if (mEditorProvider->isEditorSelection())
+    text = tr("Selection: ");
+
   switch (matches) {
     case 0:
-      text = tr("Not found");
+      text.append(tr("Not found"));
       break;
 
     case 1:
-      text = tr("%1 match").arg(matches);
+      text.append(tr("%1 match").arg(matches));
       break;
 
     default:
-      text = tr("%1 matches").arg(matches);
+      text.append(tr("%1 matches").arg(matches));
       break;
   }
 

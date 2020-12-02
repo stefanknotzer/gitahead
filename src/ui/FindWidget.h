@@ -21,6 +21,7 @@ class EditorProvider
 {
 public:
   virtual QList<TextEditor *> editors() = 0;
+  virtual bool isEditorSelection() = 0;
   virtual void ensureVisible(TextEditor *editor, int pos) = 0;
 };
 
