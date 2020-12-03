@@ -1420,112 +1420,142 @@
         <translation>Bash ist erforderlich, um externe Tools auszuführen.</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="109"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="127"/>
         <source>Stage</source>
         <translation>Stagen</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="113"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="141"/>
         <source>Unstage</source>
         <translation>Unstagen</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="170"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="210"/>
         <source>Discard Changes</source>
         <translation>Änderungen verwerfen</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="165"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="205"/>
         <source>Remove Untracked Files</source>
         <translation>Ungetrackte Dateien entfernen</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="176"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="117"/>
+        <source>Added</source>
+        <translation>hinzugefügten</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/FileContextMenu.cpp" line="118"/>
+        <source>Deleted</source>
+        <translation>gelöschten</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/FileContextMenu.cpp" line="119"/>
+        <source>Modified</source>
+        <translation>geänderten</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/FileContextMenu.cpp" line="120"/>
+        <source>Untracked</source>
+        <translation>ungetrackten</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/FileContextMenu.cpp" line="131"/>
+        <source>Stage All %1 Files</source>
+        <translation>Alle %1 Dateien stagen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/FileContextMenu.cpp" line="145"/>
+        <source>Unstage All %1 Files</source>
+        <translation>Alle %1 Dateien unstagen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/FileContextMenu.cpp" line="216"/>
         <source>Ignore</source>
         <translation>Ignorieren</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="198"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="238"/>
         <source>Checkout</source>
         <translation>Auschecken</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="226"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="266"/>
         <source>Unlock</source>
         <translation>Entsperren</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="226"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="266"/>
         <source>Lock</source>
         <translation>Sperren</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="241"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="281"/>
         <source>Copy File Name</source>
         <translation>Dateiname kopieren</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="257"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="297"/>
         <source>Filter History</source>
         <translation>History filtern</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="262"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="302"/>
         <source>Navigate to</source>
         <translation>Navigiere zu</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="263"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="303"/>
         <source>Next Revision</source>
         <translation>Nächste Revision</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="268"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="308"/>
         <source>next</source>
         <translation>nächste</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="272"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="312"/>
         <source>Previous Revision</source>
         <translation>Vorherige Revision</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="277"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="317"/>
         <source>previous</source>
         <translation>vorherige</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="287"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="327"/>
         <source>Unset Executable</source>
         <translation>Nicht als ausführbar markieren</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="287"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="327"/>
         <source>Set Executable</source>
         <translation>Als ausführbar markieren</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="316"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="356"/>
         <source>edit</source>
         <translation>Editor</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="320"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="360"/>
         <source>diff</source>
         <translation>Diff</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="324"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="364"/>
         <source>merge</source>
         <translation>Merge</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="328"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="368"/>
         <source>External Tool Not Found</source>
         <translation>Externes Tool nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="329"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="369"/>
         <source>Failed to execute external %1 tool.</source>
         <translation>%1-Tool konnte nicht ausgeführt werden.</translation>
     </message>
