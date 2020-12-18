@@ -298,7 +298,8 @@ RepoView::RepoView(const git::Repository &repo, MainWindow *parent)
   connect(mCommits, &CommitList::diffSelected,
   [this](const git::Diff &diff, const QString &file, bool spontaneous) {
     mHistory->update(diff.isValid() ? location() : Location(), spontaneous);
-    mDetails->setDiff(diff, file, mPathspec->pathspec());
+    if (spontaneous)
+      mDetails->setDiff(diff, file, mPathspec->pathspec());
   });
 
   // Refresh the diff when a whole directory is added to the index.

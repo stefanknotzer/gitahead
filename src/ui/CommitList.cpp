@@ -1287,6 +1287,9 @@ CommitList::CommitList(Index *index, QWidget *parent)
 
     // Notify main window.
     emit statusChanged(visible);
+
+    // Fake spontaneous to trigger DetailView update.
+    emit diffSelected(selectedDiff(), mFile, true);
   });
 
   connect(this, &CommitList::entered, [this](const QModelIndex &index) {

@@ -36,8 +36,7 @@ function hunk (hunk, opts)
           -- Report range from soft limit.
           local pos = line:column_pos(soft)
           line:add_error("hard", pos + 1, len - pos)
-        end
-        if column > soft then
+        elseif column > soft then
           local pos = line:column_pos(soft)
           line:add_error("soft", pos + 1, len - pos)
         end
