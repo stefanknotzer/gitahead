@@ -121,25 +121,23 @@ FindWidget::FindWidget(EditorProvider *provider, QWidget *parent)
   mButtons->prev()->setMinimumHeight(height);
   mButtons->next()->setMinimumHeight(height);
 
-  QTimer *delay = new QTimer();
-
   // Show hit count whenever text is not empty.
-  connect(mField, &QLineEdit::textChanged, [delay](const QString &text) {
-    sText = text;
-
-    // Add short delay to start search on words.
-    if (!text.isEmpty())
-      delay->start(500);
-    else
-      delay->start(0);
-  });
-
+  QTimer *delay = new QTimer();
   connect(delay, &QTimer::timeout, [this, delay]() {
     delay->stop();
     highlightAll();
 
     if (MenuBar *menuBar = MenuBar::instance(this))
       menuBar->updateFind();
+  });
+  connect(mField, &QLineEdit::textChanged, [delay](const QString &text) {
+    sText = text;
+
+    // Add short delay (search for words rather than chars).
+    if (!text.isEmpty())
+      delay->start(500);
+    else
+      delay->start(0);
   });
 
   // Connect previous button.

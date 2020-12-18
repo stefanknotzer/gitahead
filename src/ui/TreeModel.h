@@ -58,6 +58,9 @@ public:
 
   Qt::ItemFlags flags(const QModelIndex &index) const override;
 
+signals:
+  void stageFiles(const QStringList &files, bool staged);
+
 private:
   class Node
   {

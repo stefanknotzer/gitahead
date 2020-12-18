@@ -38,7 +38,7 @@ class FileModel : public QAbstractListModel
 
 public:
   FileModel(const git::Repository &repo, QObject *parent = nullptr)
-    : QAbstractListModel(parent), mRepo(repo)
+    : QAbstractListModel(parent)
   {
     connect(repo.notifier(), &git::RepositoryNotifier::indexChanged,
             this, &FileModel::updateCheckState);
@@ -67,33 +67,29 @@ public:
       case Qt::DecorationRole: {
         QString ret(git::Diff::statusChar(mDiff.status(index.row())));
         QString name = mDiff.name(index.row());
-        git::Patch patch = mDiff.patch(index.row());
+        git::Patch *patch = mDiff.patch(index.row());
 
         // Append file type.
-        if (mRepo.lookupSubmodule(name).isValid())
+        if (patch->isSubmodule())
           ret.append(tr("Submodule"));
-        else if (!patch.isValid())
+        else if (!patch->isValid())
           ret.append(tr("Invalid"));
-        else if (patch.isLfsPointer())
+        else if (patch->isLfsPointer())
           ret.append("LFS");
-        else if (mDiff.isBinary(index.row()))
-          ret.append("BIN");
-        else if (mDiff.status(index.row()) == GIT_DELTA_UNTRACKED) {
-          bool binary = false;
-          QString path = mRepo.workdir().filePath(name);
-          QFile dev(path);
-          if (dev.open(QFile::ReadOnly)) {
-            QByteArray content;
-            do {
-              content = dev.read(1024 * 1024);
-              git::Buffer buffer(content.constData(), content.length());
-              binary = buffer.isBinary();
-            } while (!binary && (content.length() == (1024 * 1024)));
-            dev.close();
-          }
-          if (binary)
-            ret.append("BIN");
+        else if (patch->isConflicted()) {
+          bool res = true;
+          if (patch->isBinary())
+            res = patch->conflictResolution(-1) != git::Patch::Unresolved;
+
+          for (int i = 0; i < patch->count(); i++)
+            if (patch->conflictResolution(i) == git::Patch::Unresolved)
+              res = false;
+          if (res)
+            ret.append(tr("Resolved"));
         }
+        else if (patch->isBinary())
+          ret.append("BIN");
+
         return ret;
       }
 
@@ -132,12 +128,8 @@ public:
   {
     switch (role) {
       case Qt::CheckStateRole: {
-        QString name = mDiff.name(index.row());
-        if (mDiff.index().isStaged(name) == git::Index::Conflicted &&
-            mDiff.patch(index.row()).count() > 0)
-          return false;
-
-        mDiff.index().setStaged({name}, value.toBool(), mYieldFocus);
+        // File stage/unstage.
+        emit stageFile(index.row(), value.toBool());
         emit dataChanged(index, index, {role});
         return true;
       }
@@ -151,6 +143,9 @@ public:
     mYieldFocus = enabled;
   }
 
+signals:
+  void stageFile(int index, bool staged);
+
 private:
   void updateCheckState(const QStringList &paths)
   {
@@ -163,7 +158,6 @@ private:
     }
   }
 
-  git::Repository mRepo;
   git::Diff mDiff;
 
   bool mYieldFocus = true;
@@ -187,6 +181,7 @@ public:
     QStyle *style = opt.widget ? opt.widget->style() : QApplication::style();
     style->drawControl(QStyle::CE_ItemViewItem, &opt, painter, opt.widget);
 
+    // Status badge.
     QString text = index.data(Qt::DecorationRole).toString();
     QStyle::SubElement se = QStyle::SE_ItemViewItemDecoration;
     QRect rect = style->subElementRect(se, &opt, opt.widget);
@@ -199,7 +194,12 @@ public:
       info.setWidth(info.width() - (info.height() * 4 / 3));
       info.setTop(rect.y());
       info.setHeight(rect.height());
-      Badge::paint(painter, {{text.remove(0, 1), Theme::BadgeState::Head}}, info, &opt);
+      if (text[0] == '!')
+        Badge::paint(painter, {{text.remove(0, 1), Theme::BadgeState::Tag}},
+                     info, &opt);
+      else
+        Badge::paint(painter, {{text.remove(0, 1), Theme::BadgeState::Head}},
+                     info, &opt);
     }
   }
 
@@ -337,8 +337,14 @@ FileList::FileList(const git::Repository &repo, QWidget *parent)
   setAttribute(Qt::WA_MacShowFocusRect, false);
   setSelectionMode(QAbstractItemView::ExtendedSelection);
 
-  setModel(new FileModel(repo, this));
+  FileModel *fileModel;
+  setModel(fileModel = new FileModel(repo, this));
   setItemDelegate(new FileDelegate(this));
+
+  // Stage file request.
+  connect(fileModel, &FileModel::stageFile, [this](int index, bool staged) {
+    RepoView::parentView(this)->stageFiles({mDiff.name(index)}, staged);
+  });
 
   Settings *settings = Settings::instance();
 
@@ -628,7 +634,7 @@ FileList::FileList(const git::Repository &repo, QWidget *parent)
 void FileList::resizeEvent(QResizeEvent *event)
 {
   QListView::resizeEvent(event);
-  mButton->move(viewport()->width() - mButton->width() - 2, y() + 3);
+  mButton->move(viewport()->width() - mButton->sizeHint().width() - 2, y() + 3);
 }
 
 void FileList::setDiff(const git::Diff &diff, const QString &pathspec)

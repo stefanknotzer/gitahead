@@ -26,6 +26,8 @@ class Repository;
 
 class DiffWidget : public ContentWidget
 {
+  Q_OBJECT
+
 public:
   DiffWidget(const git::Repository &repo, QWidget *parent = nullptr);
 
@@ -39,7 +41,8 @@ public:
   void find() override;
   void findNext() override;
   void findPrevious() override;
-  
+  bool writeFile(const QString &file, bool staged) override;
+
 private:
   void selectFile(const QString &name);
   void setCurrentFile(int value);

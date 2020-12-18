@@ -12,6 +12,7 @@
 #include "conf/Settings.h"
 #include "dialogs/SettingsDialog.h"
 #include "git/Index.h"
+#include "git/Patch.h"
 #include "git/Tree.h"
 #include "tools/EditTool.h"
 #include "tools/ShowTool.h"
@@ -106,7 +107,7 @@ FileContextMenu::FileContextMenu(
   if (commits.isEmpty()) {
     if (index.isValid()) {
       QString statusText;
-      git_delta_t status;
+      git_delta_t status = GIT_DELTA_UNMODIFIED;
 
       // Single file selected.
       if (files.size() == 1) {
@@ -124,36 +125,39 @@ FileContextMenu::FileContextMenu(
       }
 
       // Stage/Unstage
-      QAction *stage = addAction(tr("Stage"), [index, files] {
-        git::Index(index).setStaged(files, true);
+      QAction *stage = addAction(tr("Stage"), [view, files] {
+        view->stageFiles(files, true);
       });
 
-      QAction *stageAll = addAction(tr("Stage All %1 Files").arg(statusText), [index, diff, status] {
+      QAction *stageAll = addAction(tr("Stage All %1 Files").arg(statusText),
+      [view, diff, status] {
         QStringList files;
         for (int i = 0; i < diff.count(); i++) {
           if (diff.status(i) == status)
             files.append(diff.name(i));
         }
         if (!files.isEmpty())
-          git::Index(index).setStaged(files, true);
+          view->stageFiles(files, true);
       });
 
-      QAction *unstage = addAction(tr("Unstage"), [index, files] {
-        git::Index(index).setStaged(files, false);
+      QAction *unstage = addAction(tr("Unstage"), [view, files] {
+        view->stageFiles(files, false);
       });
 
-      QAction *unstageAll = addAction(tr("Unstage All %1 Files").arg(statusText), [index, diff, status] {
+      QAction *unstageAll = addAction(tr("Unstage All %1 Files").arg(statusText),
+      [view, diff, status] {
         QStringList files;
         for (int i = 0; i < diff.count(); i++) {
           if (diff.status(i) == status)
             files.append(diff.name(i));
         }
         if (!files.isEmpty())
-          git::Index(index).setStaged(files, false);
+          view->stageFiles(files, false);
       });
 
       int staged = 0;
       int unstaged = 0;
+      bool resolved = true;
       foreach (const QString &file, files) {
         switch (index.isStaged(file)) {
           case git::Index::Disabled:
@@ -172,13 +176,19 @@ FileContextMenu::FileContextMenu(
             ++staged;
             break;
 
-          case git::Index::Conflicted:
-            // FIXME: Resolve conflicts?
+          case git::Index::Conflicted: {
+            ++unstaged;
+
+            int idx = diff.indexOf(file);
+            for (int i = 0; i < diff.patch(idx)->count(); i++)
+              if (diff.patch(idx)->conflictResolution(i) == git::Patch::Unresolved)
+                resolved = false;
             break;
+          }
         }
       }
 
-      stage->setEnabled(unstaged > 0);
+      stage->setEnabled((unstaged > 0) && resolved);
       unstage->setEnabled(staged > 0);
       stageAll->setVisible((unstaged > 0) && !statusText.isEmpty());
       unstageAll->setVisible((staged > 0) && !statusText.isEmpty());

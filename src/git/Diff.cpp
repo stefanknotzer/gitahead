@@ -38,6 +38,7 @@ Diff::Data::~Data()
 
 void Diff::Data::resetMap()
 {
+  patch.clear();
   map.clear();
   int count = git_diff_num_deltas(diff);
   for (int i = 0; i < count; ++i)
@@ -86,11 +87,16 @@ int Diff::count() const
   return git_diff_num_deltas(d->diff);
 }
 
-Patch Diff::patch(int index) const
+Patch *Diff::patch(int index) const
 {
-  git_patch *patch = nullptr;
-  git_patch_from_diff(&patch, d->diff, d->map.at(index));
-  return Patch(patch);
+  Patch *ret = d->patch.value(d->map.at(index), nullptr);
+  if ((ret == nullptr) || !ret->isValid()) {
+    git_patch *patch = nullptr;
+    git_patch_from_diff(&patch, d->diff, d->map.at(index));
+    ret = new Patch(patch);
+    d->patch.insert(d->map.at(index), ret);
+  }
+  return ret;
 }
 
 QString Diff::name(int index) const
@@ -231,14 +237,6 @@ void Diff::sort(QList<SortRole> roleList, QList<Qt::SortOrder> orderList)
 
     return comp;
   });
-}
-
-void Diff::setAllStaged(bool staged, bool yieldFocus)
-{
-  QStringList paths;
-  for (int i = 0; i < count(); ++i)
-    paths.append(name(i));
-  index().setStaged(paths, staged);
 }
 
 char Diff::statusChar(git_delta_t status)

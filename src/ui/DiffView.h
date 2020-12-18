@@ -45,7 +45,8 @@ public:
   bool isEditorSelection() override { return mVisibleFiles >= 0; }
   void ensureVisible(TextEditor *editor, int pos) override;
 
-  int borderWidth(void);
+  int borderWidth();
+  bool writeResolution(int index, bool staged);
 
 signals:
   void diagnosticAdded(TextEditor::DiagnosticKind kind);
@@ -60,7 +61,7 @@ private:
   void fetchAll(int index = -1);
 
   git::Diff mDiff;
-  QMap<QString,git::Patch> mStagedPatches;
+  QMap<QString,git::Patch *> mStagedPatches;
 
   QList<QWidget *> mFiles;
   QList<QMetaObject::Connection> mConnections;

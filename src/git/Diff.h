@@ -67,7 +67,7 @@ public:
   git_diff_file newFile(int index) const { return d->delta(index)->new_file; }
 
   int count() const;
-  Patch patch(int index) const;
+  Patch *patch(int index) const;
   QString name(int index) const;
   bool isBinary(int index) const;
   git_delta_t status(int index) const;
@@ -84,8 +84,6 @@ public:
   void sort(SortRole role, Qt::SortOrder order = Qt::AscendingOrder);
   void sort(QList<SortRole> roleList, QList<Qt::SortOrder> orderList);
 
-  void setAllStaged(bool staged, bool yieldFocus = true);
-
   static char statusChar(git_delta_t status);
 
 private:
@@ -100,6 +98,8 @@ private:
     git_diff *diff;
     QList<int> map;
     Index index;
+
+    QMap<int,Patch *> patch;
   };
 
   Diff(git_diff *diff);

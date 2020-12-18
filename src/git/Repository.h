@@ -308,6 +308,7 @@ signals:
 
   void stateChanged();
   void workdirChanged();
+  void statusChanged();
 
   void directoryStaged();
   void directoryAboutToBeStaged(

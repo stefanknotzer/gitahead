@@ -65,6 +65,11 @@ DiffWidget::DiffWidget(const git::Repository &repo, QWidget *parent)
   connect(mFiles, &FileList::sortRequested, [this] {
     setDiff(mDiff);
   });
+
+  // Conflict resolution status update.
+  connect(repo.notifier(), &git::RepositoryNotifier::statusChanged, [this] {
+    mFiles->update();
+  });
 }
 
 QString DiffWidget::selectedFile() const
@@ -174,6 +179,18 @@ void DiffWidget::findNext()
 void DiffWidget::findPrevious()
 {
   mFind->find(FindWidget::Backward);
+}
+
+bool DiffWidget::writeFile(const QString &file, bool staged)
+{
+  bool stage = true;
+
+  if (mDiff.isValid()) {
+    // Write merge resolution to disk.
+    if (!mDiffView->writeResolution(mDiff.indexOf(file), staged))
+      stage = false;
+  }
+  return stage;
 }
 
 void DiffWidget::selectFile(const QString &file)

@@ -221,6 +221,9 @@ void TextEditor::load(const QString &path, const QString &text)
   setSavePoint();
   emptyUndoBuffer();
 
+  // Clear diagnostics.
+  deleteDiagnostics();
+
   // Notify layout of size change.
   updateGeometry();
 }
@@ -342,6 +345,16 @@ void TextEditor::addDiagnostic(int line, const Diagnostic &diag)
 
   // Signal addition.
   emit diagnosticAdded(line, diag);
+}
+
+void TextEditor::deleteDiagnostic(int line)
+{
+  mDiagnostics.take(line);
+}
+
+void TextEditor::deleteDiagnostics()
+{
+  mDiagnostics.clear();
 }
 
 QSize TextEditor::viewportSizeHint() const

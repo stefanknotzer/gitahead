@@ -50,6 +50,7 @@ public:
   bool isConflicted() const;
   bool isBinary() const;
   bool isLfsPointer() const;
+  bool isSubmodule() const;
 
   Blob blob(Diff::File file) const;
 
@@ -93,6 +94,10 @@ private:
 
   QSharedPointer<git_patch> d;
   QList<ConflictHunk> mConflicts;
+
+  bool mIsBinary;
+  bool mIsLfsPointer;
+  bool mIsSubmodule;
 
   friend class Diff;
 };

@@ -11,6 +11,8 @@
 #include "Blob.h"
 #include "Id.h"
 #include "Repository.h"
+#include "git/Buffer.h"
+#include "git/Submodule.h"
 #include "git2/filter.h"
 #include <QDataStream>
 #include <QFile>
@@ -29,6 +31,7 @@ QMap<QString,QMap<int,int>> readConflictResolutions(const Repository &repo)
     QMap<QString,QMap<int,int>> map;
     QDataStream in(&file);
     in >> map;
+    file.close();
     return map;
   }
 
@@ -43,6 +46,7 @@ void writeConflictResolutions(
   if (file.open(QFile::WriteOnly)) {
     QDataStream out(&file);
     out << map;
+    file.close();
   }
 }
 
@@ -53,56 +57,88 @@ Patch::Patch() {}
 Patch::Patch(git_patch *patch)
   : d(patch, git_patch_free)
 {
-  if (!isValid() || !isConflicted())
+  if (!isValid())
     return;
 
-  // Read conflict hunks.
   Repository repo(git_patch_owner(patch));
   if (!repo.isValid())
     return;
 
+  mIsBinary = git_patch_get_delta(d.data())->flags & GIT_DIFF_FLAG_BINARY;
+
   QFile file(repo.workdir().filePath(name(Diff::OldFile)));
-  if (!file.open(QFile::ReadOnly))
-    return;
+  if (file.open(QFile::ReadOnly)) {
+    QList<QByteArray> lines;
+    bool conflicted = isConflicted();
+    QByteArray line = file.readLine(1024 * 1024);
 
-  QList<QByteArray> lines;
-  QByteArray line = file.readLine();
-  while (!line.isEmpty()) {
-    lines.append(line);
-    line = file.readLine();
-  }
+    while (!line.isEmpty()) {
+      git::Buffer buffer(line.constData(), line.length());
 
-  int lineCount = lines.size();
-  int context = git_patch_context_lines(patch);
-  for (int i = 0; i < lineCount; ++i) {
-    if (!lines.at(i).startsWith("<<<<<<<"))
-      continue;
+      // Detect binary file.
+      if (buffer.isBinary()) {
+        lines.clear();
+        mIsBinary = true;
+        break;
+      }
 
-    int mid = -1;
-    for (int j = i + 1; j < lineCount; ++j) {
-      if (!lines.at(j).startsWith("======="))
-        continue;
+      // Read conflict hunks.
+      if (conflicted)
+        lines.append(line);
 
-      mid = j;
-      break;
+      line = file.readLine();
     }
 
-    if (mid < 0)
-      break;
+    file.close();
 
-    for (int j = mid + 1; j < lineCount; ++j) {
-      if (!lines.at(j).startsWith(">>>>>>>"))
-        continue;
+    // Conflict hunks evaluation.
+    if (!lines.isEmpty()) {
+      int lineCount = lines.size();
+      int context = git_patch_context_lines(patch);
+      for (int i = 0; i < lineCount; ++i) {
+        if (!lines.at(i).startsWith("<<<<<<<"))
+          continue;
 
-      // Add conflict.
-      int line = qMax(0, i - context);
-      int count = qMin(lineCount, j + context + 1) - line;
-      mConflicts.append({line, i, mid, j, lines.mid(line, count)});
+        int mid = -1;
+        for (int j = i + 1; j < lineCount; ++j) {
+          if (!lines.at(j).startsWith("======="))
+            continue;
 
-      i = j + 1;
-      break;
+          mid = j;
+          break;
+        }
+
+        if (mid < 0)
+          break;
+
+        for (int j = mid + 1; j < lineCount; ++j) {
+          if (!lines.at(j).startsWith(">>>>>>>"))
+            continue;
+
+          // Add conflict.
+          int line = qMax(0, i - context);
+          int count = qMin(lineCount, j + context + 1) - line;
+          mConflicts.append({line, i, mid, j, lines.mid(line, count)});
+
+          i = j + 1;
+          break;
+        }
+      }
     }
   }
+
+  // Check if file is a lfs pointer.
+  mIsLfsPointer = false;
+  if ((count() > 0) && (lineCount(0) > 0)) {
+    QByteArray line = lineContent(0, 0).trimmed();
+    if (line == "version https://git-lfs.github.com/spec/v1")
+      mIsLfsPointer = true;
+  }
+
+  // Check if file is a submodule.
+  mIsSubmodule = false;
+  if (!mIsBinary && !mIsLfsPointer)
+    mIsSubmodule = repo.lookupSubmodule(name()).isValid();
 }
 
 Repository Patch::repo() const
@@ -139,21 +175,17 @@ bool Patch::isConflicted() const
 
 bool Patch::isBinary() const
 {
-  if (!isValid()) // Patch data is invalid
-    return false;
-
-  return git_patch_get_delta(d.data())->flags & GIT_DIFF_FLAG_BINARY;
+  return mIsBinary;
 }
 
 bool Patch::isLfsPointer() const
 {
-  if (count() > 0 && lineCount(0) > 0) {
-    QByteArray line = lineContent(0, 0).trimmed();
-    if (line == "version https://git-lfs.github.com/spec/v1")
-      return true;
-  }
+  return mIsLfsPointer;
+}
 
-  return false;
+bool Patch::isSubmodule() const
+{
+  return mIsSubmodule;
 }
 
 Blob Patch::blob(Diff::File file) const
@@ -247,6 +279,9 @@ char Patch::lineOrigin(int index, int ln) const
 
 int Patch::lineNumber(int index, int ln, Diff::File file) const
 {
+  if (index < 0)
+    return index;
+
   if (isConflicted())
     return mConflicts.at(index).line + ln;
 
@@ -289,6 +324,9 @@ void Patch::setConflictResolution(int index, ConflictResolution resolution)
   QMap<QString,QMap<int,int>> map = readConflictResolutions(repo);
   map[name()][lineNumber(index, 0)] = resolution;
   writeConflictResolutions(repo, map);
+
+  // Conflict resolution status changed.
+  emit repo.notifier()->statusChanged();
 }
 
 QByteArray Patch::apply(

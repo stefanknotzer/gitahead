@@ -39,9 +39,16 @@ TreeWidget::TreeWidget(const git::Repository &repo, QWidget *parent)
   : ContentWidget(parent)
 {
   mView = new ColumnView(this);
-  mView->setModel(new TreeModel(repo, this));
+  TreeModel *treeModel;
+  mView->setModel(treeModel = new TreeModel(repo, this));
   connect(mView, &ColumnView::fileSelected,
           this, &TreeWidget::loadEditorContent);
+
+  // Stage files request.
+  connect(treeModel, &TreeModel::stageFiles, [this]
+  (const QStringList &files, bool staged) {
+    RepoView::parentView(this)->stageFiles(files, staged);
+  });
 
   // Open a new editor window on double-click.
   connect(mView, &ColumnView::doubleClicked, this, &TreeWidget::edit);
@@ -113,6 +120,11 @@ void TreeWidget::findPrevious()
   mEditor->findPrevious();
 }
 
+bool TreeWidget::writeFile(const QString &file, bool staged)
+{
+  return true;
+}
+
 void TreeWidget::contextMenuEvent(QContextMenuEvent *event)
 {
   QStringList files;
@@ -124,7 +136,7 @@ void TreeWidget::contextMenuEvent(QContextMenuEvent *event)
     return;
 
   RepoView *view = RepoView::parentView(this);
-  FileContextMenu menu(view, files);
+  FileContextMenu menu(view, files, view->repo().index());
   menu.exec(event->globalPos());
 }
 

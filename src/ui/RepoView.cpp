@@ -534,6 +534,11 @@ bool RepoView::isUnstageEnabled() const
   return mDetails->isUnstageEnabled();
 }
 
+void RepoView::stageFiles(const QStringList &files, bool staged)
+{
+  mDetails->stageFiles(files, staged);
+}
+
 RepoView::ViewMode RepoView::viewMode() const
 {
   return mDetails->viewMode();

@@ -99,6 +99,7 @@ public:
   bool isStageEnabled() const;
   void unstage();
   bool isUnstageEnabled() const;
+  void stageFiles(const QStringList &files, bool staged);
 
   // mode
   ViewMode viewMode() const;

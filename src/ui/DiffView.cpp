@@ -19,15 +19,14 @@
 #include "git/Blame.h"
 #include "git/Blob.h"
 #include "git/Branch.h"
-#include "git/Buffer.h"
 #include "git/Commit.h"
 #include "git/Config.h"
 #include "git/FilterList.h"
 #include "git/Index.h"
 #include "git/Patch.h"
 #include "git/Repository.h"
+#include "git/RevWalk.h"
 #include "git/Signature.h"
-#include "git/Submodule.h"
 #include "git/Tree.h"
 #include "git2/diff.h"
 #include "git2/index.h"
@@ -290,7 +289,7 @@ class EditButton : public Button
 
 public:
   EditButton(
-    const git::Patch &patch,
+    const git::Patch *patch,
     int index,
     bool binary,
     bool lfs,
@@ -302,20 +301,20 @@ public:
     // Add edit button menu.
     QMenu *menu = new QMenu(this);
 
-    QString name = patch.name();
+    QString name = patch->name();
     RepoView *view = RepoView::parentView(this);
 
     // Calculate starting line numbers.
     int oldLine = -1;
     int newLine = -1;
-    if (index >= 0 && patch.lineCount(index) > 0) {
-      oldLine = patch.lineNumber(index, 0, git::Diff::OldFile);
-      newLine = patch.lineNumber(index, 0, git::Diff::NewFile);
+    if (index >= 0 && patch->lineCount(index) > 0) {
+      oldLine = patch->lineNumber(index, 0, git::Diff::OldFile);
+      newLine = patch->lineNumber(index, 0, git::Diff::NewFile);
     }
 
     if (view->repo().workdir().exists(name)) {
       QAction *action = menu->addAction(tr("Edit Working Copy"));
-      connect(action, &QAction::triggered, [this, view, name, newLine] {
+      connect(action, &QAction::triggered, [view, name, newLine] {
         view->edit(name, newLine);
       });
     }
@@ -323,16 +322,16 @@ public:
     // Add revision edit actions.
     QList<git::Commit> commits = view->commits();
     git::Commit commit = !commits.isEmpty() ? commits.first() : git::Commit();
-    git::Blob newBlob = patch.blob(git::Diff::NewFile);
+    git::Blob newBlob = patch->blob(git::Diff::NewFile);
     if (newBlob.isValid()) {
       QAction *action = menu->addAction(tr("Edit New Revision"));
       connect(action, &QAction::triggered,
-      [this, view, name, newLine, newBlob, commit] {
+      [view, name, newLine, newBlob, commit] {
         view->openEditor(name, newLine, newBlob, commit);
       });
     }
 
-    git::Blob oldBlob = patch.blob(git::Diff::OldFile);
+    git::Blob oldBlob = patch->blob(git::Diff::OldFile);
     if (oldBlob.isValid()) {
       if (commit.isValid()) {
         QList<git::Commit> parents = commit.parents();
@@ -342,7 +341,7 @@ public:
 
       QAction *action = menu->addAction(tr("Edit Old Revision"));
       connect(action, &QAction::triggered,
-      [this, view, name, oldLine, oldBlob, commit] {
+      [view, name, oldLine, oldBlob, commit] {
         view->openEditor(name, oldLine, oldBlob, commit);
       });
     }
@@ -655,7 +654,7 @@ public:
   };
 
   ImageWidget(
-    const git::Patch &patch,
+    const git::Patch *patch,
     bool lfs,
     bool scaled,
     QWidget *parent = nullptr)
@@ -674,8 +673,10 @@ public:
     QMimeType oldmime, newmime;
 
     // Load pixmaps.
-    QPixmap oldpix = loadPixmap(patch, git::Diff::OldFile, oldsize, oldmime, lfs, scaled);
-    QPixmap newpix = loadPixmap(patch, git::Diff::NewFile, newsize, newmime, lfs, scaled);
+    QPixmap oldpix = loadPixmap(patch, lfs, git::Diff::OldFile,
+                                oldsize, oldmime, scaled);
+    QPixmap newpix = loadPixmap(patch, lfs, git::Diff::NewFile,
+                                newsize, newmime, scaled);
 
     mImage = new Image(oldpix, oldsize, oldmime,
                        newpix, newsize, newmime);
@@ -687,10 +688,16 @@ public:
   DisclosureButton *disclosureButton() const { return mHeader->disclosureButton(); }
 
 private:
-  QPixmap loadPixmap(const git::Patch &patch, git::Diff::File type, QSize &size, QMimeType &mime, bool lfs, bool scaled)
+  QPixmap loadPixmap(
+    const git::Patch *patch,
+    bool lfs,
+    git::Diff::File type,
+    QSize &size,
+    QMimeType &mime,
+    bool scaled)
   {
     QPixmap pixmap;
-    git::Blob blob = patch.blob(type);
+    git::Blob blob = patch->blob(type);
 
     if (blob.isValid()) {
       QByteArray data = blob.content();
@@ -698,7 +705,7 @@ private:
       // LFS smudge will fail on very large files:
       // QByteArray can only hold up to 2^31 bytes (2 GB).
       if (lfs)
-        data = patch.repo().lfsSmudge(data, patch.name());
+        data = patch->repo().lfsSmudge(data, patch->name());
 
       if ((unsigned)data.size() < kBinaryPictureFilesize) {
         // Load pixmap from blob data.
@@ -734,7 +741,7 @@ private:
         return pixmap;
     }
 
-    QString path = patch.repo().workdir().filePath(patch.name());
+    QString path = patch->repo().workdir().filePath(patch->name());
     uint64_t filesize = QFileInfo(path).size();
 
     if ((type == git::Diff::OldFile) || (filesize == 0)) {
@@ -849,7 +856,7 @@ public:
 
   InfoWidget(
     const git::Diff &diff,
-    const git::Patch &patch,
+    const git::Patch *patch,
     bool binary,
     bool lfs,
     QWidget *parent = nullptr)
@@ -861,7 +868,7 @@ public:
     layout->setSpacing(0);
 
     // Check for valid index.
-    int index = diff.indexOf(patch.name());
+    int index = diff.indexOf(patch->name());
     if (index < 0)
       return;
 
@@ -904,25 +911,25 @@ public:
 
     // Filesize of modified binary is not set.
     if ((newfile.mode != GIT_FILEMODE_UNREADABLE) && (newsize == 0)) {
-      if (patch.isValid() && patch.blob(git::Diff::NewFile).isValid()) {
-        newsize = patch.blob(git::Diff::NewFile).content().size();
+      if (patch->isValid() && patch->blob(git::Diff::NewFile).isValid()) {
+        newsize = patch->blob(git::Diff::NewFile).content().size();
       }
     }
 
     // Get lfs pointer size (added or modified file).
     if (lfs) {
-      if ((patch.status() == GIT_DELTA_ADDED) ||
-          (patch.status() == GIT_DELTA_MODIFIED) ||
-          (patch.status() == GIT_DELTA_DELETED)) {
+      if ((patch->status() == GIT_DELTA_ADDED) ||
+          (patch->status() == GIT_DELTA_MODIFIED) ||
+          (patch->status() == GIT_DELTA_DELETED)) {
         // oldsize is already set,
         // newsize is calculated using patch data.
         newsize = 0;
 
-        int hunkCount = patch.count();
+        int hunkCount = patch->count();
         for (int idx = 0; idx < hunkCount; ++idx) {
-          int patchCount = patch.lineCount(idx);
+          int patchCount = patch->lineCount(idx);
           for (int lidx = 0; lidx < patchCount; ++lidx) {
-            char origin = patch.lineOrigin(idx, lidx);
+            char origin = patch->lineOrigin(idx, lidx);
             if (origin == GIT_DIFF_LINE_CONTEXT_EOFNL ||
                 origin == GIT_DIFF_LINE_ADD_EOFNL ||
                 origin == GIT_DIFF_LINE_DEL_EOFNL) {
@@ -931,16 +938,16 @@ public:
             }
 
             // Old content: find lfs object size.
-            if (patch.lineNumber(idx, lidx, git::Diff::OldFile) >= 0) {
-              QByteArray line = patch.lineContent(idx, lidx);
+            if (patch->lineNumber(idx, lidx, git::Diff::OldFile) >= 0) {
+              QByteArray line = patch->lineContent(idx, lidx);
               if (line.startsWith("size "))
                 oldlfssize = line.remove(0, 5).toULong();
             }
 
             // New content: find lfs object size.
-            if (patch.lineNumber(idx, lidx, git::Diff::NewFile) >= 0) {
-              newsize += patch.lineContent(idx, lidx).size();
-              QByteArray line = patch.lineContent(idx, lidx);
+            if (patch->lineNumber(idx, lidx, git::Diff::NewFile) >= 0) {
+              newsize += patch->lineContent(idx, lidx).size();
+              QByteArray line = patch->lineContent(idx, lidx);
               if (line.startsWith("size "))
                 newlfssize = line.remove(0, 5).toULong();
             }
@@ -1016,14 +1023,14 @@ public:
 
     // Add filetime.
     if ((newmode != GIT_FILEMODE_UNREADABLE) && (diff.isStatusDiff())) {
-      QFileInfo info(patch.repo().workdir().filePath(newfile.path));
+      QFileInfo info(patch->repo().workdir().filePath(newfile.path));
       QDateTime newtime = info.fileTime(QFile::FileModificationTime);
       if (newmode != oldmode)
         lines << Line(GIT_DIFF_LINE_ADDITION, -1, 4);
       else
         lines << Line(GIT_DIFF_LINE_CONTEXT, -1, 4);
       content += InfoWidget::tr("time:");
-      content += " " + newtime.toString(Qt::DateFormat::DefaultLocaleShortDate) + "\n";
+      content += " " + newtime.toString(Qt::DefaultLocaleShortDate) + "\n";
     }
 
     // Find matching lines.
@@ -1136,7 +1143,7 @@ public:
     }
 
     // Set margin width.
-    QByteArray text(patch.isConflicted() ? conflictWidth : width, ' ');
+    QByteArray text(patch->isConflicted() ? conflictWidth : width, ' ');
     int margin = mEditor->textWidth(STYLE_DEFAULT, text);
     if (margin > mEditor->marginWidthN(TextEditor::LineNumbers))
       mEditor->setMarginWidthN(TextEditor::LineNumbers, margin);
@@ -1230,6 +1237,559 @@ private:
   TextEditor *mEditor;
 };
 
+void lookupCommitInfos(
+  const git::Repository &repo,
+  bool ours,
+  QString &branch,
+  QString &tooltip)
+{
+  branch.clear();
+  tooltip.clear();
+
+  // Find id.
+  QString id;
+  if (ours) {
+    id = repo.head().target().id().toString();
+  } else {
+    git::Reference mergeHead = repo.lookupRef("MERGE_HEAD");
+    if (mergeHead.isValid())
+      id = mergeHead.annotatedCommit().commit().id().toString();
+  }
+
+  if (id.isEmpty())
+    return;
+
+  // Commit detail lookup.
+  git::RevWalk walker = repo.walker();
+  while (git::Commit commit = walker.next()) {
+    QList<git::Reference> refs = commit.refs();
+    foreach (const git::Reference &ref, refs) {
+      if (id == ref.name()) {
+        id = commit.id().toString();
+        break;
+      }
+    }
+
+    if (id == commit.id().toString()) {
+      // Set branch name.
+      foreach (const git::Reference &ref, refs) {
+        if (ref.isLocalBranch()) {
+          branch = ref.name();
+          break;
+        }
+      }
+
+      // Set tooltip.
+      tooltip.append(commit.id().toString().left(7));
+      tooltip.append("\n");
+      tooltip.append(commit.author().name());
+      tooltip.append("\n");
+      tooltip.append(commit.author().date().toString(Qt::DefaultLocaleShortDate));
+      break;
+    }
+  }
+
+  // Branch: elide, set id if empty
+  if (branch.length() > 20) {
+    branch.chop(17);
+    branch.append("...");
+  }
+  if (branch.isEmpty())
+    branch = id.left(7);
+}
+
+class ResolutionWidget : public QFrame
+{
+  Q_OBJECT
+
+public:
+  class Header : public QFrame
+  {
+  public:
+    Header(
+      const git::Patch *patch,
+      bool binary,
+      bool lfs,
+      QWidget *parent = nullptr)
+      : QFrame(parent)
+    {
+      setObjectName("ResolutionHeader");
+
+      QLabel *label = new QLabel(kHunkFmt.arg(ResolutionWidget::tr("Resolution")), this);
+
+      // Add resolution buttons.
+      mUndo = new QToolButton(this);
+      mUndo->setObjectName("ConflictUndoResolution");
+      mUndo->setText(ResolutionWidget::tr("Undo"));
+
+      QString branch;
+      QString tooltip;
+
+      mOurs = new QToolButton(this);
+      mOurs->setObjectName("ConflictAllOurs");
+      mOurs->setStyleSheet(buttonStyle(Theme::Diff::Ours));
+      mOurs->setText(ResolutionWidget::tr("Take Ours"));
+      lookupCommitInfos(patch->repo(), true, branch, tooltip);
+      if (!branch.isEmpty())
+        mOurs->setText(mOurs->text() + " (" + branch + ")");
+      if (!tooltip.isEmpty())
+        mOurs->setToolTip(tooltip);
+
+      mTheirs = new QToolButton(this);
+      mTheirs->setObjectName("ConflictAllTheirs");
+      mTheirs->setStyleSheet(buttonStyle(Theme::Diff::Theirs));
+      mTheirs->setText(ResolutionWidget::tr("Take Theirs"));
+      lookupCommitInfos(patch->repo(), false, branch, tooltip);
+      if (!branch.isEmpty())
+        mTheirs->setText(mTheirs->text() + " (" + branch + ")");
+      if (!tooltip.isEmpty())
+        mTheirs->setToolTip(tooltip);
+
+      // Add edit button.
+      EditButton *edit = new EditButton(patch, -1, binary, lfs, this);
+      edit->setToolTip(ResolutionWidget::tr("Edit Hunk"));
+
+      // Add disclosure button.
+      mDisclosureButton = new DisclosureButton(this);
+      mDisclosureButton->setEnabled(!binary);
+      mDisclosureButton->setChecked(!binary);
+      mDisclosureButton->setToolTip(
+        mDisclosureButton->isChecked() ? ResolutionWidget::tr("Collapse Resolution") :
+                                         ResolutionWidget::tr("Expand Resolution"));
+      connect(mDisclosureButton, &DisclosureButton::toggled, [this] {
+        mDisclosureButton->setToolTip(
+          mDisclosureButton->isChecked() ? ResolutionWidget::tr("Collapse Resolution") :
+                                           ResolutionWidget::tr("Expand Resolution"));
+      });
+
+      QHBoxLayout *buttons = new QHBoxLayout;
+      buttons->setContentsMargins(0,0,0,0);
+      buttons->setSpacing(4);
+      buttons->addWidget(mUndo);
+      buttons->addWidget(mOurs);
+      buttons->addWidget(mTheirs);
+      buttons->addSpacing(8);
+      buttons->addWidget(edit);
+      buttons->addWidget(mDisclosureButton);
+
+      QHBoxLayout *layout = new QHBoxLayout(this);
+      layout->setContentsMargins(4,4,4,4);
+      layout->addWidget(label);
+      layout->addStretch();
+      layout->addLayout(buttons);
+    }
+
+    DisclosureButton *disclosureButton() const { return mDisclosureButton; }
+
+    QToolButton *undoButton() const { return mUndo; }
+    QToolButton *oursButton() const { return mOurs; }
+    QToolButton *theirsButton() const { return mTheirs; }
+
+  protected:
+    void mouseDoubleClickEvent(QMouseEvent *event) override
+    {
+      if (mDisclosureButton->isEnabled())
+        mDisclosureButton->toggle();
+    }
+
+  private:
+    DisclosureButton *mDisclosureButton;
+
+    QToolButton *mUndo;
+    QToolButton *mOurs;
+    QToolButton *mTheirs;
+  };
+
+  ResolutionWidget(
+    DiffView *view,
+    git::Patch *patch,
+    bool binary,
+    bool lfs,
+    QWidget *parent = nullptr)
+    : QFrame(parent), mView(view), mPatch(patch)
+  {
+    setObjectName("ResolutionWidget");
+    git::Repository repo = patch->repo();
+    QVBoxLayout *layout = new QVBoxLayout(this);
+    layout->setContentsMargins(0,0,0,0);
+    layout->setSpacing(0);
+
+    mHeader = new Header(patch, binary, lfs, this);
+    layout->addWidget(mHeader);
+
+    mEditor = new Editor(this);
+    mEditor->setVisible(!binary);
+    mEditor->setLexer(patch->name());
+    mEditor->setCaretStyle(CARETSTYLE_INVISIBLE);
+    mEditor->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+    connect(mEditor, &TextEditor::updateUi,
+            MenuBar::instance(this), &MenuBar::updateCutCopyPaste);
+
+    // Ensure that text margin reacts to settings changes.
+    connect(mEditor, &TextEditor::settingsChanged, [this] {
+      int width = mEditor->textWidth(STYLE_LINENUMBER, mEditor->marginText(0));
+      mEditor->setMarginWidthN(TextEditor::LineNumbers, width);
+    });
+
+    // Darken background when find highlight is active.
+    connect(mEditor, &TextEditor::highlightActivated,
+            this, &ResolutionWidget::setDisabled);
+
+    // Update line count and buttons.
+    connect(mEditor, &TextEditor::modified, [this] {
+      mEditor->setLineCount(mEditor->lineCount());
+
+      // Button visibility.
+      int ours = 0;
+      int theirs = 0;
+      int count = mPatch->count();
+      for (int i = 0; i < count; i++) {
+        if (mPatch->conflictResolution(i) == git::Patch::Ours)
+          ours++;
+        if (mPatch->conflictResolution(i) == git::Patch::Theirs)
+          theirs++;
+      }
+
+      mHeader->undoButton()->setEnabled(ours + theirs > 0);
+      mHeader->oursButton()->setEnabled(ours < count);
+      mHeader->theirsButton()->setEnabled(theirs < count);
+    });
+
+    // Disable vertical resize.
+    mEditor->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+
+    layout->addWidget(mEditor);
+    connect(mHeader->disclosureButton(), &DisclosureButton::toggled,
+            mEditor, &TextEditor::setVisible);
+
+    // Handle conflict resolution.
+    QToolButton *undo = mHeader->undoButton();
+    connect(undo, &QToolButton::clicked, [this] {
+      if (mPatch->isBinary()) {
+        mPatch->setConflictResolution(-1, git::Patch::Unresolved);
+        mHeader->undoButton()->setEnabled(false);
+        mHeader->oursButton()->setEnabled(true);
+        mHeader->theirsButton()->setEnabled(true);
+      } else {
+        for (int index = 0; index < mPatch->count(); index++)
+          mPatch->setConflictResolution(index, git::Patch::Unresolved);
+        update();
+      }
+    });
+
+    QToolButton *ours = mHeader->oursButton();
+    connect(ours, &QToolButton::clicked, [this] {
+      if (mPatch->isBinary()) {
+        mPatch->setConflictResolution(-1, git::Patch::Ours);
+        mHeader->undoButton()->setEnabled(true);
+        mHeader->oursButton()->setEnabled(false);
+        mHeader->theirsButton()->setEnabled(true);
+      } else {
+        for (int index = 0; index < mPatch->count(); index++)
+          mPatch->setConflictResolution(index, git::Patch::Ours);
+        update();
+      }
+    });
+
+    QToolButton *theirs = mHeader->theirsButton();
+    connect(theirs, &QToolButton::clicked, [this] {
+      if (mPatch->isBinary()) {
+        mPatch->setConflictResolution(-1, git::Patch::Theirs);
+        mHeader->undoButton()->setEnabled(true);
+        mHeader->oursButton()->setEnabled(true);
+        mHeader->theirsButton()->setEnabled(false);
+      } else {
+        for (int index = 0; index < mPatch->count(); index++)
+          mPatch->setConflictResolution(index, git::Patch::Theirs);
+        update();
+      }
+    });
+
+    // Default merge resolution.
+    if (binary) {
+      auto resolution = patch->conflictResolution(-1);
+      switch (resolution) {
+        case git::Patch::Ours:
+          mHeader->undoButton()->setEnabled(true);
+          mHeader->oursButton()->setEnabled(false);
+          mHeader->theirsButton()->setEnabled(true);
+          break;
+        case git::Patch::Theirs:
+          mHeader->undoButton()->setEnabled(true);
+          mHeader->oursButton()->setEnabled(true);
+          mHeader->theirsButton()->setEnabled(false);
+          break;
+        default:
+          patch->setConflictResolution(-1, git::Patch::Ours);
+          mHeader->undoButton()->setEnabled(true);
+          mHeader->oursButton()->setEnabled(false);
+          mHeader->theirsButton()->setEnabled(true);
+          break;
+      }
+    }
+
+    // Hook up error margin click.
+    connect(mEditor, &TextEditor::marginClicked, [this](int pos) {
+      int line = mEditor->lineFromPosition(pos);
+      QList<TextEditor::Diagnostic> diags = mEditor->diagnostics(line);
+      if (diags.isEmpty())
+        return;
+
+      QTableWidget *table = new QTableWidget(diags.size(), 3);
+      table->setWindowFlag(Qt::Popup);
+      table->setAttribute(Qt::WA_DeleteOnClose);
+      table->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+      table->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+      table->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
+
+      table->setShowGrid(false);
+      table->setSelectionMode(QAbstractItemView::NoSelection);
+      table->verticalHeader()->setVisible(false);
+      table->horizontalHeader()->setVisible(false);
+
+      QShortcut *esc = new QShortcut(tr("Esc"), table);
+      connect(esc, &QShortcut::activated, table, &QTableWidget::close);
+
+      for (int i = 0; i < diags.size(); ++i) {
+        const TextEditor::Diagnostic &diag = diags.at(i);
+
+        QStyle::StandardPixmap pixmap;
+        switch (diag.kind) {
+          case TextEditor::Note:
+            pixmap = QStyle::SP_MessageBoxInformation;
+            break;
+
+          case TextEditor::Warning:
+            pixmap = QStyle::SP_MessageBoxWarning;
+            break;
+
+          case TextEditor::Error:
+            pixmap = QStyle::SP_MessageBoxCritical;
+            break;
+        }
+
+        QIcon icon = style()->standardIcon(pixmap);
+        QTableWidgetItem *item = new QTableWidgetItem(icon, diag.message);
+        item->setToolTip(diag.description);
+        table->setItem(i, 0, item);
+
+        // Add fix button.
+        QPushButton *fix = new QPushButton(tr("Fix"));
+        fix->setEnabled(!diag.replacement.isNull());
+        connect(fix, &QPushButton::clicked, [this, line, diag, table] {
+          // Look up the actual line number from the margin.
+          QRegularExpression re("\\s+");
+          QStringList numbers = mEditor->marginText(line).split(re);
+
+          if (numbers.size() != 2)
+            return;
+
+          int newLine = numbers.last().toInt() - 1;
+          if (newLine < 0)
+            return;
+
+          // Load editor.
+          TextEditor editor;
+          git::Repository repo = mPatch->repo();
+          QString path = repo.workdir().filePath(mPatch->name());
+
+          {
+            // Read file.
+            QFile file(path);
+            if (file.open(QFile::ReadOnly))
+              editor.load(path, repo.decode(file.readAll()));
+          }
+
+          if (!editor.length())
+            return;
+
+          // Replace range.
+          int pos = editor.positionFromLine(newLine) + diag.range.pos;
+          editor.setSelection(pos + diag.range.len, pos);
+          editor.replaceSelection(diag.replacement);
+
+          // Write file to disk.
+          QSaveFile file(path);
+          if (!file.open(QFile::WriteOnly))
+            return;
+
+          QTextStream out(&file);
+          out.setCodec(repo.codec());
+          out << editor.text();
+          file.commit();
+
+          table->hide();
+          RepoView::parentView(this)->refresh();
+        });
+
+        table->setCellWidget(i, 1, fix);
+      }
+
+      // Add done button.
+      QPushButton *done = new QPushButton(tr("Done"));
+      connect(done, &QPushButton::clicked, table, &QTableWidget::close);
+      table->setCellWidget(0, 2, done);
+
+      table->resizeColumnsToContents();
+      table->resize(table->sizeHint());
+
+      QPoint point = mEditor->pointFromPosition(pos);
+      point.setY(point.y() + mEditor->textHeight(line));
+      table->move(mEditor->mapToGlobal(point));
+      table->show();
+    });
+  }
+
+  void update()
+  {
+    // Text file only.
+    if (!mPatch->isBinary()) {
+      mEditor->setReadOnly(false);
+
+      // Load original content (without resolution).
+      load();
+
+      if (mEditor->length()) {
+        // Apply resolution.
+        for (int index = mPatch->count() - 1; index >= 0; index--) {
+          for (int i = mPatch->lineCount(index); i >= 0; --i) {
+            char origin = mPatch->lineOrigin(index, i);
+            auto resolution = mPatch->conflictResolution(index);
+            int line = mPatch->lineNumber(index, i);
+
+            if ((origin == GIT_DIFF_LINE_CONTEXT) ||
+                ((origin == 'O') && (resolution == git::Patch::Ours)) ||
+                ((origin == 'T') && (resolution == git::Patch::Theirs)) ||
+                (resolution == git::Patch::Unresolved)) {
+              if (origin == 'O')
+                mEditor->markerAdd(line, TextEditor::Ours);
+              if (origin == 'T')
+                mEditor->markerAdd(line, TextEditor::Theirs);
+              if ((origin != GIT_DIFF_LINE_CONTEXT) &&
+                  (resolution == git::Patch::Unresolved)) {
+                mEditor->addDiagnostic(line,
+                  { TextEditor::Note,
+                    tr("unresolved merge conflict"),
+                    tr("Resolve conflict using 'ours' or 'theirs' button."),
+                    0 , 0, nullptr });
+              }
+              continue;
+            }
+
+            int pos = mEditor->positionFromLine(line);
+            int length = mEditor->lineLength(line);
+            mEditor->deleteRange(pos, length);
+          }
+        }
+      }
+
+      // Add marker.
+      for (int lidx = 0; lidx < mEditor->lineCount(); lidx++)
+        mEditor->markerAdd(lidx, TextEditor::Addition);
+
+      // Execute hunk plugins.
+      foreach (PluginRef plugin, mView->plugins()) {
+        if (plugin->isValid() && plugin->isEnabled())
+          plugin->hunk(mEditor);
+      }
+
+      // Delete marker.
+      mEditor->markerDeleteAll(TextEditor::Addition);
+      mEditor->setReadOnly(true);
+    }
+  }
+
+  bool write()
+  {
+    git::Repository repo = mPatch->repo();
+    QString path = repo.workdir().filePath(mPatch->name());
+
+    if (!mEditor->length())
+      return false;
+
+    // Save or remove backup.
+    git::Config config = git::Config::global();
+    if (config.value<bool>("mergetool.keepBackup"))
+      QFile::copy(path, path + ".orig");
+    else
+      QFile::remove(path + ".orig");
+
+    if (mPatch->isBinary()) {
+      // Write binary to disk.
+      git::Index::Conflict conflict = repo.index().conflict(mPatch->name());
+      git::Blob blob;
+
+      if (mPatch->conflictResolution(-1) == git::Patch::Ours)
+        blob = repo.lookupBlob(conflict.ours);
+      else if (mPatch->conflictResolution(-1) == git::Patch::Theirs)
+        blob = repo.lookupBlob(conflict.theirs);
+      else
+        return false;
+
+      // Write file to disk.
+      QSaveFile file(path);
+      if (!file.open(QFile::WriteOnly) || !blob.isValid())
+        return false;
+
+      file.write(blob.content());
+      return file.commit();
+
+    } else {
+      // Write resolution to disk.
+      QSaveFile file(path);
+      if (!file.open(QFile::WriteOnly))
+        return false;
+
+      QTextStream out(&file);
+      out.setCodec(repo.codec());
+      out << mEditor->text();
+      return file.commit();
+    }
+  }
+
+  Header *header() const { return mHeader; }
+
+  TextEditor *editor() { return mEditor; }
+
+private:
+  void load()
+  {
+    // Load entire file.
+    git::Repository repo = mPatch->repo();
+    QString name = mPatch->name();
+    QFile dev(repo.workdir().filePath(name));
+
+    // Clear diagnostics.
+    mEditor->deleteDiagnostics();
+
+    if (dev.open(QFile::ReadOnly)) {
+      mEditor->load(name, repo.decode(dev.readAll()));
+
+      int count = mEditor->lineCount();
+      QByteArray lines = QByteArray::number(count);
+      int width = mEditor->textWidth(STYLE_LINENUMBER, lines.constData());
+      int marginWidth = (mEditor->length() > 0) ? width + 8 : 0;
+      mEditor->setMarginWidthN(TextEditor::LineNumber, marginWidth);
+    }
+
+    // Add markers and line numbers.
+    for (int lidx = 0; lidx < mEditor->lineCount(); ++lidx) {
+      mEditor->marginSetText(lidx, QString::number(lidx + 1) + ' ' +
+                                   QString::number(lidx + 1));
+      mEditor->marginSetStyle(lidx, STYLE_LINENUMBER);
+    }
+
+    mEditor->updateGeometry();
+  }
+
+  DiffView *mView;
+  git::Patch *mPatch;
+
+  Header *mHeader;
+  TextEditor *mEditor;
+};
+
 class HunkWidget : public QFrame
 {
   Q_OBJECT
@@ -1240,8 +1800,9 @@ public:
   public:
     Header(
       const git::Diff &diff,
-      const git::Patch &patch,
+      const git::Patch *patch,
       int index,
+      bool binary,
       bool lfs,
       bool submodule,
       QWidget *parent = nullptr)
@@ -1250,62 +1811,55 @@ public:
       setObjectName("HunkHeader");
       mCheck = new QCheckBox(this);
 
-      QString header = (index >= 0) ? patch.header(index) : QString();
+      QString header = (index >= 0) ? patch->header(index) : QString();
       QString escaped = header.trimmed().toHtmlEscaped();
       QLabel *label = new QLabel(kHunkFmt.arg(escaped), this);
 
-      if (patch.isConflicted()) {
-        mSave = new QToolButton(this);
-        mSave->setObjectName("ConflictSave");
-        mSave->setText(HunkWidget::tr("Save"));
-
+      // Add resolution buttons.
+      if (patch->isConflicted()) {
         mUndo = new QToolButton(this);
         mUndo->setObjectName("ConflictUndo");
         mUndo->setText(HunkWidget::tr("Undo"));
-        connect(mUndo, &QToolButton::clicked, [this] {
-          mSave->setVisible(false);
-          mUndo->setVisible(false);
-          mOurs->setEnabled(true);
-          mTheirs->setEnabled(true);
-        });
+
+        QString branch;
+        QString tooltip;
 
         mOurs = new QToolButton(this);
         mOurs->setObjectName("ConflictOurs");
         mOurs->setStyleSheet(buttonStyle(Theme::Diff::Ours));
         mOurs->setText(HunkWidget::tr("Use Ours"));
-        connect(mOurs, &QToolButton::clicked, [this] {
-          mSave->setVisible(true);
-          mUndo->setVisible(true);
-          mOurs->setEnabled(false);
-          mTheirs->setEnabled(false);
-        });
+        lookupCommitInfos(patch->repo(), true, branch, tooltip);
+        if (!branch.isEmpty())
+          mOurs->setText(mOurs->text() + " (" + branch + ")");
+        if (!tooltip.isEmpty())
+          mOurs->setToolTip(tooltip);
 
         mTheirs = new QToolButton(this);
         mTheirs->setObjectName("ConflictTheirs");
         mTheirs->setStyleSheet(buttonStyle(Theme::Diff::Theirs));
         mTheirs->setText(HunkWidget::tr("Use Theirs"));
-        connect(mTheirs, &QToolButton::clicked, [this] {
-          mSave->setVisible(true);
-          mUndo->setVisible(true);
-          mOurs->setEnabled(false);
-          mTheirs->setEnabled(false);
-        });
+        lookupCommitInfos(patch->repo(), false, branch, tooltip);
+        if (!branch.isEmpty())
+          mTheirs->setText(mTheirs->text() + " (" + branch + ")");
+        if (!tooltip.isEmpty())
+          mTheirs->setToolTip(tooltip);
       }
 
-      EditButton *edit = new EditButton(patch, index, false, lfs, this);
+      // Add edit button.
+      EditButton *edit = new EditButton(patch, index, binary, lfs, this);
       edit->setToolTip(HunkWidget::tr("Edit Hunk"));
 
       // Add discard button.
       DiscardButton *discard = nullptr;
-      if (diff.isStatusDiff() && !submodule && !patch.isConflicted()) {
+      if (diff.isStatusDiff() && !submodule && !patch->isConflicted()) {
         discard = new DiscardButton(this);
         discard->setToolTip(HunkWidget::tr("Discard Hunk"));
         connect(discard, &DiscardButton::clicked, [this, patch, index] {
-          QString name = patch.name();
-          int line = patch.lineNumber(index, 0, git::Diff::NewFile);
+          QString name = patch->name();
+          int line = patch->lineNumber(index, 0, git::Diff::NewFile);
 
           QString title = HunkWidget::tr("Discard Hunk?");
-          QString text = patch.isUntracked() ?
+          QString text = patch->isUntracked() ?
             HunkWidget::tr("Are you sure you want to remove '%1'?").arg(name) :
             HunkWidget::tr("Are you sure you want to discard the "
                "hunk starting at line %1 in '%2'?").arg(line).arg(name);
@@ -1318,20 +1872,20 @@ public:
           QPushButton *discard =
             dialog->addButton(HunkWidget::tr("Discard Hunk"), QMessageBox::AcceptRole);
           connect(discard, &QPushButton::clicked, [this, patch, index] {
-            git::Repository repo = patch.repo();
-            if (patch.isUntracked()) {
-              repo.workdir().remove(patch.name());
+            git::Repository repo = patch->repo();
+            if (patch->isUntracked()) {
+              repo.workdir().remove(patch->name());
               return;
             }
 
-            QString name = patch.name();
+            QString name = patch->name();
             QSaveFile file(repo.workdir().filePath(name));
             if (!file.open(QFile::WriteOnly))
               return;
 
-            QBitArray hunks(patch.count(), true);
+            QBitArray hunks(patch->count(), true);
             hunks[index] = false;
-            QByteArray buffer = patch.apply(hunks, repo.filters(name));
+            QByteArray buffer = patch->apply(hunks, repo.filters(name));
             if (buffer.isEmpty())
               return;
 
@@ -1358,10 +1912,7 @@ public:
       QHBoxLayout *buttons = new QHBoxLayout;
       buttons->setContentsMargins(0,0,0,0);
       buttons->setSpacing(4);
-      if (mSave && mUndo && mOurs && mTheirs) {
-        mSave->setVisible(false);
-        mUndo->setVisible(false);
-        buttons->addWidget(mSave);
+      if (mUndo && mOurs && mTheirs) {
         buttons->addWidget(mUndo);
         buttons->addWidget(mOurs);
         buttons->addWidget(mTheirs);
@@ -1390,7 +1941,6 @@ public:
 
     DisclosureButton *disclosureButton() const { return mDisclosureButton; }
 
-    QToolButton *saveButton() const { return mSave; }
     QToolButton *undoButton() const { return mUndo; }
     QToolButton *oursButton() const { return mOurs; }
     QToolButton *theirsButton() const { return mTheirs; }
@@ -1405,7 +1955,6 @@ public:
   private:
     QCheckBox *mCheck;
     DisclosureButton *mDisclosureButton;
-    QToolButton *mSave = nullptr;
     QToolButton *mUndo = nullptr;
     QToolButton *mOurs = nullptr;
     QToolButton *mTheirs = nullptr;
@@ -1414,27 +1963,28 @@ public:
   HunkWidget(
     DiffView *view,
     const git::Diff &diff,
-    const git::Patch &patch,
+    git::Patch *patch,
     int index,
+    bool binary,
     bool lfs,
     bool submodule,
     QWidget *parent = nullptr)
-    : QFrame(parent), mView(view), mPatch(patch), mIndex(index)
+    : QFrame(parent), mView(view), mPatch(patch), mindex(index)
   {
     setObjectName("HunkWidget");
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->setContentsMargins(0,0,0,0);
     layout->setSpacing(0);
 
-    mHeader = new Header(diff, patch, index, lfs, submodule, this);
+    mHeader = new Header(diff, patch, index, binary, lfs, submodule, this);
     layout->addWidget(mHeader);
 
     mEditor = new Editor(this);
-    mEditor->setLexer(patch.name());
+    mEditor->setLexer(patch->name());
     mEditor->setCaretStyle(CARETSTYLE_INVISIBLE);
     mEditor->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     if (index >= 0)
-      mEditor->setLineCount(patch.lineCount(index));
+      mEditor->setLineCount(patch->lineCount(index));
 
     connect(mEditor, &TextEditor::updateUi,
             MenuBar::instance(this), &MenuBar::updateCutCopyPaste);
@@ -1457,74 +2007,25 @@ public:
             mEditor, &TextEditor::setVisible);
 
     // Handle conflict resolution.
-    if (QToolButton *save = mHeader->saveButton()) {
-      connect(save, &QToolButton::clicked, [this] {
-        TextEditor editor;
-        git::Repository repo = mPatch.repo();
-        QString path = repo.workdir().filePath(mPatch.name());
-
-        {
-          // Read file.
-          QFile file(path);
-          if (file.open(QFile::ReadOnly))
-            editor.load(path, repo.decode(file.readAll()));
-        }
-
-        if (!editor.length())
-          return;
-
-        // Apply resolution.
-        for (int i = mPatch.lineCount(mIndex); i >= 0; --i) {
-          char origin = mPatch.lineOrigin(mIndex, i);
-          auto resolution = mPatch.conflictResolution(mIndex);
-          if (origin == GIT_DIFF_LINE_CONTEXT ||
-              (origin == 'O' && resolution == git::Patch::Ours) ||
-              (origin == 'T' && resolution == git::Patch::Theirs))
-            continue;
-
-          int line = mPatch.lineNumber(mIndex, i);
-          int pos = editor.positionFromLine(line);
-          int length = editor.lineLength(line);
-          editor.deleteRange(pos, length);
-        }
-
-        // Write file to disk.
-        QSaveFile file(path);
-        if (!file.open(QFile::WriteOnly))
-          return;
-
-        QTextStream out(&file);
-        out.setCodec(repo.codec());
-        out << editor.text();
-        file.commit();
-
-        mPatch.setConflictResolution(mIndex, git::Patch::Unresolved);
-
-        RepoView::parentView(this)->refresh();
-      });
-    }
-
     if (QToolButton *undo = mHeader->undoButton()) {
       connect(undo, &QToolButton::clicked, [this] {
-        // Invalidate to trigger reload.
-        invalidate();
-        mPatch.setConflictResolution(mIndex, git::Patch::Unresolved);
+        mPatch->setConflictResolution(mindex, git::Patch::Unresolved);
+        mResolution->update();
       });
     }
 
+    git::Repository repo = patch->repo();
     if (QToolButton *ours = mHeader->oursButton()) {
       connect(ours, &QToolButton::clicked, [this] {
-        mEditor->markerDeleteAll(TextEditor::Theirs);
-        chooseLines(TextEditor::Ours);
-        mPatch.setConflictResolution(mIndex, git::Patch::Ours);
+        mPatch->setConflictResolution(mindex, git::Patch::Ours);
+        mResolution->update();
       });
     }
 
     if (QToolButton *theirs = mHeader->theirsButton()) {
       connect(theirs, &QToolButton::clicked, [this] {
-        mEditor->markerDeleteAll(TextEditor::Ours);
-        chooseLines(TextEditor::Theirs);
-        mPatch.setConflictResolution(mIndex, git::Patch::Theirs);
+        mPatch->setConflictResolution(mindex, git::Patch::Theirs);
+        mResolution->update();
       });
     }
 
@@ -1536,7 +2037,7 @@ public:
       if (diags.isEmpty())
         return;
 
-      QTableWidget *table = new QTableWidget(diags.size(), 3);
+      QTableWidget *table = new QTableWidget(diags.size(), 4);
       table->setWindowFlag(Qt::Popup);
       table->setAttribute(Qt::WA_DeleteOnClose);
       table->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -1591,8 +2092,8 @@ public:
 
           // Load editor.
           TextEditor editor;
-          git::Repository repo = mPatch.repo();
-          QString path = repo.workdir().filePath(mPatch.name());
+          git::Repository repo = mPatch->repo();
+          QString path = repo.workdir().filePath(mPatch->name());
 
           {
             // Read file.
@@ -1640,7 +2141,7 @@ public:
 
           // Edit the file and select the range.
           RepoView *view = RepoView::parentView(this);
-          EditorWindow *window = view->openEditor(mPatch.name(), newLine);
+          EditorWindow *window = view->openEditor(mPatch->name(), newLine);
           TextEditor *editor = window->widget()->editor();
           int pos = editor->positionFromLine(newLine) + diag.range.pos;
           editor->setSelection(pos + diag.range.len, pos);
@@ -1648,6 +2149,11 @@ public:
 
         table->setCellWidget(i, 2, edit);
       }
+
+      // Add done button.
+      QPushButton *done = new QPushButton(tr("Done"));
+      connect(done, &QPushButton::clicked, table, &QTableWidget::close);
+      table->setCellWidget(0, 3, done);
 
       table->resizeColumnsToContents();
       table->resize(table->sizeHint());
@@ -1673,6 +2179,37 @@ public:
     mEditor->clearAll();
     mLoaded = false;
     update();
+  }
+
+  void setResolution(ResolutionWidget *resolution)
+  {
+    mResolution = resolution;
+
+    // Update editor and buttons.
+    if ((mPatch->count() > 0) && (resolution != nullptr)) {
+      connect(mResolution->editor(), &TextEditor::modified, [this] {
+        // Reload editor.
+        mEditor->setReadOnly(false);
+        mEditor->clearAll();
+        mLoaded = false;
+        load();
+
+        // Update editor markers and button visibility.
+        git::Patch::ConflictResolution res = mPatch->conflictResolution(mindex);
+        if (res == git::Patch::Ours) {
+          mEditor->markerDeleteAll(TextEditor::Theirs);
+          chooseLines(TextEditor::Ours);
+        }
+        if (res == git::Patch::Theirs) {
+          mEditor->markerDeleteAll(TextEditor::Ours);
+          chooseLines(TextEditor::Theirs);
+        }
+
+        mHeader->oursButton()->setEnabled(res != git::Patch::Ours);
+        mHeader->theirsButton()->setEnabled(res != git::Patch::Theirs);
+        mHeader->undoButton()->setEnabled(res != git::Patch::Unresolved);
+      });
+    }
   }
 
 protected:
@@ -1746,9 +2283,9 @@ private:
     mLoaded = true;
 
     // Load entire file.
-    git::Repository repo = mPatch.repo();
-    if (mIndex < 0) {
-      QString name = mPatch.name();
+    git::Repository repo = mPatch->repo();
+    if (mindex < 0) {
+      QString name = mPatch->name();
       QFile dev(repo.workdir().filePath(name));
       if (dev.open(QFile::ReadOnly)) {
         mEditor->load(name, repo.decode(dev.readAll()));
@@ -1769,9 +2306,9 @@ private:
     // Load hunk.
     QList<Line> lines;
     QByteArray content;
-    int patchCount = mPatch.lineCount(mIndex);
+    int patchCount = mPatch->lineCount(mindex);
     for (int lidx = 0; lidx < patchCount; ++lidx) {
-      char origin = mPatch.lineOrigin(mIndex, lidx);
+      char origin = mPatch->lineOrigin(mindex, lidx);
       if (origin == GIT_DIFF_LINE_CONTEXT_EOFNL ||
           origin == GIT_DIFF_LINE_ADD_EOFNL ||
           origin == GIT_DIFF_LINE_DEL_EOFNL) {
@@ -1781,10 +2318,10 @@ private:
         continue;
       }
 
-      int oldLine = mPatch.lineNumber(mIndex, lidx, git::Diff::OldFile);
-      int newLine = mPatch.lineNumber(mIndex, lidx, git::Diff::NewFile);
+      int oldLine = mPatch->lineNumber(mindex, lidx, git::Diff::OldFile);
+      int newLine = mPatch->lineNumber(mindex, lidx, git::Diff::NewFile);
       lines << Line(origin, oldLine, newLine);
-      content += mPatch.lineContent(mIndex, lidx);
+      content += mPatch->lineContent(mindex, lidx);
     }
 
     // Trim final line end.
@@ -1807,7 +2344,7 @@ private:
     }
 
     // Get comments for this file.
-    Account::FileComments comments = mView->comments().files.value(mPatch.name());
+    Account::FileComments comments = mView->comments().files.value(mPatch->name());
 
     // Add markers and line numbers.
     int additions = 0;
@@ -1909,7 +2446,7 @@ private:
           marker = TextEditor::Addition;
           ++additions;
           if (lidx + 1 >= count ||
-              mPatch.lineOrigin(mIndex, lidx + 1) != GIT_DIFF_LINE_ADDITION) {
+              mPatch->lineOrigin(mindex, lidx + 1) != GIT_DIFF_LINE_ADDITION) {
             // The heuristic is that matching blocks have
             // the same number of additions as deletions.
             if (additions == deletions) {
@@ -1995,29 +2532,13 @@ private:
     }
 
     // Set margin width.
-    QByteArray text(mPatch.isConflicted() ? conflictWidth : width, ' ');
+    QByteArray text(mPatch->isConflicted() ? conflictWidth : width, ' ');
     int margin = mEditor->textWidth(STYLE_DEFAULT, text);
     if (margin > mEditor->marginWidthN(TextEditor::LineNumbers))
       mEditor->setMarginWidthN(TextEditor::LineNumbers, margin);
 
     // Disallow editing.
     mEditor->setReadOnly(true);
-
-    // Restore resolved conflicts.
-    if (mPatch.isConflicted()) {
-      switch (mPatch.conflictResolution(mIndex)) {
-        case git::Patch::Ours:
-          mHeader->oursButton()->click();
-          break;
-
-        case git::Patch::Theirs:
-          mHeader->theirsButton()->click();
-          break;
-
-        default:
-          break;
-      }
-    }
 
     // Execute hunk plugins.
     foreach (PluginRef plugin, mView->plugins()) {
@@ -2040,17 +2561,18 @@ private:
         mEditor->deleteRange(pos, length);
       }
     }
-
     mEditor->setReadOnly(true);
   }
 
   DiffView *mView;
-  git::Patch mPatch;
-  int mIndex;
+  git::Patch *mPatch;
+  int mindex;
 
   Header *mHeader;
   TextEditor *mEditor;
   bool mLoaded = false;
+
+  ResolutionWidget *mResolution;
 };
 
 class LineStats : public QWidget
@@ -2187,7 +2709,7 @@ protected:
   }
 
 private:
-  QFontMetrics getFontMetric(void) const
+  QFontMetrics getFontMetric() const
   {
     QFont font = QLabel::font();
 
@@ -2266,7 +2788,7 @@ public:
   public:
     Header(
       const git::Diff &diff,
-      const git::Patch &patch,
+      git::Patch *patch,
       bool binary,
       bool lfs,
       bool submodule,
@@ -2275,21 +2797,22 @@ public:
     {
       setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
-      QString name = patch.name();
+      QString name = patch->name();
       mCheck = new QCheckBox(this);
       mCheck->setVisible(diff.isStatusDiff());
 
-      char status = git::Diff::statusChar(patch.status());
+      char status = git::Diff::statusChar(patch->status());
       Badge *badge = new Badge({Badge::Label(QChar(status))}, this);
 
       LineStats *stats = nullptr;
-      git::Patch::LineStats lineStats = patch.lineStats();
+      git::Patch::LineStats lineStats = patch->lineStats();
       if (lineStats.additions > 0 || lineStats.deletions > 0)
         stats = new LineStats(lineStats, this);
 
       FileLabel *label;
-      if (patch.status() == GIT_DELTA_RENAMED)
-        label = new FileLabel(patch.name(git::Diff::OldFile), name, submodule, this);
+      if (patch->status() == GIT_DELTA_RENAMED)
+        label = new FileLabel(patch->name(git::Diff::OldFile),
+                              name, submodule, this);
       else
         label = new FileLabel(QString(), name, submodule, this);
 
@@ -2308,32 +2831,30 @@ public:
       layout->addStretch();
       layout->addLayout(buttons);
 
-      if (binary) {
-
+      if (!patch->isConflicted() && binary) {
         // Add binary button.
         mToolButton = new QToolButton(this);
         mToolButton->setText(FileWidget::tr("Show Picture/Icon"));
         mToolButton->setCheckable(true);
       } else if (lfs) {
-
         // Add LFS buttons.
         Badge *lfsBadge = new Badge({Badge::Label(FileWidget::tr("LFS"), Theme::BadgeState::Head)}, this);
         buttons->addWidget(lfsBadge);
 
         QToolButton *lfsLockButton = new QToolButton(this);
-        bool locked = patch.repo().lfsIsLocked(patch.name());
+        bool locked = patch->repo().lfsIsLocked(patch->name());
         lfsLockButton->setText(locked ? FileWidget::tr("Unlock") : FileWidget::tr("Lock"));
         buttons->addWidget(lfsLockButton);
 
         connect(lfsLockButton, &QToolButton::clicked, [this, patch] {
-          bool locked = patch.repo().lfsIsLocked(patch.name());
-          RepoView::parentView(this)->lfsSetLocked({patch.name()}, !locked);
+          bool locked = patch->repo().lfsIsLocked(patch->name());
+          RepoView::parentView(this)->lfsSetLocked({patch->name()}, !locked);
         });
 
-        git::RepositoryNotifier *notifier = patch.repo().notifier();
+        git::RepositoryNotifier *notifier = patch->repo().notifier();
         connect(notifier, &git::RepositoryNotifier::lfsLocksChanged, this,
         [patch, lfsLockButton] {
-          bool locked = patch.repo().lfsIsLocked(patch.name());
+          bool locked = patch->repo().lfsIsLocked(patch->name());
           lfsLockButton->setText(locked ? FileWidget::tr("Unlock") : FileWidget::tr("Lock"));
         });
 
@@ -2346,9 +2867,12 @@ public:
           buttons->addWidget(lfsBadge);
         }
 
-        // Add info button.
+        // Add info/resolution button.
         mToolButton = new QToolButton(this);
-        mToolButton->setText(FileWidget::tr("Show Info"));
+        if (patch->isConflicted())
+          mToolButton->setText(FileWidget::tr("Show Resolution"));
+        else
+          mToolButton->setText(FileWidget::tr("Show Info"));
         mToolButton->setCheckable(true);
       }
       buttons->addWidget(mToolButton);
@@ -2360,16 +2884,16 @@ public:
       buttons->addWidget(mEdit);
 
       // Add discard button.
-      if (diff.isStatusDiff() && !submodule && !patch.isConflicted()) {
+      if (diff.isStatusDiff() && !submodule && !patch->isConflicted()) {
         DiscardButton *discard = new DiscardButton(this);
         discard->setToolTip(FileWidget::tr("Discard File"));
         buttons->addWidget(discard);
 
         connect(discard, &QToolButton::clicked, [this] {
           RepoView *view = RepoView::parentView(this);
-          QString name = mPatch.name();
+          QString name = mPatch->name();
 
-          if (mPatch.isUntracked())
+          if (mPatch->isUntracked())
             view->promptToRemove({name});
           else
             view->promptToDiscard(view->repo().head().target(), {name});
@@ -2385,46 +2909,14 @@ public:
       });
       buttons->addWidget(mDisclosureButton);
 
-      // Dummy buttons for context menu signals.
-      mDisclosureHunks = new QToolButton(this);
-      mDisclosureHunks->setVisible(false);
-      mDisclosureHunks->setCheckable(true);
-      buttons->addWidget(mDisclosureHunks);
-
-      mDisclosureContents = new QToolButton(this);
-      mDisclosureContents->setVisible(false);
-      mDisclosureContents->setCheckable(true);
-      buttons->addWidget(mDisclosureContents);
-
-      mDisclosureAllHunks = new QToolButton(this);
-      mDisclosureAllHunks->setVisible(false);
-      mDisclosureAllHunks->setCheckable(true);
-      buttons->addWidget(mDisclosureAllHunks);
-
-      mDisclosureAllContents = new QToolButton(this);
-      mDisclosureAllContents->setVisible(false);
-      mDisclosureAllContents->setCheckable(true);
-      buttons->addWidget(mDisclosureAllContents);
-
-      mDisclosureAllFiles = new QToolButton(this);
-      mDisclosureAllFiles->setVisible(false);
-      mDisclosureAllFiles->setCheckable(true);
-      buttons->addWidget(mDisclosureAllFiles);
-
       if (!diff.isStatusDiff())
         return;
-
-      // Respond to check changes.
-      connect(mCheck, &QCheckBox::clicked, [this](bool staged) {
-        mCheck->setChecked(!staged); // Allow index to decide.
-        mDiff.index().setStaged({mPatch.name()}, staged);
-      });
 
       // Respond to index changes.
       git::Repository repo = RepoView::parentView(this)->repo();
       connect(repo.notifier(), &git::RepositoryNotifier::indexChanged, this,
       [this](const QStringList &paths) {
-        if (paths.contains(mPatch.name()))
+        if (paths.contains(mPatch->name()))
           updateCheckState();
       });
 
@@ -2432,16 +2924,38 @@ public:
       updateCheckState();
     }
 
+    void updateCheckState()
+    {
+      bool disabled = false;
+      Qt::CheckState state = Qt::Unchecked;
+      switch (mDiff.index().isStaged(mPatch->name())) {
+        case git::Index::Disabled:
+          disabled = true;
+          break;
+
+        case git::Index::Unstaged:
+          break;
+
+        case git::Index::PartiallyStaged:
+          state = Qt::PartiallyChecked;
+          break;
+
+        case git::Index::Staged:
+          state = Qt::Checked;
+          break;
+
+        case git::Index::Conflicted:
+          break;
+      }
+      mCheck->setCheckState(state);
+      mCheck->setEnabled(!disabled);
+    }
+
     QCheckBox *check() const { return mCheck; }
 
     DisclosureButton *disclosureButton() const { return mDisclosureButton; }
 
     QToolButton *toolButton() const { return mToolButton; }
-    QToolButton *disclosureHunks() const { return mDisclosureHunks; }
-    QToolButton *disclosureContents() const { return mDisclosureContents; }
-    QToolButton *disclosureAllHunks() const { return mDisclosureAllHunks; }
-    QToolButton *disclosureAllContents() const { return mDisclosureAllContents; }
-    QToolButton *disclosureAllFiles() const { return mDisclosureAllFiles; }
 
     void setEnableAll(bool enable) { mEnableAll = enable; }
 
@@ -2455,35 +2969,35 @@ public:
     void contextMenuEvent(QContextMenuEvent *event) override
     {
       RepoView *view = RepoView::parentView(this);
-      FileContextMenu menu(view, {mPatch.name()}, mDiff.index());
+      FileContextMenu menu(view, {mPatch->name()}, mDiff.index());
 
       // Disclosure trigger signals.
       QMenu *collapse = new QMenu(FileContextMenu::tr("Collapse"));
       QMenu *expand = new QMenu(FileContextMenu::tr("Expand"));
 
       QString title;
-      if (mPatch.isUntracked()) {
+      if (mPatch->isUntracked()) {
         title = FileContextMenu::tr("Content");
-      } else if (mPatch.isBinary()) {
+      } else if (mPatch->isBinary()) {
         title = FileContextMenu::tr("Picture/Icon");
       }
-      else if (mPatch.count() > 0) {
-        title = mPatch.count() == 1 ? FileContextMenu::tr("Hunk") :
-                                      FileContextMenu::tr("Hunks");
+      else if (mPatch->count() > 0) {
+        title = mPatch->count() == 1 ? FileContextMenu::tr("Hunk") :
+                                       FileContextMenu::tr("Hunks");
       }
 
+      FileWidget *file = static_cast<FileWidget *>(parentWidget());
+
       // Collapse menu actions.
-      if (mPatch.isUntracked() || mPatch.isBinary()) {
-        collapse->addAction(title, [this] {
-          if (!mDisclosureContents->isChecked())
-            mDisclosureContents->setChecked(true);
-          mDisclosureContents->setChecked(false);
+      if (mPatch->isUntracked() || mPatch->isBinary()) {
+        collapse->addAction(title, [file] {
+          file->setDisclosureHunks(false);
+          file->setDisclosureImages(false);
+          file->setDisclosureInfos(false);
         });
-      } else if (mPatch.count() > 0) {
-        collapse->addAction(title, [this] {
-          if (!mDisclosureHunks->isChecked())
-            mDisclosureHunks->setChecked(true);
-          mDisclosureHunks->setChecked(false);
+      } else if (mPatch->count() > 0) {
+        collapse->addAction(title, [file] {
+          file->setDisclosureHunks(false);
         });
       }
 
@@ -2491,35 +3005,27 @@ public:
         if (!title.isEmpty())
           collapse->addSeparator();
 
-        collapse->addAction(FileContextMenu::tr("All Hunks"), [this] {
-          if (!mDisclosureAllHunks->isChecked())
-            mDisclosureAllHunks->setChecked(true);
-          mDisclosureAllHunks->setChecked(false);
+        collapse->addAction(FileContextMenu::tr("All Hunks"), [file] {
+          emit file->disclosureHunks(false);
         });
-        collapse->addAction(FileContextMenu::tr("All Pictures/Icons"), [this] {
-          if (!mDisclosureAllContents->isChecked())
-            mDisclosureAllContents->setChecked(true);
-          mDisclosureAllContents->setChecked(false);
+        collapse->addAction(FileContextMenu::tr("All Pictures/Icons"), [file] {
+          emit file->disclosureContents(false);
         });
-        collapse->addAction(FileContextMenu::tr("All Files"), [this] {
-          if (!mDisclosureAllFiles->isChecked())
-            mDisclosureAllFiles->setChecked(true);
-          mDisclosureAllFiles->setChecked(false);
+        collapse->addAction(FileContextMenu::tr("All Files"), [file] {
+          emit file->disclosureFiles(false);
         });
       }
 
       // Expand menu actions.
-      if (mPatch.isUntracked() || mPatch.isBinary()) {
-        expand->addAction(title, [this] {
-          if (mDisclosureContents->isChecked())
-            mDisclosureContents->setChecked(false);
-          mDisclosureContents->setChecked(true);
+      if (mPatch->isUntracked() || mPatch->isBinary()) {
+        expand->addAction(title, [file] {
+          file->setDisclosureHunks(true);
+          file->setDisclosureImages(true);
+          file->setDisclosureInfos(true);
         });
-      } else if (mPatch.count() > 0) {
-        expand->addAction(title, [this] {
-          if (mDisclosureHunks->isChecked())
-            mDisclosureHunks->setChecked(false);
-          mDisclosureHunks->setChecked(true);
+      } else if (mPatch->count() > 0) {
+        expand->addAction(title, [file] {
+          file->setDisclosureHunks(true);
         });
       }
 
@@ -2527,20 +3033,14 @@ public:
         if (!title.isEmpty())
           expand->addSeparator();
 
-        expand->addAction(FileContextMenu::tr("All Hunks"), [this] {
-          if (mDisclosureAllHunks->isChecked())
-            mDisclosureAllHunks->setChecked(false);
-          mDisclosureAllHunks->setChecked(true);
+        expand->addAction(FileContextMenu::tr("All Hunks"), [file] {
+          emit file->disclosureHunks(true);
         });
-        expand->addAction(FileContextMenu::tr("All Pictures/Icons"), [this] {
-          if (mDisclosureAllContents->isChecked())
-            mDisclosureAllContents->setChecked(false);
-          mDisclosureAllContents->setChecked(true);
+        expand->addAction(FileContextMenu::tr("All Pictures/Icons"), [file] {
+          emit file->disclosureContents(true);
         });
-        expand->addAction(FileContextMenu::tr("All Files"), [this] {
-          if (mDisclosureAllFiles->isChecked())
-            mDisclosureAllFiles->setChecked(false);
-          mDisclosureAllFiles->setChecked(true);
+        expand->addAction(FileContextMenu::tr("All Files"), [file] {
+          emit file->disclosureFiles(true);
         });
       }
 
@@ -2564,48 +3064,13 @@ public:
     }
 
   private:
-    void updateCheckState()
-    {
-      bool disabled = false;
-      Qt::CheckState state = Qt::Unchecked;
-      switch (mDiff.index().isStaged(mPatch.name())) {
-        case git::Index::Disabled:
-          disabled = true;
-          break;
-
-        case git::Index::Unstaged:
-          break;
-
-        case git::Index::PartiallyStaged:
-          state = Qt::PartiallyChecked;
-          break;
-
-        case git::Index::Staged:
-          state = Qt::Checked;
-          break;
-
-        case git::Index::Conflicted:
-          disabled = (mPatch.count() > 0);
-          break;
-      }
-
-      mCheck->setCheckState(state);
-      mCheck->setEnabled(!disabled);
-    }
-
     git::Diff mDiff;
-    git::Patch mPatch;
+    git::Patch *mPatch;
 
     QCheckBox *mCheck;
     QToolButton *mToolButton;
     EditButton *mEdit;
     DisclosureButton *mDisclosureButton;
-
-    QToolButton *mDisclosureHunks;
-    QToolButton *mDisclosureContents;
-    QToolButton *mDisclosureAllHunks;
-    QToolButton *mDisclosureAllContents;
-    QToolButton *mDisclosureAllFiles;
 
     bool mEnableAll = true;
   };
@@ -2613,8 +3078,8 @@ public:
   FileWidget(
     DiffView *view,
     const git::Diff &diff,
-    const git::Patch &patch,
-    const git::Patch &staged,
+    git::Patch *patch,
+    git::Patch *staged,
     QWidget *parent = nullptr)
     : QFrame(parent), mView(view), mDiff(diff), mPatch(patch)
   {
@@ -2625,34 +3090,21 @@ public:
 
     git::Repository repo = RepoView::parentView(this)->repo();
 
-    QString name = patch.name();
+    QString name = patch->name();
     QString path = repo.workdir().filePath(name);
-    bool submodule = repo.lookupSubmodule(name).isValid();
 
-    bool binary = patch.isBinary();
-    if (patch.isUntracked()) {
-      QFile dev(path);
-      if (dev.open(QFile::ReadOnly)) {
-        QByteArray content;
-        do {
-          content = dev.read(1024 * 1024);
-          git::Buffer buffer(content.constData(), content.length());
-          binary = buffer.isBinary();
-        } while (!binary && (content.length() == (1024 * 1024)));
-        dev.close();
-      }
-    }
-
-    bool lfs = patch.isLfsPointer();
+    bool binary = patch->isBinary();
+    bool lfs = patch->isLfsPointer();
+    bool submodule = patch->isSubmodule();
 
     mHeader = new Header(diff, patch, binary, lfs, submodule, parent);
     layout->addWidget(mHeader);
 
     // File collapse/expand.
     DisclosureButton *disclosureButton = mHeader->disclosureButton();
-    connect(disclosureButton, &DisclosureButton::toggled, [this, lfs, binary](bool visible) {
+    connect(disclosureButton, &DisclosureButton::toggled, [this](bool visible) {
       // LFS file expand/collapse.
-      if (lfs && !visible) {
+      if (mPatch->isLfsPointer() && !visible) {
         if (!mHunks.isEmpty())
           mHunks.first()->setVisible(false);
         if (!mImages.isEmpty())
@@ -2662,7 +3114,7 @@ public:
         return;
       }
 
-      if (lfs && visible) {
+      if (mPatch->isLfsPointer() && visible) {
         bool checked = mHeader->toolButton()->isChecked();
         if (!mHunks.isEmpty())
           mHunks.first()->setVisible(!checked);
@@ -2674,82 +3126,56 @@ public:
       }
 
       // Binary file expand/collapse.
-      if (binary && !visible) {
+      if (mPatch->isBinary() && !visible) {
         if (!mImages.isEmpty())
           mImages.first()->setVisible(false);
         if (!mInfos.isEmpty())
           mInfos.first()->setVisible(false);
+        if (!mResolutions.isEmpty())
+          mResolutions.first()->setVisible(false);
         return;
       }
 
-      if (binary && visible) {
+      if (mPatch->isBinary() && visible) {
         bool checked = mHeader->toolButton()->isChecked();
         if (mHeader->toolButton()->isEnabled()) {
-
           // Toggle picture visibility.
           if (!mImages.isEmpty())
             mImages.first()->setVisible(checked);
         } else {
-
           // Button is disabled: expand/collapse picture.
           if (!mImages.isEmpty())
             mImages.first()->setVisible(true);
         }
         if (!mInfos.isEmpty())
           mInfos.first()->setVisible(true);
+        if (!mResolutions.isEmpty())
+          mResolutions.first()->setVisible(true);
         return;
       }
 
-      // Text file expand/collapse.
+      // Text file and resolution expand/collapse.
       if (mHeader->toolButton() && !visible) {
         if (!mInfos.isEmpty())
           mInfos.first()->setVisible(false);
+        if (!mResolutions.isEmpty())
+          mResolutions.first()->setVisible(false);
       }
 
       if (mHeader->toolButton() && visible) {
         bool checked = mHeader->toolButton()->isChecked();
         if (!mInfos.isEmpty())
           mInfos.first()->setVisible(checked);
+        if (!mResolutions.isEmpty())
+          mResolutions.first()->setVisible(checked);
       }
 
       foreach (HunkWidget *hunk, mHunks)
         hunk->setVisible(visible);
     });
 
-    // Hunks collapse/expand.
-    QToolButton *disclosureFileHunks = mHeader->disclosureHunks();
-    connect(disclosureFileHunks, &QAbstractButton::toggled, [this](bool checked) {
-      setDisclosureHunks(checked);
-    });
-
-    // Content collapse/expand.
-    QToolButton *disclosureFileContents = mHeader->disclosureContents();
-    connect(disclosureFileContents, &QAbstractButton::toggled, [this](bool checked) {
-      setDisclosureHunks(checked);
-      setDisclosureImages(checked);
-      setDisclosureInfos(checked);
-    });
-
-    // All hunks collapse/expand.
-    QToolButton *disclosureAllHunks = mHeader->disclosureAllHunks();
-    connect(disclosureAllHunks, &QAbstractButton::toggled, [this](bool checked) {
-      emit disclosureHunks(checked);
-    });
-
-    // All content collapse/expand.
-    QToolButton *disclosureAllContents = mHeader->disclosureAllContents();
-    connect(disclosureAllContents, &QAbstractButton::toggled, [this](bool checked) {
-      emit disclosureContents(checked);
-    });
-
-    // All files collapse/expand.
-    QToolButton *disclosureAllFiles = mHeader->disclosureAllFiles();
-    connect(disclosureAllFiles, &QAbstractButton::toggled, [this](bool checked) {
-      emit disclosureFiles(checked);
-    });
-
+    // Collapse on check.
     if (diff.isStatusDiff()) {
-      // Collapse on check.
       connect(mHeader->check(), &QCheckBox::stateChanged, [this](int state) {
         mHeader->disclosureButton()->setChecked(state != Qt::Checked);
         if (state != Qt::PartiallyChecked) {
@@ -2766,9 +3192,8 @@ public:
 
     QToolButton *toolButton = mHeader->toolButton();
 
-    if (binary) {
-      if ((patch.status() != GIT_DELTA_RENAMED) && loadbinary) {
-
+    if (!patch->isConflicted() && binary) {
+      if ((patch->status() != GIT_DELTA_RENAMED) && loadbinary) {
         // Add file picture/icon.
         layout->addWidget(addImage(patch, lfs, scalebinary));
         if (toolButton)
@@ -2776,7 +3201,7 @@ public:
       }
 
       // Add file info.
-      layout->addWidget(addInfo(mDiff, mPatch, true, false));
+      layout->addWidget(addInfo(diff, patch, binary, lfs));
 
       // Binary button.
       if (toolButton) {
@@ -2785,19 +3210,21 @@ public:
           toolButton->setText(checked ? tr("Hide Picture/Icon") : tr("Show Picture/Icon"));
 
           if (!mImages.isEmpty()) {
-
             // Picture/icon already loaded.
             mImages.first()->setVisible(checked);
             mImages.first()->disclosureButton()->setChecked(checked);
           } else if (checked) {
-
             // Load picture/icon.
-            layout->insertWidget(1, addImage(mPatch, false, scalebinary));
+            layout->insertWidget(1, addImage(mPatch,
+                                             mPatch->isLfsPointer(),
+                                             scalebinary));
           }
 
           // Load file info.
           if (mInfos.isEmpty())
-            layout->addWidget(addInfo(mDiff, mPatch, true, false));
+            layout->addWidget(addInfo(mDiff, mPatch,
+                                      mPatch->isBinary(),
+                                      mPatch->isLfsPointer()));
 
           // File picture/icon or info loaded.
           if (!mImages.isEmpty() || !mInfos.isEmpty()) {
@@ -2809,16 +3236,15 @@ public:
           }
         });
       }
-    } else if (patch.isUntracked()) {
-
+    } else if (patch->isUntracked()) {
       // Add untracked file content.
       if (!QFileInfo(path).isDir())
-        layout->addWidget(addHunk(diff, patch, -1, lfs, submodule));
+        layout->addWidget(addHunk(diff, patch, -1, binary, lfs, submodule));
 
       // File info button.
       if (toolButton) {
         connect(toolButton, &QToolButton::clicked,
-        [this, layout, disclosureButton, toolButton, lfs](bool checked) {
+        [this, layout, disclosureButton, toolButton](bool checked) {
           toolButton->setText(checked ? tr("Hide Info") : tr("Show Info"));
 
           if (!mInfos.isEmpty()) {
@@ -2827,7 +3253,9 @@ public:
             mInfos.first()->disclosureButton()->setChecked(checked);
           } else if (checked) {
             // Load file info.
-            layout->addWidget(addInfo(mDiff, mPatch, false, lfs));
+            layout->addWidget(addInfo(mDiff, mPatch,
+                                      mPatch->isBinary(),
+                                      mPatch->isLfsPointer()));
           }
 
           // Hunk or info loaded.
@@ -2840,28 +3268,39 @@ public:
         });
       }
     } else {
-
       // Generate a diff between the head tree and index.
       QSet<int> stagedHunks;
-      if (staged.isValid()) {
-        for (int i = 0; i < staged.count(); ++i)
-          stagedHunks.insert(staged.lineNumber(i, 0, git::Diff::OldFile));
+      if (staged != nullptr) { // (staged->isValid())
+        for (int i = 0; i < staged->count(); ++i)
+          stagedHunks.insert(staged->lineNumber(i, 0, git::Diff::OldFile));
       }
 
+      // Setup resolution hunk for merge.
+      int hunkCount = patch->count();
+      ResolutionWidget *resolution = nullptr;
+      if (patch->isConflicted() && ((hunkCount > 0) || binary))
+        resolution = addResolution(patch, binary, lfs);
+
       // Add diff hunks.
-      int hunkCount = patch.count();
       for (int hidx = 0; hidx < hunkCount; ++hidx) {
-        HunkWidget *hunk = addHunk(diff, patch, hidx, lfs, submodule);
-        int startLine = patch.lineNumber(hidx, 0, git::Diff::OldFile);
+        HunkWidget *hunk = addHunk(diff, patch, hidx, binary, lfs, submodule);
+        int startLine = patch->lineNumber(hidx, 0, git::Diff::OldFile);
         hunk->header()->check()->setChecked(stagedHunks.contains(startLine));
+        hunk->setResolution(resolution);
         layout->addWidget(hunk);
+      }
+
+      // Add resolution hunk.
+      if (!mResolutions.isEmpty()) {
+        mResolutions.first()->setVisible(binary);
+        mResolutions.first()->update();
+        layout->addWidget(mResolutions.first());
       }
 
       // LFS view
       if (lfs) {
-
         // Add file info.
-        layout->addWidget(addInfo(mDiff, mPatch, false, true));
+        layout->addWidget(addInfo(diff, patch, binary, lfs));
 
         // LFS button.
         if (toolButton) {
@@ -2872,14 +3311,14 @@ public:
             mHunks.first()->header()->disclosureButton()->setChecked(!checked);
 
             if (!mImages.isEmpty()) {
-
               // Picture/icon already loaded.
               mImages.first()->setVisible(checked);
               mImages.first()->disclosureButton()->setChecked(checked);
             } else if (checked) {
-
               // Load picture/icon.
-              layout->insertWidget(1, addImage(mPatch, true, scalebinary));
+              layout->insertWidget(1, addImage(mPatch,
+                                               mPatch->isLfsPointer(),
+                                               scalebinary));
             }
 
             // Pointer, object or info loaded.
@@ -2887,68 +3326,104 @@ public:
           });
         }
       } else {
+        if (patch->isConflicted()) {
+          // Resolution button.
+          if (toolButton) {
+            toolButton->setVisible(!mResolutions.isEmpty() && !binary);
+            toolButton->setChecked(binary);
+            connect(toolButton, &QToolButton::clicked,
+            [this, disclosureButton, toolButton](bool checked) {
+              toolButton->setText(checked ? tr("Hide Resolution") :
+                                            tr("Show Resolution"));
 
-        // Add file info.
-        if (mHunks.isEmpty()) {
-          layout->addWidget(addInfo(mDiff, mPatch, false, false));
-          if (toolButton)
-            toolButton->setChecked(true);
-        }
+              if (!mResolutions.isEmpty()) {
+                // Resolution already loaded.
+                mResolutions.first()->setVisible(checked);
+                mResolutions.first()->header()->disclosureButton()->setChecked(checked);
+              }
 
-        // Submodule or empty hunk: hide file info button.
-        if (toolButton && (submodule || mHunks.isEmpty()))
-          toolButton->setVisible(false);
+              // Hunk, picture/info or info loaded.
+              if (!mResolutions.isEmpty() || !mHunks.isEmpty() ||
+                  !mImages.isEmpty() || (!mInfos.isEmpty() && checked))
+                disclosureButton->setEnabled(true);
+              else {
+                disclosureButton->setChecked(false);
+                disclosureButton->setEnabled(false);
+              }
+            });
+          }
+        } else {
+          // Add file info.
+          if (mHunks.isEmpty()) {
+            layout->addWidget(addInfo(diff, patch, binary, lfs));
+            if (toolButton)
+              toolButton->setChecked(true);
+          }
 
-        // File info button.
-        if (toolButton) {
-          connect(toolButton, &QToolButton::clicked,
-          [this, layout, disclosureButton, toolButton](bool checked) {
-            toolButton->setText(checked ? tr("Hide Info") : tr("Show Info"));
+          // Submodule or empty hunk: hide file info button.
+          if (toolButton && (submodule || mHunks.isEmpty()))
+            toolButton->setVisible(false);
 
-            if (!mInfos.isEmpty()) {
+          // File info button.
+          if (toolButton) {
+            connect(toolButton, &QToolButton::clicked,
+            [this, layout, disclosureButton, toolButton](bool checked) {
+              toolButton->setText(checked ? tr("Hide Info") : tr("Show Info"));
 
-              // Info already loaded.
-              mInfos.first()->setVisible(checked);
-              mInfos.first()->disclosureButton()->setChecked(checked);
-            } else if (checked) {
+              if (!mInfos.isEmpty()) {
+                // Info already loaded.
+                mInfos.first()->setVisible(checked);
+                mInfos.first()->disclosureButton()->setChecked(checked);
+              } else if (checked) {
+                // Load file info.
+                layout->addWidget(addInfo(mDiff, mPatch,
+                                          mPatch->isBinary(),
+                                          mPatch->isLfsPointer()));
+              }
 
-              // Load file info.
-              layout->addWidget(addInfo(mDiff, mPatch, false, false));
-            }
-
-            // Hunk, picture/info or info loaded.
-            if (!mHunks.isEmpty() || !mImages.isEmpty() || (!mInfos.isEmpty() && checked))
-              disclosureButton->setEnabled(true);
-            else {
-              disclosureButton->setChecked(false);
-              disclosureButton->setEnabled(false);
-            }
-          });
+              // Hunk, picture/info or info loaded.
+              if (!mHunks.isEmpty() || !mImages.isEmpty() ||
+                  (!mInfos.isEmpty() && checked))
+                disclosureButton->setEnabled(true);
+              else {
+                disclosureButton->setChecked(false);
+                disclosureButton->setEnabled(false);
+              }
+            });
+          }
         }
       }
     }
 
+    // Respond to check changes.
+    QCheckBox *check = mHeader->check();
+    connect(check, &QCheckBox::clicked, [this, check](bool staged) {
+      // Allow index to decide.
+      check->setChecked(!staged);
+      RepoView::parentView(this)->stageFiles({mPatch->name()}, staged);
+    });
+
     // Start hidden when the file is checked.
     bool expand = (mHeader->check()->checkState() == Qt::Unchecked);
 
-    // Auto collapse settings
+    // Auto collapse settings.
     if (Settings::instance()->value("collapse/untracked").toBool() == true &&
-        patch.isUntracked())
+        patch->isUntracked())
       expand = false;
 
     if (Settings::instance()->value("collapse/added").toBool() == true &&
-        patch.status() == GIT_DELTA_ADDED)
+        patch->status() == GIT_DELTA_ADDED)
       expand = false;
 
     if (Settings::instance()->value("collapse/modified").toBool() == true &&
-        patch.status() == GIT_DELTA_MODIFIED)
+        patch->status() == GIT_DELTA_MODIFIED)
       expand = false;
 
-    if (patch.status() == GIT_DELTA_RENAMED)
+    if (patch->status() == GIT_DELTA_RENAMED)
       expand = false;
 
     if (Settings::instance()->value("collapse/deleted").toBool() == true &&
-        patch.status() == GIT_DELTA_DELETED)
+        patch->status() == GIT_DELTA_DELETED)
       expand = false;
 
     disclosureButton->setChecked(expand);
@@ -2956,18 +3431,20 @@ public:
 
   bool isEmpty()
   {
-    return (mHunks.isEmpty() && mImages.isEmpty() && mInfos.isEmpty());
+    return (mResolutions.isEmpty() && mHunks.isEmpty() &&
+            mImages.isEmpty() && mInfos.isEmpty());
   }
 
   Header *header() const { return mHeader; }
 
-  QString name() const { return mPatch.name(); }
+  QString name() const { return mPatch->name(); }
 
   QList<HunkWidget *> hunks() const { return mHunks; }
+  QList<ResolutionWidget *> resolutions() const { return mResolutions; }
 
   QWidget *addInfo(
     const git::Diff diff,
-    const git::Patch patch,
+    const git::Patch *patch,
     bool binary,
     bool lfs)
   {
@@ -2980,7 +3457,7 @@ public:
   }
 
   QWidget *addImage(
-    const git::Patch patch,
+    const git::Patch *patch,
     bool lfs,
     bool scaled)
   {
@@ -2992,19 +3469,35 @@ public:
     return image;
   }
 
+  ResolutionWidget *addResolution(
+    git::Patch *patch,
+    bool binary,
+    bool lfs)
+  {
+    ResolutionWidget *resolution =
+      new ResolutionWidget(mView, patch, binary, lfs, this);
+
+    // Remember resolution.
+    mResolutions.append(resolution);
+
+    return resolution;
+  }
+
   HunkWidget *addHunk(
     const git::Diff &diff,
-    const git::Patch &patch,
+    git::Patch *patch,
     int index,
+    bool binary,
     bool lfs,
     bool submodule)
   {
     HunkWidget *hunk =
-      new HunkWidget(mView, diff, patch, index, lfs, submodule, this);
+      new HunkWidget(mView, diff, patch, index, binary, lfs, submodule, this);
 
     // Respond to check box click.
     QCheckBox *check = hunk->header()->check();
-    check->setVisible(diff.isStatusDiff() && !submodule && !patch.isConflicted());
+    check->setVisible(diff.isStatusDiff() && !submodule &&
+                      !patch->isConflicted());
     connect(check, &QCheckBox::clicked, this, &FileWidget::stageHunks);
 
     // Respond to editor diagnostic signal.
@@ -3027,21 +3520,21 @@ public:
 
     git::Index index = mDiff.index();
     if (hunks == QBitArray(hunks.size(), true)) {
-      index.setStaged({mPatch.name()}, true);
+      index.setStaged({mPatch->name()}, true);
       return;
     }
 
     if (hunks == QBitArray(hunks.size(), false)) {
-      index.setStaged({mPatch.name()}, false);
+      index.setStaged({mPatch->name()}, false);
       return;
     }
 
-    QByteArray buffer = mPatch.apply(hunks);
+    QByteArray buffer = mPatch->apply(hunks);
     if (buffer.isEmpty())
       return;
 
     // Add the buffer to the index.
-    index.add(mPatch.name(), buffer);
+    index.add(mPatch->name(), buffer);
   }
 
   void setDisclosureFile(bool expand) {
@@ -3051,6 +3544,9 @@ public:
   void setDisclosureHunks(bool expand) {
     foreach (HunkWidget *hunk, mHunks)
       hunk->header()->disclosureButton()->setChecked(expand);
+
+    foreach (ResolutionWidget *resolution, mResolutions)
+      resolution->header()->disclosureButton()->setChecked(expand);
   }
 
   void setDisclosureImages(bool expand) {
@@ -3074,12 +3570,13 @@ private:
   DiffView *mView;
 
   git::Diff mDiff;
-  git::Patch mPatch;
+  git::Patch *mPatch;
 
   Header *mHeader;
   QList<InfoWidget *> mInfos;
   QList<ImageWidget *> mImages;
   QList<HunkWidget *> mHunks;
+  QList<ResolutionWidget *> mResolutions;
 };
 
 } // anon. namespace
@@ -3324,6 +3821,10 @@ QList<TextEditor *> DiffView::editors()
     if (file->isVisible()) {
       foreach (HunkWidget *hunk, file->hunks())
         editors.append(hunk->editor());
+
+      foreach (ResolutionWidget *resolution, file->resolutions())
+        if (resolution->isVisible())
+          editors.append(resolution->editor());
     }
   }
 
@@ -3332,14 +3833,27 @@ QList<TextEditor *> DiffView::editors()
 
 void DiffView::ensureVisible(TextEditor *editor, int pos)
 {
-  HunkWidget *hunk = static_cast<HunkWidget *>(editor->parentWidget());
-  hunk->header()->disclosureButton()->setChecked(true);
+  int y = 0;
 
-  FileWidget *file = static_cast<FileWidget *>(hunk->parentWidget());
-  file->header()->disclosureButton()->setChecked(true);
+  // Widget is a hunk or a resolution.
+  QWidget *widget = editor->parentWidget();
+  FileWidget *file = static_cast<FileWidget *>(widget->parentWidget());
+  if (widget->objectName() == "HunkWidget") {
+    HunkWidget *hunk = static_cast<HunkWidget *>(editor->parentWidget());
+    hunk->header()->disclosureButton()->setChecked(true);
+    file->header()->disclosureButton()->setChecked(true);
 
-  int fileY = hunk->parentWidget()->y();
-  int y = fileY + hunk->y() + editor->y() + editor->pointFromPosition(pos).y();
+    y = file->y() + hunk->y() + editor->y() +
+        editor->pointFromPosition(pos).y();
+  }
+  if (widget->objectName() == "ResolutionWidget") {
+    ResolutionWidget *resolution = static_cast<ResolutionWidget *>(editor->parentWidget());
+    resolution->header()->disclosureButton()->setChecked(true);
+    file->header()->disclosureButton()->setChecked(true);
+
+    y = file->y() + resolution->y() + editor->y() +
+        editor->pointFromPosition(pos).y();
+  }
 
   QScrollBar *scrollBar = verticalScrollBar();
   int val = scrollBar->value();
@@ -3351,7 +3865,7 @@ void DiffView::ensureVisible(TextEditor *editor, int pos)
   }
 }
 
-int DiffView::borderWidth(void)
+int DiffView::borderWidth()
 {
   if (mBorderWidth > 0)
     return mBorderWidth;
@@ -3370,6 +3884,37 @@ int DiffView::borderWidth(void)
   }
 
   return mBorderWidth;
+}
+
+bool DiffView::writeResolution(int index, bool staged)
+{
+  bool stage = false;
+
+  if (index >= 0) {
+    fetchAll(index);
+
+    if (index < mFiles.size()) {
+      stage = true;
+
+      // Check conflict resolution state.
+      git::Patch *patch = mDiff.patch(index);
+      for (int i = 0; i < patch->count(); i++)
+        if (patch->isConflicted() &&
+            (patch->conflictResolution(i) == git::Patch::Unresolved))
+          stage = false;
+
+      // Write resolution to disk.
+      if (stage && staged) {
+        QWidget *widget = file(index);
+        FileWidget *file = static_cast<FileWidget *>(widget);
+
+        foreach (ResolutionWidget *resolution, file->resolutions())
+          if (!resolution->write())
+            stage = false;
+      }
+    }
+  }
+  return stage;
 }
 
 void DiffView::dropEvent(QDropEvent *event)
@@ -3411,15 +3956,15 @@ void DiffView::fetchMore(int count)
   int patchCount = mDiff.count();
   RepoView *view = RepoView::parentView(this);
   for (int pidx = init; (pidx < patchCount) && ((pidx - init) < count); ++pidx) {
-    git::Patch patch = mDiff.patch(pidx);
-    if (!patch.isValid() &&
+    git::Patch *patch = mDiff.patch(pidx);
+    if (!patch->isValid() &&
         (mDiff.status(pidx) != GIT_DELTA_UNMODIFIED)) {
       // This diff is stale. Refresh the view.
       QTimer::singleShot(0, view, &RepoView::refresh);
       return;
     }
 
-    git::Patch staged = mStagedPatches.value(patch.name());
+    git::Patch *staged = mStagedPatches.value(patch->name());
     FileWidget *file = new FileWidget(this, mDiff, patch, staged, widget());
     layout->insertWidget(layout->count() - 1, file);
 
@@ -3435,7 +3980,7 @@ void DiffView::fetchMore(int count)
 
     mFiles.append(file);
 
-    if (file->isEmpty() || !patch.isValid()) {
+    if (file->isEmpty() || !patch->isValid()) {
       DisclosureButton *button = file->header()->disclosureButton();
       button->setChecked(false);
       button->setEnabled(false);
@@ -3484,6 +4029,9 @@ void DiffView::fetchMore(int count)
 
 void DiffView::fetchAll(int index)
 {
+  if (!mDiff.isValid())
+    return;
+
   int count = index < 0 ? mDiff.count() : index - mFiles.size() + 1;
 
   // Load all patches up to and including index.

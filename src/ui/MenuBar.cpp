@@ -839,9 +839,21 @@ void MenuBar::updateView()
   if (!view)
     return;
 
+  bool merging = false;
+  switch (view->repo().state()) {
+    case GIT_REPOSITORY_STATE_MERGE:
+    case GIT_REPOSITORY_STATE_REVERT:
+    case GIT_REPOSITORY_STATE_REVERT_SEQUENCE:
+    case GIT_REPOSITORY_STATE_CHERRYPICK:
+    case GIT_REPOSITORY_STATE_CHERRYPICK_SEQUENCE:
+      merging = true;
+      break;
+  }
+
   bool diff = (view->viewMode() == RepoView::Diff);
   mToggleLog->setText(view->isLogVisible() ? tr("Hide Log") : tr("Show Log"));
   mToggleView->setText(diff ? tr("Show Tree View") : tr("Show Diff View"));
+  mToggleView->setEnabled(!merging);
 }
 
 void MenuBar::updateRepository()

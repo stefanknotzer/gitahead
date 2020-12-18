@@ -40,6 +40,7 @@ public:
   virtual void find() {}
   virtual void findNext() {}
   virtual void findPrevious() {}
+  virtual bool writeFile(const QString &file, bool staged) = 0;
 };
 
 class DetailView : public QWidget
@@ -59,6 +60,7 @@ public:
   bool isStageEnabled() const;
   void unstage();
   bool isUnstageEnabled() const;
+  void stageFiles(const QStringList files, bool staged);
 
   // mode
   RepoView::ViewMode viewMode() const;
@@ -93,6 +95,8 @@ private:
     DiffIndex,
     TreeIndex
   };
+
+  git::Diff mDiff;
 
   QStackedWidget *mDetail;
   QStackedWidget *mContent;

@@ -21,6 +21,7 @@
 #include "git/Config.h"
 #include "git/Diff.h"
 #include "git/Index.h"
+#include "git/Patch.h"
 #include "git/Repository.h"
 #include "git/Signature.h"
 #include "git/TagRef.h"
@@ -1303,14 +1304,11 @@ public:
 
     mStage = new QPushButton(tr("Stage All"), this);
     mStage->setObjectName("StageAll");
-    connect(mStage, &QPushButton::clicked, this, &CommitEditor::stage);
 
     mUnstage = new QPushButton(tr("Unstage All"), this);
-    connect(mUnstage, &QPushButton::clicked, this, &CommitEditor::unstage);
 
     mCommit = new QPushButton(tr("Commit"), this);
     mCommit->setDefault(true);
-    connect(mCommit, &QPushButton::clicked, this, &CommitEditor::commit);
 
     // Update buttons on index change.
     connect(repo.notifier(), &git::RepositoryNotifier::indexChanged,
@@ -1331,42 +1329,9 @@ public:
     layout->addLayout(buttonLayout);
   }
 
-  void commit()
-  {
-    // Check for a merge head.
-    git::AnnotatedCommit upstream;
-    RepoView *view = RepoView::parentView(this);
-    if (git::Reference mergeHead = view->repo().lookupRef("MERGE_HEAD"))
-      upstream = mergeHead.annotatedCommit();
-
-    if (view->commit(mMessage->toPlainText(), upstream))
-      mMessage->clear(); // Clear the message field.
-  }
-
-  bool isCommitEnabled() const
-  {
-    return mCommit->isEnabled();
-  }
-
-  void stage()
-  {
-    mDiff.setAllStaged(true);
-  }
-
-  bool isStageEnabled() const
-  {
-    return mStage->isEnabled();
-  }
-
-  void unstage()
-  {
-    mDiff.setAllStaged(false);
-  }
-
-  bool isUnstageEnabled() const
-  {
-    return mUnstage->isEnabled();
-  }
+  bool isCommitEnabled() const { return mCommit->isEnabled(); }
+  bool isStageEnabled() const { return mStage->isEnabled(); }
+  bool isUnstageEnabled() const { return mUnstage->isEnabled(); }
 
   void setMessage(const QString &message)
   {
@@ -1388,7 +1353,6 @@ public:
     }
   }
 
-private:
   void updateButtons(bool yieldFocus = true)
   {
     if (!mDiff.isValid()) {
@@ -1402,10 +1366,11 @@ private:
     int staged = 0;
     int partial = 0;
     int conflicted = 0;
+    int resolved = 0;
     int count = mDiff.count();
     git::Index index = mDiff.index();
-    for (int i = 0; i < count; ++i) {
-      QString name = mDiff.name(i);
+    for (int idx = 0; idx < count; ++idx) {
+      QString name = mDiff.name(idx);
       switch (index.isStaged(name)) {
         case git::Index::Disabled:
         case git::Index::Unstaged:
@@ -1421,9 +1386,21 @@ private:
           ++staged;
           break;
 
-        case git::Index::Conflicted:
+        case git::Index::Conflicted: {
           ++conflicted;
+
+          git::Patch *patch = mDiff.patch(idx);
+          bool res = true;
+          if (patch->isBinary())
+            res = patch->conflictResolution(-1) != git::Patch::Unresolved;
+
+          for (int i = 0; i < patch->count(); i++)
+            if (patch->conflictResolution(i) == git::Patch::Unresolved)
+              res = false;
+          if (res)
+            ++resolved;
           break;
+        }
       }
     }
 
@@ -1478,10 +1455,10 @@ private:
         fragments.append(partialFmt.arg(partial));
       }
 
-      if (conflicted) {
+      if (conflicted > resolved) {
         QString conflictedFmt = (conflicted == 1) ?
-          tr("%1 unresolved conflict") : tr("%1 unresolved conflicts");
-        fragments.append(conflictedFmt.arg(conflicted));
+          tr("%1 of %2 conflict resolved") : tr("%1 of %2 conflicts resolved");
+        fragments.append(conflictedFmt.arg(resolved).arg(conflicted));
       } else if (mDiff.isConflicted()) {
         fragments.append(tr("all conflicts resolved"));
       }
@@ -1500,6 +1477,13 @@ private:
     MenuBar::instance(this)->updateRepository();
   }
 
+  QPushButton *stageButton() const { return mStage; }
+  QPushButton *unstageButton() const { return mUnstage; }
+  QPushButton *commitButton() const { return mCommit; }
+
+  TextEdit *commitMessage() const { return mMessage; }
+
+private:
   void updateLineSettings(QAction *action, int value)
   {
     git::Config appconfig = mRepo.appConfig();
@@ -1597,6 +1581,9 @@ ContentWidget::~ContentWidget() {}
 DetailView::DetailView(const git::Repository &repo, QWidget *parent)
   : QWidget(parent)
 {
+  CommitEditor *edit;
+  DiffWidget *diff;
+
   QVBoxLayout *layout = new QVBoxLayout(this);
   layout->setContentsMargins(0,0,0,0);
   layout->setSpacing(0);
@@ -1606,21 +1593,44 @@ DetailView::DetailView(const git::Repository &repo, QWidget *parent)
   layout->addWidget(mDetail);
 
   mDetail->addWidget(new CommitDetail(this));
-  mDetail->addWidget(new CommitEditor(repo, this));
+  mDetail->addWidget(edit = new CommitEditor(repo, this));
 
   mContent = new QStackedWidget(this);
   layout->addWidget(mContent, 1);
 
-  mContent->addWidget(new DiffWidget(repo, this));
+  mContent->addWidget(diff = new DiffWidget(repo, this));
   mContent->addWidget(new TreeWidget(repo, this));
+
+  // Stage, unstage and commit buttons.
+  connect(edit->stageButton(), &QPushButton::clicked,
+          this, &DetailView::stage);
+  connect(edit->unstageButton(), &QPushButton::clicked,
+          this, &DetailView::unstage);
+  connect(edit->commitButton(), &QPushButton::clicked,
+          this, &DetailView::commit);
+
+  // Conflict resolution status update.
+  connect(repo.notifier(), &git::RepositoryNotifier::statusChanged, [edit] {
+    edit->updateButtons();
+  });
 }
 
 DetailView::~DetailView() {}
 
 void DetailView::commit()
 {
-  Q_ASSERT(isCommitEnabled());
-  static_cast<CommitEditor *>(mDetail->currentWidget())->commit();
+  if (!isCommitEnabled())
+    return;
+
+  // Check for a merge head.
+  git::AnnotatedCommit upstream;
+  RepoView *view = RepoView::parentView(this);
+  if (git::Reference mergeHead = view->repo().lookupRef("MERGE_HEAD"))
+    upstream = mergeHead.annotatedCommit();
+
+  CommitEditor *ce = static_cast<CommitEditor *>(mDetail->currentWidget());
+  if (view->commit(ce->commitMessage()->toPlainText(), upstream))
+    ce->commitMessage()->clear(); // Clear the message field.
 }
 
 bool DetailView::isCommitEnabled() const
@@ -1632,8 +1642,16 @@ bool DetailView::isCommitEnabled() const
 
 void DetailView::stage()
 {
-  Q_ASSERT(isStageEnabled());
-  static_cast<CommitEditor *>(mDetail->currentWidget())->stage();
+  if (!isStageEnabled())
+    return;
+
+  QStringList files;
+  git::Index index = mDiff.index();
+  for (int i = 0; i < mDiff.count(); ++i)
+    if (index.isStaged(mDiff.name(i)) != git::Index::Staged)
+      files.append(mDiff.name(i));
+
+  stageFiles(files, true);
 }
 
 bool DetailView::isStageEnabled() const
@@ -1645,8 +1663,16 @@ bool DetailView::isStageEnabled() const
 
 void DetailView::unstage()
 {
-  Q_ASSERT(isUnstageEnabled());
-  static_cast<CommitEditor *>(mDetail->currentWidget())->unstage();
+  if (!isUnstageEnabled())
+    return;
+
+  QStringList files;
+  git::Index index = mDiff.index();
+  for (int i = 0; i < mDiff.count(); ++i)
+    if (index.isStaged(mDiff.name(i)) != git::Index::Unstaged)
+      files.append(mDiff.name(i));
+
+  stageFiles(files, false);
 }
 
 bool DetailView::isUnstageEnabled() const
@@ -1654,6 +1680,48 @@ bool DetailView::isUnstageEnabled() const
   QWidget *widget = mDetail->currentWidget();
   return (mDetail->currentIndex() == EditorIndex &&
           static_cast<CommitEditor *>(widget)->isUnstageEnabled());
+}
+
+void DetailView::stageFiles(const QStringList files, bool staged)
+{
+  // Central stage/unstage file(s).
+  if (files.isEmpty())
+    return;
+
+  // Make sure contents are written (e.g. merge resolution)
+  QStringList stageFiles;
+  QStringList rejectedFiles;
+  foreach (const QString &file, files) {
+    bool ok = true;
+    for (int i = 0; i < mContent->count(); i++) {
+      ContentWidget *cw = static_cast<ContentWidget *>(mContent->widget(i));
+      if (!cw->writeFile(file, staged))
+        ok = false;
+    }
+    if (ok)
+      stageFiles.append(file);
+    else
+      rejectedFiles.append(file);
+  }
+
+  // User information: rejected files.
+  if (!rejectedFiles.isEmpty()) {
+    QString singular = rejectedFiles.count() == 1 ? tr("One file is") :
+                                                    tr("Several files are");
+    QMessageBox mb(QMessageBox::Information,
+                   staged ? tr("Staging All Files") :
+                            tr("Unstaging All Files"),
+                   staged ? tr("%1 not staged").arg(singular) :
+                            tr("%1 not unstaged").arg(singular),
+                   QMessageBox::Ok, this);
+    mb.setInformativeText(tr("Check for unresolved merge conflicts or "
+                             "the working directory for filesystem problems."));
+    mb.setDetailedText(rejectedFiles.join('\n'));
+    mb.exec();
+  }
+
+  // Stage/Unstage.
+  mDiff.index().setStaged(stageFiles, staged);
 }
 
 RepoView::ViewMode DetailView::viewMode() const
@@ -1690,6 +1758,7 @@ void DetailView::setDiff(
   RepoView *view = RepoView::parentView(this);
   QList<git::Commit> commits = view->commits();
 
+  mDiff = diff;
   mDetail->setCurrentIndex(commits.isEmpty() ? EditorIndex : CommitIndex);
   mDetail->setVisible(diff.isValid());
 

@@ -999,10 +999,24 @@ void ToolBar::updateStash()
 void ToolBar::updateView()
 {
   RepoView *view = currentView();
+
+  bool merging = false;
+  if (view) {
+    switch (view->repo().state()) {
+      case GIT_REPOSITORY_STATE_MERGE:
+      case GIT_REPOSITORY_STATE_REVERT:
+      case GIT_REPOSITORY_STATE_REVERT_SEQUENCE:
+      case GIT_REPOSITORY_STATE_CHERRYPICK:
+      case GIT_REPOSITORY_STATE_CHERRYPICK_SEQUENCE:
+        merging = true;
+        break;
+    }
+  }
+
   mConfigButton->setEnabled(view);
   mLogButton->setEnabled(view);
   mModeGroup->button(RepoView::Diff)->setEnabled(view);
-  mModeGroup->button(RepoView::Tree)->setEnabled(view);
+  mModeGroup->button(RepoView::Tree)->setEnabled(!merging);
 
   if (view) {
     bool visible = view->isLogVisible();

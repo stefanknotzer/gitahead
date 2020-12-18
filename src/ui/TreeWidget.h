@@ -39,6 +39,7 @@ public:
   void find() override;
   void findNext() override;
   void findPrevious() override;
+  bool writeFile(const QString &file, bool staged) override;
 
 protected:
   void contextMenuEvent(QContextMenuEvent *event) override;
@@ -52,4 +53,5 @@ private:
   ColumnView *mView;
   BlameEditor *mEditor;
 };
+
 #endif

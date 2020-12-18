@@ -204,7 +204,8 @@ bool TreeModel::setData(
           files.append(file);
       }
 
-      mDiff.index().setStaged(files, value.toBool());
+      // File stage/unstage.
+      emit stageFiles(files, value.toBool());
       emit dataChanged(index, index, {role});
       return true;
     }
