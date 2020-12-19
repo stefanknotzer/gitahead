@@ -1328,7 +1328,9 @@ public:
       mOurs = new QToolButton(this);
       mOurs->setObjectName("ConflictAllOurs");
       mOurs->setStyleSheet(buttonStyle(Theme::Diff::Ours));
-      mOurs->setText(ResolutionWidget::tr("Take Ours"));
+      mOurs->setText(ResolutionWidget::tr("Entirely Use Ours"));
+      mOurs->setToolTip(ResolutionWidget::tr("Resolve all conflicts applying "
+                                             "'Our' solution"));
       lookupCommitInfos(patch->repo(), true, branch, tooltip);
       if (!branch.isEmpty())
         mOurs->setText(mOurs->text() + " (" + branch + ")");
@@ -1338,7 +1340,9 @@ public:
       mTheirs = new QToolButton(this);
       mTheirs->setObjectName("ConflictAllTheirs");
       mTheirs->setStyleSheet(buttonStyle(Theme::Diff::Theirs));
-      mTheirs->setText(ResolutionWidget::tr("Take Theirs"));
+      mTheirs->setText(ResolutionWidget::tr("Entirely Use Theirs"));
+      mTheirs->setToolTip(ResolutionWidget::tr("Resolve all conflicts applying "
+                                               "'Their' solution"));
       lookupCommitInfos(patch->repo(), false, branch, tooltip);
       if (!branch.isEmpty())
         mTheirs->setText(mTheirs->text() + " (" + branch + ")");
@@ -1347,7 +1351,7 @@ public:
 
       // Add edit button.
       EditButton *edit = new EditButton(patch, -1, binary, lfs, this);
-      edit->setToolTip(ResolutionWidget::tr("Edit Hunk"));
+      edit->setToolTip(ResolutionWidget::tr("Edit Resolution"));
 
       // Add disclosure button.
       mDisclosureButton = new DisclosureButton(this);
@@ -1645,7 +1649,7 @@ public:
                 mEditor->addDiagnostic(line,
                   { TextEditor::Note,
                     tr("unresolved merge conflict"),
-                    tr("Resolve conflict using 'ours' or 'theirs' button."),
+                    tr("Resolve conflict choosing 'Ours' or 'Theirs' button."),
                     0 , 0, nullptr });
               }
               continue;
@@ -2008,6 +2012,7 @@ public:
       connect(undo, &QToolButton::clicked, [this] {
         mPatch->setConflictResolution(mIndex, git::Patch::Unresolved);
         mResolution->update();
+        mHeader->disclosureButton()->setChecked(true);
       });
     }
 
@@ -2016,6 +2021,7 @@ public:
       connect(ours, &QToolButton::clicked, [this] {
         mPatch->setConflictResolution(mIndex, git::Patch::Ours);
         mResolution->update();
+        mHeader->disclosureButton()->setChecked(false);
       });
     }
 
@@ -2023,6 +2029,7 @@ public:
       connect(theirs, &QToolButton::clicked, [this] {
         mPatch->setConflictResolution(mIndex, git::Patch::Theirs);
         mResolution->update();
+        mHeader->disclosureButton()->setChecked(false);
       });
     }
 
