@@ -1426,35 +1426,9 @@ public:
     connect(mEditor, &TextEditor::updateUi,
             MenuBar::instance(this), &MenuBar::updateCutCopyPaste);
 
-    // Ensure that text margin reacts to settings changes.
-    connect(mEditor, &TextEditor::settingsChanged, [this] {
-      int width = mEditor->textWidth(STYLE_LINENUMBER, mEditor->marginText(0));
-      mEditor->setMarginWidthN(TextEditor::LineNumbers, width);
-    });
-
     // Darken background when find highlight is active.
     connect(mEditor, &TextEditor::highlightActivated,
             this, &ResolutionWidget::setDisabled);
-
-    // Update line count and buttons.
-    connect(mEditor, &TextEditor::modified, [this] {
-      mEditor->setLineCount(mEditor->lineCount());
-
-      // Button visibility.
-      int ours = 0;
-      int theirs = 0;
-      int count = mPatch->count();
-      for (int i = 0; i < count; i++) {
-        if (mPatch->conflictResolution(i) == git::Patch::Ours)
-          ours++;
-        if (mPatch->conflictResolution(i) == git::Patch::Theirs)
-          theirs++;
-      }
-
-      mHeader->undoButton()->setEnabled(ours + theirs > 0);
-      mHeader->oursButton()->setEnabled(ours < count);
-      mHeader->theirsButton()->setEnabled(theirs < count);
-    });
 
     // Disable vertical resize.
     mEditor->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
@@ -1697,6 +1671,25 @@ public:
       // Delete marker.
       mEditor->markerDeleteAll(TextEditor::Addition);
       mEditor->setReadOnly(true);
+      mEditor->updateGeometry();
+
+      // Button visibility.
+      int ours = 0;
+      int theirs = 0;
+      int count = mPatch->count();
+      for (int i = 0; i < count; i++) {
+        if (mPatch->conflictResolution(i) == git::Patch::Ours)
+          ours++;
+        if (mPatch->conflictResolution(i) == git::Patch::Theirs)
+          theirs++;
+      }
+
+      mHeader->undoButton()->setEnabled(ours + theirs > 0);
+      mHeader->oursButton()->setEnabled(ours < count);
+      mHeader->theirsButton()->setEnabled(theirs < count);
+
+      // Resolution changed.
+      emit resolutionChanged();
     }
   }
 
@@ -1752,6 +1745,9 @@ public:
 
   TextEditor *editor() { return mEditor; }
 
+signals:
+  void resolutionChanged();
+
 private:
   void load()
   {
@@ -1773,10 +1769,11 @@ private:
       mEditor->setMarginWidthN(TextEditor::LineNumber, marginWidth);
     }
 
-    // Add markers and line numbers.
+    // Add line numbers.
+    mEditor->marginTextClearAll();
     for (int lidx = 0; lidx < mEditor->lineCount(); ++lidx) {
-      mEditor->marginSetText(lidx, QString::number(lidx + 1) + ' ' +
-                                   QString::number(lidx + 1));
+      mEditor->marginSetText(lidx, QString::number(lidx + 1) +
+                             ' ' + QString::number(lidx + 1));
       mEditor->marginSetStyle(lidx, STYLE_LINENUMBER);
     }
 
@@ -1969,7 +1966,7 @@ public:
     bool lfs,
     bool submodule,
     QWidget *parent = nullptr)
-    : QFrame(parent), mView(view), mPatch(patch), mindex(index)
+    : QFrame(parent), mView(view), mPatch(patch), mIndex(index)
   {
     setObjectName("HunkWidget");
     QVBoxLayout *layout = new QVBoxLayout(this);
@@ -2009,7 +2006,7 @@ public:
     // Handle conflict resolution.
     if (QToolButton *undo = mHeader->undoButton()) {
       connect(undo, &QToolButton::clicked, [this] {
-        mPatch->setConflictResolution(mindex, git::Patch::Unresolved);
+        mPatch->setConflictResolution(mIndex, git::Patch::Unresolved);
         mResolution->update();
       });
     }
@@ -2017,14 +2014,14 @@ public:
     git::Repository repo = patch->repo();
     if (QToolButton *ours = mHeader->oursButton()) {
       connect(ours, &QToolButton::clicked, [this] {
-        mPatch->setConflictResolution(mindex, git::Patch::Ours);
+        mPatch->setConflictResolution(mIndex, git::Patch::Ours);
         mResolution->update();
       });
     }
 
     if (QToolButton *theirs = mHeader->theirsButton()) {
       connect(theirs, &QToolButton::clicked, [this] {
-        mPatch->setConflictResolution(mindex, git::Patch::Theirs);
+        mPatch->setConflictResolution(mIndex, git::Patch::Theirs);
         mResolution->update();
       });
     }
@@ -2187,7 +2184,7 @@ public:
 
     // Update editor and buttons.
     if ((mPatch->count() > 0) && (resolution != nullptr)) {
-      connect(mResolution->editor(), &TextEditor::modified, [this] {
+      connect(mResolution, &ResolutionWidget::resolutionChanged, [this] {
         // Reload editor.
         mEditor->setReadOnly(false);
         mEditor->clearAll();
@@ -2195,7 +2192,7 @@ public:
         load();
 
         // Update editor markers and button visibility.
-        git::Patch::ConflictResolution res = mPatch->conflictResolution(mindex);
+        git::Patch::ConflictResolution res = mPatch->conflictResolution(mIndex);
         if (res == git::Patch::Ours) {
           mEditor->markerDeleteAll(TextEditor::Theirs);
           chooseLines(TextEditor::Ours);
@@ -2284,7 +2281,7 @@ private:
 
     // Load entire file.
     git::Repository repo = mPatch->repo();
-    if (mindex < 0) {
+    if (mIndex < 0) {
       QString name = mPatch->name();
       QFile dev(repo.workdir().filePath(name));
       if (dev.open(QFile::ReadOnly)) {
@@ -2306,9 +2303,9 @@ private:
     // Load hunk.
     QList<Line> lines;
     QByteArray content;
-    int patchCount = mPatch->lineCount(mindex);
+    int patchCount = mPatch->lineCount(mIndex);
     for (int lidx = 0; lidx < patchCount; ++lidx) {
-      char origin = mPatch->lineOrigin(mindex, lidx);
+      char origin = mPatch->lineOrigin(mIndex, lidx);
       if (origin == GIT_DIFF_LINE_CONTEXT_EOFNL ||
           origin == GIT_DIFF_LINE_ADD_EOFNL ||
           origin == GIT_DIFF_LINE_DEL_EOFNL) {
@@ -2318,10 +2315,10 @@ private:
         continue;
       }
 
-      int oldLine = mPatch->lineNumber(mindex, lidx, git::Diff::OldFile);
-      int newLine = mPatch->lineNumber(mindex, lidx, git::Diff::NewFile);
+      int oldLine = mPatch->lineNumber(mIndex, lidx, git::Diff::OldFile) + 1;
+      int newLine = mPatch->lineNumber(mIndex, lidx, git::Diff::NewFile) + 1;
       lines << Line(origin, oldLine, newLine);
-      content += mPatch->lineContent(mindex, lidx);
+      content += mPatch->lineContent(mIndex, lidx);
     }
 
     // Trim final line end.
@@ -2446,7 +2443,7 @@ private:
           marker = TextEditor::Addition;
           ++additions;
           if (lidx + 1 >= count ||
-              mPatch->lineOrigin(mindex, lidx + 1) != GIT_DIFF_LINE_ADDITION) {
+              mPatch->lineOrigin(mIndex, lidx + 1) != GIT_DIFF_LINE_ADDITION) {
             // The heuristic is that matching blocks have
             // the same number of additions as deletions.
             if (additions == deletions) {
@@ -2566,7 +2563,7 @@ private:
 
   DiffView *mView;
   git::Patch *mPatch;
-  int mindex;
+  int mIndex;
 
   Header *mHeader;
   TextEditor *mEditor;
@@ -2937,7 +2934,8 @@ public:
           break;
 
         case git::Index::PartiallyStaged:
-          state = Qt::PartiallyChecked;
+          if (!mPatch->isConflicted())
+            state = Qt::PartiallyChecked;
           break;
 
         case git::Index::Staged:
@@ -3097,7 +3095,7 @@ public:
     bool lfs = patch->isLfsPointer();
     bool submodule = patch->isSubmodule();
 
-    mHeader = new Header(diff, patch, binary, lfs, submodule, parent);
+    mHeader = new Header(diff, patch, binary, lfs, submodule, this);
     layout->addWidget(mHeader);
 
     // File collapse/expand.
@@ -3138,7 +3136,7 @@ public:
 
       if (mPatch->isBinary() && visible) {
         bool checked = mHeader->toolButton()->isChecked();
-        if (mHeader->toolButton()->isEnabled()) {
+        if (mHeader->toolButton()->isVisible()) {
           // Toggle picture visibility.
           if (!mImages.isEmpty())
             mImages.first()->setVisible(checked);

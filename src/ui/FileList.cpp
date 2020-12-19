@@ -105,7 +105,10 @@ public:
             return Qt::Unchecked;
 
           case git::Index::PartiallyStaged:
-            return Qt::PartiallyChecked;
+            if (mDiff.patch(index.row())->isConflicted())
+              return Qt::Unchecked;
+            else
+              return Qt::PartiallyChecked;
 
           case git::Index::Staged:
             return Qt::Checked;

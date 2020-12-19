@@ -1376,10 +1376,25 @@ public:
         case git::Index::Unstaged:
           break;
 
-        case git::Index::PartiallyStaged:
-          list.append(QFileInfo(name).fileName());
-          ++partial;
+        case git::Index::PartiallyStaged: {
+          git::Patch *patch = mDiff.patch(idx);
+          if (patch->isConflicted()) {
+            ++conflicted;
+            bool res = true;
+            if (patch->isBinary())
+              res = patch->conflictResolution(-1) != git::Patch::Unresolved;
+
+            for (int i = 0; i < patch->count(); i++)
+              if (patch->conflictResolution(i) == git::Patch::Unresolved)
+                res = false;
+            if (res)
+              ++resolved;
+          } else {
+            list.append(QFileInfo(name).fileName());
+            ++partial;
+          }
           break;
+        }
 
         case git::Index::Staged:
           list.append(QFileInfo(name).fileName());
@@ -1706,7 +1721,7 @@ void DetailView::stageFiles(const QStringList files, bool staged)
 
   // User information: rejected files.
   if (!rejectedFiles.isEmpty()) {
-    QString singular = rejectedFiles.count() == 1 ? tr("One file is") :
+    QString singular = rejectedFiles.count() == 1 ? tr("File is") :
                                                     tr("Several files are");
     QMessageBox mb(QMessageBox::Information,
                    staged ? tr("Staging All Files") :
@@ -1715,7 +1730,7 @@ void DetailView::stageFiles(const QStringList files, bool staged)
                             tr("%1 not unstaged").arg(singular),
                    QMessageBox::Ok, this);
     mb.setInformativeText(tr("Check for unresolved merge conflicts or "
-                             "the working directory for filesystem problems."));
+                             "filesystem issues in the working directory."));
     mb.setDetailedText(rejectedFiles.join('\n'));
     mb.exec();
   }

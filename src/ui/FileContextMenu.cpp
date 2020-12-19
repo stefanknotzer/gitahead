@@ -167,10 +167,16 @@ FileContextMenu::FileContextMenu(
             ++unstaged;
             break;
 
-          case git::Index::PartiallyStaged:
+          case git::Index::PartiallyStaged: {
             ++staged;
             ++unstaged;
+
+            int idx = diff.indexOf(file);
+            for (int i = 0; i < diff.patch(idx)->count(); i++)
+              if (diff.patch(idx)->conflictResolution(i) == git::Patch::Unresolved)
+                resolved = false;
             break;
+          }
 
           case git::Index::Staged:
             ++staged;
@@ -189,7 +195,7 @@ FileContextMenu::FileContextMenu(
       }
 
       stage->setEnabled((unstaged > 0) && resolved);
-      unstage->setEnabled(staged > 0);
+      unstage->setEnabled((staged > 0) && resolved);
       stageAll->setVisible((unstaged > 0) && !statusText.isEmpty());
       unstageAll->setVisible((staged > 0) && !statusText.isEmpty());
 
