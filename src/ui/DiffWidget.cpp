@@ -181,16 +181,12 @@ void DiffWidget::findPrevious()
   mFind->find(FindWidget::Backward);
 }
 
-bool DiffWidget::writeFile(const QString &file, bool staged)
+bool DiffWidget::stageRequest(const QString &file, bool staged)
 {
-  bool stage = true;
+  if (mDiff.isValid())
+    return mDiffView->stageRequest(mDiff.indexOf(file), staged);
 
-  if (mDiff.isValid()) {
-    // Write merge resolution to disk.
-    if (!mDiffView->writeResolution(mDiff.indexOf(file), staged))
-      stage = false;
-  }
-  return stage;
+  return false;
 }
 
 void DiffWidget::selectFile(const QString &file)

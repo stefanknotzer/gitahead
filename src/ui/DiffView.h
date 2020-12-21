@@ -46,7 +46,7 @@ public:
   void ensureVisible(TextEditor *editor, int pos) override;
 
   int borderWidth();
-  bool writeResolution(int index, bool staged);
+  bool stageRequest(int index, bool staged);
 
 signals:
   void diagnosticAdded(TextEditor::DiagnosticKind kind);

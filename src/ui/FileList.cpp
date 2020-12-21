@@ -84,6 +84,7 @@ public:
           for (int i = 0; i < patch->count(); i++)
             if (patch->conflictResolution(i) == git::Patch::Unresolved)
               res = false;
+
           if (res)
             ret.append(tr("Resolved"));
         }

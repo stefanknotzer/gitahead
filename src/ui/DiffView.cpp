@@ -1702,9 +1702,6 @@ public:
     git::Repository repo = mPatch->repo();
     QString path = repo.workdir().filePath(mPatch->name());
 
-    if (!mEditor->length())
-      return false;
-
     // Save or remove backup.
     git::Config config = git::Config::global();
     if (config.value<bool>("mergetool.keepBackup"))
@@ -1733,6 +1730,9 @@ public:
       return file.commit();
 
     } else {
+      if (!mEditor->length())
+        return false;
+
       // Write resolution to disk.
       QSaveFile file(path);
       if (!file.open(QFile::WriteOnly))
@@ -3891,35 +3891,41 @@ int DiffView::borderWidth()
   return mBorderWidth;
 }
 
-bool DiffView::writeResolution(int index, bool staged)
+bool DiffView::stageRequest(int index, bool staged)
 {
-  bool stage = false;
-
   if (index >= 0) {
     fetchAll(index);
 
     if (index < mFiles.size()) {
-      stage = true;
+      bool stage = true;
 
       // Check conflict resolution state.
       git::Patch *patch = mDiff.patch(index);
-      for (int i = 0; i < patch->count(); i++)
-        if (patch->isConflicted() &&
-            (patch->conflictResolution(i) == git::Patch::Unresolved))
-          stage = false;
+      if (patch->isConflicted()) {
+        if (patch->isBinary())
+          stage = patch->conflictResolution(-1) != git::Patch::Unresolved;
 
-      // Write resolution to disk.
-      if (stage && staged) {
-        QWidget *widget = file(index);
-        FileWidget *file = static_cast<FileWidget *>(widget);
-
-        foreach (ResolutionWidget *resolution, file->resolutions())
-          if (!resolution->write())
+        for (int i = 0; i < patch->count(); i++)
+          if (patch->isConflicted() &&
+              (patch->conflictResolution(i) == git::Patch::Unresolved))
             stage = false;
+
+        // Write resolution to disk.
+        if (stage && staged) {
+          QWidget *widget = file(index);
+          FileWidget *file = static_cast<FileWidget *>(widget);
+
+          foreach (ResolutionWidget *resolution, file->resolutions())
+            if (!resolution->write())
+              stage = false;
+        }
       }
+
+      return stage;
     }
   }
-  return stage;
+
+  return false;
 }
 
 void DiffView::dropEvent(QDropEvent *event)

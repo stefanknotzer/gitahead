@@ -41,7 +41,7 @@ public:
   void find() override;
   void findNext() override;
   void findPrevious() override;
-  bool writeFile(const QString &file, bool staged) override;
+  bool stageRequest(const QString &file, bool staged) override;
 
 private:
   void selectFile(const QString &name);

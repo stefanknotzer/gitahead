@@ -115,11 +115,12 @@ FileContextMenu::FileContextMenu(
         if (idx >= 0) {
           status = diff.status(idx);
           switch (diff.status(idx)) {
-            case GIT_DELTA_ADDED:     statusText = tr("Added");     break;
-            case GIT_DELTA_DELETED:   statusText = tr("Deleted");   break;
-            case GIT_DELTA_MODIFIED:  statusText = tr("Modified");  break;
-            case GIT_DELTA_UNTRACKED: statusText = tr("Untracked"); break;
-            default:                                                break;
+            case GIT_DELTA_ADDED:       statusText = tr("Added");     break;
+            case GIT_DELTA_DELETED:     statusText = tr("Deleted");   break;
+            case GIT_DELTA_MODIFIED:    statusText = tr("Modified");  break;
+            case GIT_DELTA_UNTRACKED:   statusText = tr("Untracked"); break;
+            case GIT_DELTA_CONFLICTED:  statusText = tr("Resolved");  break;
+            default:                                                  break;
           }
         }
       }
@@ -157,7 +158,7 @@ FileContextMenu::FileContextMenu(
 
       int staged = 0;
       int unstaged = 0;
-      bool resolved = true;
+      bool res = true;
       foreach (const QString &file, files) {
         switch (index.isStaged(file)) {
           case git::Index::Disabled:
@@ -171,10 +172,17 @@ FileContextMenu::FileContextMenu(
             ++staged;
             ++unstaged;
 
-            int idx = diff.indexOf(file);
-            for (int i = 0; i < diff.patch(idx)->count(); i++)
-              if (diff.patch(idx)->conflictResolution(i) == git::Patch::Unresolved)
-                resolved = false;
+            git::Patch *patch = diff.patch(diff.indexOf(file));
+
+            // Merge conflict: file was added in ours and theirs commit.
+            if (patch->isConflicted()) {
+              if (patch->isBinary())
+                res = patch->conflictResolution(-1);
+
+              for (int i = 0; i < patch->count(); i++)
+                if (patch->conflictResolution(i) == git::Patch::Unresolved)
+                  res = false;
+            }
             break;
           }
 
@@ -185,19 +193,23 @@ FileContextMenu::FileContextMenu(
           case git::Index::Conflicted: {
             ++unstaged;
 
-            int idx = diff.indexOf(file);
-            for (int i = 0; i < diff.patch(idx)->count(); i++)
-              if (diff.patch(idx)->conflictResolution(i) == git::Patch::Unresolved)
-                resolved = false;
+            git::Patch *patch = diff.patch(diff.indexOf(file));
+            if (patch->isBinary())
+              res = patch->conflictResolution(-1) != git::Patch::Unresolved;
+
+            for (int i = 0; i < patch->count(); i++)
+              if (patch->conflictResolution(i) == git::Patch::Unresolved)
+                res = false;
+
             break;
           }
         }
       }
 
-      stage->setEnabled((unstaged > 0) && resolved);
-      unstage->setEnabled((staged > 0) && resolved);
-      stageAll->setVisible((unstaged > 0) && !statusText.isEmpty());
-      unstageAll->setVisible((staged > 0) && !statusText.isEmpty());
+      stage->setEnabled((unstaged > 0) && res);
+      unstage->setEnabled((staged > 0) && res);
+      stageAll->setVisible((unstaged > 0) && res && !statusText.isEmpty());
+      unstageAll->setVisible((staged > 0) && res && !statusText.isEmpty());
 
       addSeparator();
     }

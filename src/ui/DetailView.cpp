@@ -1378,8 +1378,11 @@ public:
 
         case git::Index::PartiallyStaged: {
           git::Patch *patch = mDiff.patch(idx);
+
+          // Merge conflict: file was added in ours and theirs commit.
           if (patch->isConflicted()) {
             ++conflicted;
+
             bool res = true;
             if (patch->isBinary())
               res = patch->conflictResolution(-1) != git::Patch::Unresolved;
@@ -1387,6 +1390,7 @@ public:
             for (int i = 0; i < patch->count(); i++)
               if (patch->conflictResolution(i) == git::Patch::Unresolved)
                 res = false;
+
             if (res)
               ++resolved;
           } else {
@@ -1412,6 +1416,7 @@ public:
           for (int i = 0; i < patch->count(); i++)
             if (patch->conflictResolution(i) == git::Patch::Unresolved)
               res = false;
+
           if (res)
             ++resolved;
           break;
@@ -1666,7 +1671,7 @@ void DetailView::stage()
     if (index.isStaged(mDiff.name(i)) != git::Index::Staged)
       files.append(mDiff.name(i));
 
-  stageFiles(files, true);
+  stageFiles(files, true, true);
 }
 
 bool DetailView::isStageEnabled() const
@@ -1687,7 +1692,7 @@ void DetailView::unstage()
     if (index.isStaged(mDiff.name(i)) != git::Index::Unstaged)
       files.append(mDiff.name(i));
 
-  stageFiles(files, false);
+  stageFiles(files, false, true);
 }
 
 bool DetailView::isUnstageEnabled() const
@@ -1697,7 +1702,8 @@ bool DetailView::isUnstageEnabled() const
           static_cast<CommitEditor *>(widget)->isUnstageEnabled());
 }
 
-void DetailView::stageFiles(const QStringList files, bool staged)
+void DetailView::stageFiles(const QStringList files, bool staged,
+                            bool userinfo)
 {
   // Central stage/unstage file(s).
   if (files.isEmpty())
@@ -1705,24 +1711,20 @@ void DetailView::stageFiles(const QStringList files, bool staged)
 
   // Make sure contents are written (e.g. merge resolution)
   QStringList stageFiles;
-  QStringList rejectedFiles;
+  QStringList rejectFiles;
   foreach (const QString &file, files) {
-    bool ok = true;
-    for (int i = 0; i < mContent->count(); i++) {
-      ContentWidget *cw = static_cast<ContentWidget *>(mContent->widget(i));
-      if (!cw->writeFile(file, staged))
-        ok = false;
-    }
-    if (ok)
+    ContentWidget *cw = static_cast<ContentWidget *>(mContent->currentWidget());
+    if (cw->stageRequest(file, staged))
       stageFiles.append(file);
     else
-      rejectedFiles.append(file);
+      rejectFiles.append(file);
   }
 
   // User information: rejected files.
-  if (!rejectedFiles.isEmpty()) {
-    QString singular = rejectedFiles.count() == 1 ? tr("File is") :
-                                                    tr("Several files are");
+  if (userinfo && !rejectFiles.isEmpty()) {
+    QString singular = rejectFiles.count() == 1 ? tr("1 file is") :
+                                                  tr("%1 files are")
+                                                  .arg(rejectFiles.count());
     QMessageBox mb(QMessageBox::Information,
                    staged ? tr("Staging All Files") :
                             tr("Unstaging All Files"),
@@ -1731,11 +1733,10 @@ void DetailView::stageFiles(const QStringList files, bool staged)
                    QMessageBox::Ok, this);
     mb.setInformativeText(tr("Check for unresolved merge conflicts or "
                              "filesystem issues in the working directory."));
-    mb.setDetailedText(rejectedFiles.join('\n'));
+    mb.setDetailedText(rejectFiles.join('\n'));
     mb.exec();
   }
 
-  // Stage/Unstage.
   mDiff.index().setStaged(stageFiles, staged);
 }
 

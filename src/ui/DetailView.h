@@ -40,7 +40,7 @@ public:
   virtual void find() {}
   virtual void findNext() {}
   virtual void findPrevious() {}
-  virtual bool writeFile(const QString &file, bool staged) = 0;
+  virtual bool stageRequest(const QString &file, bool staged) = 0;
 };
 
 class DetailView : public QWidget
@@ -60,7 +60,8 @@ public:
   bool isStageEnabled() const;
   void unstage();
   bool isUnstageEnabled() const;
-  void stageFiles(const QStringList files, bool staged);
+  void stageFiles(const QStringList files, bool staged,
+                  bool userinfo = false);
 
   // mode
   RepoView::ViewMode viewMode() const;

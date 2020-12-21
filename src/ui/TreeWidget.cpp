@@ -120,7 +120,7 @@ void TreeWidget::findPrevious()
   mEditor->findPrevious();
 }
 
-bool TreeWidget::writeFile(const QString &file, bool staged)
+bool TreeWidget::stageRequest(const QString &file, bool staged)
 {
   return true;
 }
