@@ -43,6 +43,7 @@
 #include "git2/stash.h"
 #include "git2/tag.h"
 #include "git2/sys/repository.h"
+#include <QDataStream>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -65,6 +66,7 @@ namespace {
 const QString kConfigDir = "gitahead";
 const QString kConfigFile = "config";
 const QString kStarFile = "starred";
+const QString kConflictResolutionFile = "conflicts";
 
 int blame_progress(const git_oid *suspect, void *payload)
 {
@@ -725,7 +727,7 @@ QList<Remote> Repository::remotes() const
     return QList<Remote>();
 
   QList<Remote> remotes;
-  for (int i = 0; i < names.count; ++i) {
+  for (size_t i = 0; i < names.count; ++i) {
     if (Remote remote = lookupRemote(names.strings[i]))
       remotes.append(remote);
   }
@@ -933,7 +935,7 @@ void Repository::cleanupState()
   int current = state();
   git_repository_state_cleanup(d->repo);
   if (state() != current) {
-    Patch::clearConflictResolutions(d->repo);
+    clearConflictResolutions();
     emit d->notifier->stateChanged();
   }
 }
@@ -1040,6 +1042,56 @@ bool Repository::lfsSetLocked(const QString &path, bool locked)
 
   emit d->notifier->lfsLocksChanged();
   return true;
+}
+
+int Repository::conflictResolution(const QString &name, int index)
+{
+  if (d->conflictResolutions.isEmpty()) {
+    QFile file(appDir().filePath(kConflictResolutionFile));
+    if (file.open(QFile::ReadOnly)) {
+      QDataStream in(&file);
+      in >> d->conflictResolutions;
+      file.close();
+    }
+  }
+
+  auto it = d->conflictResolutions.constFind(name);
+  if (it == d->conflictResolutions.constEnd())
+    return -1;
+
+  QMap<int,int> resolutions = it.value();
+  auto resolutionIt = resolutions.constFind(index);
+  if (resolutionIt == resolutions.constEnd())
+    return -1;
+
+  return resolutionIt.value();
+}
+
+void Repository::setConflictResolution(
+  const QString &name,
+  int index, int resolution)
+{
+  // Make sure file is loaded, change detection.
+  if (conflictResolution(name, index) == resolution)
+    return;
+
+  d->conflictResolutions[name][index] = resolution;
+
+  QFile file(appDir().filePath(kConflictResolutionFile));
+  if (file.open(QFile::WriteOnly)) {
+    QDataStream out(&file);
+    out << d->conflictResolutions;
+    file.close();
+  }
+
+  // Conflict resolution status changed.
+  emit d->notifier->statusChanged();
+}
+
+void Repository::clearConflictResolutions()
+{
+  d->conflictResolutions.clear();
+  appDir().remove(kConflictResolutionFile);
 }
 
 bool Repository::clean(const QString &name)

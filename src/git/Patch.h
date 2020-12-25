@@ -42,7 +42,7 @@ public:
 
   bool isValid() const { return !d.isNull(); }
 
-  Repository repo() const;
+  Repository *repo() const { return mRepo; }
 
   QString name(Diff::File file = Diff::NewFile) const;
   git_delta_t status() const;
@@ -78,8 +78,6 @@ public:
     const QString &oldPath = QString(),
     const QString &newPath = QString());
 
-  static void clearConflictResolutions(const Repository &repo);
-
 private:
   struct ConflictHunk
   {
@@ -93,6 +91,7 @@ private:
   Patch(git_patch *patch);
 
   QSharedPointer<git_patch> d;
+  Repository *mRepo;
   QList<ConflictHunk> mConflicts;
 
   bool mIsBinary;

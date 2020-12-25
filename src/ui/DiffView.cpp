@@ -705,7 +705,7 @@ private:
       // LFS smudge will fail on very large files:
       // QByteArray can only hold up to 2^31 bytes (2 GB).
       if (lfs)
-        data = patch->repo().lfsSmudge(data, patch->name());
+        data = patch->repo()->lfsSmudge(data, patch->name());
 
       if ((unsigned)data.size() < kBinaryPictureFilesize) {
         // Load pixmap from blob data.
@@ -741,7 +741,7 @@ private:
         return pixmap;
     }
 
-    QString path = patch->repo().workdir().filePath(patch->name());
+    QString path = patch->repo()->workdir().filePath(patch->name());
     uint64_t filesize = QFileInfo(path).size();
 
     if ((type == git::Diff::OldFile) || (filesize == 0)) {
@@ -1023,7 +1023,7 @@ public:
 
     // Add filetime.
     if ((newmode != GIT_FILEMODE_UNREADABLE) && (diff.isStatusDiff())) {
-      QFileInfo info(patch->repo().workdir().filePath(newfile.path));
+      QFileInfo info(patch->repo()->workdir().filePath(newfile.path));
       QDateTime newtime = info.fileTime(QFile::FileModificationTime);
       if (newmode != oldmode)
         lines << Line(GIT_DIFF_LINE_ADDITION, -1, 4);
@@ -1238,20 +1238,16 @@ private:
 };
 
 void lookupCommitInfos(
-  const git::Repository &repo,
+  const git::Repository *repo,
   bool ours,
-  QString &branch,
-  QString &tooltip)
+  QToolButton *button)
 {
-  branch.clear();
-  tooltip.clear();
-
   // Find id.
   QString id;
   if (ours) {
-    id = repo.head().target().id().toString();
+    id = repo->head().target().id().toString();
   } else {
-    git::Reference mergeHead = repo.lookupRef("MERGE_HEAD");
+    git::Reference mergeHead = repo->lookupRef("MERGE_HEAD");
     if (mergeHead.isValid())
       id = mergeHead.annotatedCommit().commit().id().toString();
   }
@@ -1259,8 +1255,11 @@ void lookupCommitInfos(
   if (id.isEmpty())
     return;
 
+  QString branch;
+  QString tooltip;
+
   // Commit detail lookup.
-  git::RevWalk walker = repo.walker();
+  git::RevWalk walker = repo->walker();
   while (git::Commit commit = walker.next()) {
     QList<git::Reference> refs = commit.refs();
     foreach (const git::Reference &ref, refs) {
@@ -1284,7 +1283,8 @@ void lookupCommitInfos(
       tooltip.append("\n");
       tooltip.append(commit.author().name());
       tooltip.append("\n");
-      tooltip.append(commit.author().date().toString(Qt::DefaultLocaleShortDate));
+      tooltip.append(commit.author().date()
+                     .toString(Qt::DefaultLocaleShortDate));
       break;
     }
   }
@@ -1296,6 +1296,12 @@ void lookupCommitInfos(
   }
   if (branch.isEmpty())
     branch = id.left(7);
+
+  // Set button text and tooltip.
+  if (!branch.isEmpty())
+    button->setText(button->text() + "( " + branch + ")");
+  if (!tooltip.isEmpty())
+    button->setToolTip(tooltip);
 }
 
 class ResolutionWidget : public QFrame
@@ -1322,20 +1328,13 @@ public:
       mUndo->setObjectName("ConflictUndoResolution");
       mUndo->setText(ResolutionWidget::tr("Undo"));
 
-      QString branch;
-      QString tooltip;
-
       mOurs = new QToolButton(this);
       mOurs->setObjectName("ConflictAllOurs");
       mOurs->setStyleSheet(buttonStyle(Theme::Diff::Ours));
       mOurs->setText(ResolutionWidget::tr("Entirely Use Ours"));
       mOurs->setToolTip(ResolutionWidget::tr("Resolve all conflicts applying "
                                              "'Our' solution"));
-      lookupCommitInfos(patch->repo(), true, branch, tooltip);
-      if (!branch.isEmpty())
-        mOurs->setText(mOurs->text() + " (" + branch + ")");
-      if (!tooltip.isEmpty())
-        mOurs->setToolTip(tooltip);
+      lookupCommitInfos(patch->repo(), true, mOurs);
 
       mTheirs = new QToolButton(this);
       mTheirs->setObjectName("ConflictAllTheirs");
@@ -1343,11 +1342,7 @@ public:
       mTheirs->setText(ResolutionWidget::tr("Entirely Use Theirs"));
       mTheirs->setToolTip(ResolutionWidget::tr("Resolve all conflicts applying "
                                                "'Their' solution"));
-      lookupCommitInfos(patch->repo(), false, branch, tooltip);
-      if (!branch.isEmpty())
-        mTheirs->setText(mTheirs->text() + " (" + branch + ")");
-      if (!tooltip.isEmpty())
-        mTheirs->setToolTip(tooltip);
+      lookupCommitInfos(patch->repo(), false, mTheirs);
 
       // Add edit button.
       EditButton *edit = new EditButton(patch, -1, binary, lfs, this);
@@ -1413,7 +1408,6 @@ public:
     : QFrame(parent), mView(view), mPatch(patch)
   {
     setObjectName("ResolutionWidget");
-    git::Repository repo = patch->repo();
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->setContentsMargins(0,0,0,0);
     layout->setSpacing(0);
@@ -1569,14 +1563,14 @@ public:
 
           // Load editor.
           TextEditor editor;
-          git::Repository repo = mPatch->repo();
-          QString path = repo.workdir().filePath(mPatch->name());
+          git::Repository *repo = mPatch->repo();
+          QString path = repo->workdir().filePath(mPatch->name());
 
           {
             // Read file.
             QFile file(path);
             if (file.open(QFile::ReadOnly))
-              editor.load(path, repo.decode(file.readAll()));
+              editor.load(path, repo->decode(file.readAll()));
           }
 
           if (!editor.length())
@@ -1593,7 +1587,7 @@ public:
             return;
 
           QTextStream out(&file);
-          out.setCodec(repo.codec());
+          out.setCodec(repo->codec());
           out << editor.text();
           file.commit();
 
@@ -1662,18 +1656,12 @@ public:
         }
       }
 
-      // Add marker.
-      for (int lidx = 0; lidx < mEditor->lineCount(); lidx++)
-        mEditor->markerAdd(lidx, TextEditor::Addition);
-
       // Execute hunk plugins.
       foreach (PluginRef plugin, mView->plugins()) {
         if (plugin->isValid() && plugin->isEnabled())
           plugin->hunk(mEditor);
       }
 
-      // Delete marker.
-      mEditor->markerDeleteAll(TextEditor::Addition);
       mEditor->setReadOnly(true);
       mEditor->updateGeometry();
 
@@ -1699,8 +1687,8 @@ public:
 
   bool write()
   {
-    git::Repository repo = mPatch->repo();
-    QString path = repo.workdir().filePath(mPatch->name());
+    git::Repository *repo = mPatch->repo();
+    QString path = repo->workdir().filePath(mPatch->name());
 
     // Save or remove backup.
     git::Config config = git::Config::global();
@@ -1711,13 +1699,13 @@ public:
 
     if (mPatch->isBinary()) {
       // Write binary to disk.
-      git::Index::Conflict conflict = repo.index().conflict(mPatch->name());
+      git::Index::Conflict conflict = repo->index().conflict(mPatch->name());
       git::Blob blob;
 
       if (mPatch->conflictResolution(-1) == git::Patch::Ours)
-        blob = repo.lookupBlob(conflict.ours);
+        blob = repo->lookupBlob(conflict.ours);
       else if (mPatch->conflictResolution(-1) == git::Patch::Theirs)
-        blob = repo.lookupBlob(conflict.theirs);
+        blob = repo->lookupBlob(conflict.theirs);
       else
         return false;
 
@@ -1739,7 +1727,7 @@ public:
         return false;
 
       QTextStream out(&file);
-      out.setCodec(repo.codec());
+      out.setCodec(repo->codec());
       out << mEditor->text();
       return file.commit();
     }
@@ -1756,15 +1744,12 @@ private:
   void load()
   {
     // Load entire file.
-    git::Repository repo = mPatch->repo();
+    git::Repository *repo = mPatch->repo();
     QString name = mPatch->name();
-    QFile dev(repo.workdir().filePath(name));
-
-    // Clear diagnostics.
-    mEditor->deleteDiagnostics();
+    QFile dev(repo->workdir().filePath(name));
 
     if (dev.open(QFile::ReadOnly)) {
-      mEditor->load(name, repo.decode(dev.readAll()));
+      mEditor->load(name, repo->decode(dev.readAll()));
 
       int count = mEditor->lineCount();
       QByteArray lines = QByteArray::number(count);
@@ -1822,28 +1807,17 @@ public:
         mUndo->setObjectName("ConflictUndo");
         mUndo->setText(HunkWidget::tr("Undo"));
 
-        QString branch;
-        QString tooltip;
-
         mOurs = new QToolButton(this);
         mOurs->setObjectName("ConflictOurs");
         mOurs->setStyleSheet(buttonStyle(Theme::Diff::Ours));
         mOurs->setText(HunkWidget::tr("Use Ours"));
-        lookupCommitInfos(patch->repo(), true, branch, tooltip);
-        if (!branch.isEmpty())
-          mOurs->setText(mOurs->text() + " (" + branch + ")");
-        if (!tooltip.isEmpty())
-          mOurs->setToolTip(tooltip);
+        lookupCommitInfos(patch->repo(), true, mOurs);
 
         mTheirs = new QToolButton(this);
         mTheirs->setObjectName("ConflictTheirs");
         mTheirs->setStyleSheet(buttonStyle(Theme::Diff::Theirs));
         mTheirs->setText(HunkWidget::tr("Use Theirs"));
-        lookupCommitInfos(patch->repo(), false, branch, tooltip);
-        if (!branch.isEmpty())
-          mTheirs->setText(mTheirs->text() + " (" + branch + ")");
-        if (!tooltip.isEmpty())
-          mTheirs->setToolTip(tooltip);
+        lookupCommitInfos(patch->repo(), false, mTheirs);
       }
 
       // Add edit button.
@@ -1873,20 +1847,20 @@ public:
           QPushButton *discard =
             dialog->addButton(HunkWidget::tr("Discard Hunk"), QMessageBox::AcceptRole);
           connect(discard, &QPushButton::clicked, [this, patch, index] {
-            git::Repository repo = patch->repo();
+            git::Repository *repo = patch->repo();
             if (patch->isUntracked()) {
-              repo.workdir().remove(patch->name());
+              repo->workdir().remove(patch->name());
               return;
             }
 
             QString name = patch->name();
-            QSaveFile file(repo.workdir().filePath(name));
+            QSaveFile file(repo->workdir().filePath(name));
             if (!file.open(QFile::WriteOnly))
               return;
 
             QBitArray hunks(patch->count(), true);
             hunks[index] = false;
-            QByteArray buffer = patch->apply(hunks, repo.filters(name));
+            QByteArray buffer = patch->apply(hunks, repo->filters(name));
             if (buffer.isEmpty())
               return;
 
@@ -2012,16 +1986,13 @@ public:
       connect(undo, &QToolButton::clicked, [this] {
         mPatch->setConflictResolution(mIndex, git::Patch::Unresolved);
         mResolution->update();
-        mHeader->disclosureButton()->setChecked(true);
       });
     }
 
-    git::Repository repo = patch->repo();
     if (QToolButton *ours = mHeader->oursButton()) {
       connect(ours, &QToolButton::clicked, [this] {
         mPatch->setConflictResolution(mIndex, git::Patch::Ours);
         mResolution->update();
-        mHeader->disclosureButton()->setChecked(false);
       });
     }
 
@@ -2029,7 +2000,6 @@ public:
       connect(theirs, &QToolButton::clicked, [this] {
         mPatch->setConflictResolution(mIndex, git::Patch::Theirs);
         mResolution->update();
-        mHeader->disclosureButton()->setChecked(false);
       });
     }
 
@@ -2096,14 +2066,14 @@ public:
 
           // Load editor.
           TextEditor editor;
-          git::Repository repo = mPatch->repo();
-          QString path = repo.workdir().filePath(mPatch->name());
+          git::Repository *repo = mPatch->repo();
+          QString path = repo->workdir().filePath(mPatch->name());
 
           {
             // Read file.
             QFile file(path);
             if (file.open(QFile::ReadOnly))
-              editor.load(path, repo.decode(file.readAll()));
+              editor.load(path, repo->decode(file.readAll()));
           }
 
           if (!editor.length())
@@ -2120,7 +2090,7 @@ public:
             return;
 
           QTextStream out(&file);
-          out.setCodec(repo.codec());
+          out.setCodec(repo->codec());
           out << editor.text();
           file.commit();
 
@@ -2212,6 +2182,9 @@ public:
         mHeader->oursButton()->setEnabled(res != git::Patch::Ours);
         mHeader->theirsButton()->setEnabled(res != git::Patch::Theirs);
         mHeader->undoButton()->setEnabled(res != git::Patch::Unresolved);
+
+        // Collapse resolved hunk.
+        mHeader->disclosureButton()->setChecked(res == git::Patch::Unresolved);
       });
     }
   }
@@ -2287,12 +2260,12 @@ private:
     mLoaded = true;
 
     // Load entire file.
-    git::Repository repo = mPatch->repo();
+    git::Repository *repo = mPatch->repo();
     if (mIndex < 0) {
       QString name = mPatch->name();
-      QFile dev(repo.workdir().filePath(name));
+      QFile dev(repo->workdir().filePath(name));
       if (dev.open(QFile::ReadOnly)) {
-        mEditor->load(name, repo.decode(dev.readAll()));
+        mEditor->load(name, repo->decode(dev.readAll()));
 
         int count = mEditor->lineCount();
         QByteArray lines = QByteArray::number(count);
@@ -2335,7 +2308,7 @@ private:
       content.chop(1);
 
     // Add text.
-    mEditor->setText(repo.decode(content));
+    mEditor->setText(repo->decode(content));
 
     // Calculate margin width.
     int width = 0;
@@ -2837,28 +2810,31 @@ public:
 
       if (!patch->isConflicted() && binary) {
         // Add binary button.
+        Badge *binBadge = new Badge({Badge::Label("BIN", Theme::BadgeState::Head)}, this);
+        buttons->addWidget(binBadge);
+
         mToolButton = new QToolButton(this);
         mToolButton->setText(FileWidget::tr("Show Picture/Icon"));
         mToolButton->setCheckable(true);
       } else if (lfs) {
         // Add LFS buttons.
-        Badge *lfsBadge = new Badge({Badge::Label(FileWidget::tr("LFS"), Theme::BadgeState::Head)}, this);
+        Badge *lfsBadge = new Badge({Badge::Label("LFS", Theme::BadgeState::Head)}, this);
         buttons->addWidget(lfsBadge);
 
         QToolButton *lfsLockButton = new QToolButton(this);
-        bool locked = patch->repo().lfsIsLocked(patch->name());
+        bool locked = patch->repo()->lfsIsLocked(patch->name());
         lfsLockButton->setText(locked ? FileWidget::tr("Unlock") : FileWidget::tr("Lock"));
         buttons->addWidget(lfsLockButton);
 
         connect(lfsLockButton, &QToolButton::clicked, [this, patch] {
-          bool locked = patch->repo().lfsIsLocked(patch->name());
+          bool locked = patch->repo()->lfsIsLocked(patch->name());
           RepoView::parentView(this)->lfsSetLocked({patch->name()}, !locked);
         });
 
-        git::RepositoryNotifier *notifier = patch->repo().notifier();
+        git::RepositoryNotifier *notifier = patch->repo()->notifier();
         connect(notifier, &git::RepositoryNotifier::lfsLocksChanged, this,
         [patch, lfsLockButton] {
-          bool locked = patch->repo().lfsIsLocked(patch->name());
+          bool locked = patch->repo()->lfsIsLocked(patch->name());
           lfsLockButton->setText(locked ? FileWidget::tr("Unlock") : FileWidget::tr("Lock"));
         });
 
@@ -2867,8 +2843,8 @@ public:
         mToolButton->setCheckable(true);
       } else {
         if (submodule) {
-          Badge *lfsBadge = new Badge({Badge::Label(FileWidget::tr("Submodule"), Theme::BadgeState::Head)}, this);
-          buttons->addWidget(lfsBadge);
+          Badge *subBadge = new Badge({Badge::Label(FileWidget::tr("Submodule"), Theme::BadgeState::Head)}, this);
+          buttons->addWidget(subBadge);
         }
 
         // Add info/resolution button.

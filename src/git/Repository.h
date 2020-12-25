@@ -226,6 +226,13 @@ public:
   bool lfsIsLocked(const QString &path);
   bool lfsSetLocked(const QString &path, bool locked);
 
+  // conflict resolutions
+  int conflictResolution(const QString &name, int index);
+  void setConflictResolution(
+    const QString &name,
+    int index, int resolution);
+  void clearConflictResolutions();
+
   // last error
   static int lastErrorKind();
   static QString lastError(const QString &defaultError = QString());
@@ -256,6 +263,7 @@ private:
     bool lfsLocksCached = false;
 
     QSet<Id> starredCommits;
+    QMap<QString,QMap<int,int>> conflictResolutions;
   };
 
   Repository(git_repository *repo);

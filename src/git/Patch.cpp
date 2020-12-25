@@ -14,43 +14,8 @@
 #include "git/Buffer.h"
 #include "git/Submodule.h"
 #include "git2/filter.h"
-#include <QDataStream>
-#include <QFile>
-#include <QMap>
 
 namespace git {
-
-namespace {
-
-const QString kConflictResolutionFile = "conflicts";
-
-QMap<QString,QMap<int,int>> readConflictResolutions(const Repository &repo)
-{
-  QFile file(repo.appDir().filePath(kConflictResolutionFile));
-  if (file.open(QFile::ReadOnly)) {
-    QMap<QString,QMap<int,int>> map;
-    QDataStream in(&file);
-    in >> map;
-    file.close();
-    return map;
-  }
-
-  return QMap<QString,QMap<int,int>>();
-}
-
-void writeConflictResolutions(
-  const Repository &repo,
-  const QMap<QString,QMap<int,int>> &map)
-{
-  QFile file(repo.appDir().filePath(kConflictResolutionFile));
-  if (file.open(QFile::WriteOnly)) {
-    QDataStream out(&file);
-    out << map;
-    file.close();
-  }
-}
-
-} // anon. namespace
 
 Patch::Patch() {}
 
@@ -60,13 +25,13 @@ Patch::Patch(git_patch *patch)
   if (!isValid())
     return;
 
-  Repository repo(git_patch_owner(patch));
-  if (!repo.isValid())
+  mRepo = new Repository(git_patch_owner(patch));
+  if ((mRepo == nullptr) || !mRepo->isValid())
     return;
 
   mIsBinary = git_patch_get_delta(d.data())->flags & GIT_DIFF_FLAG_BINARY;
 
-  QFile file(repo.workdir().filePath(name(Diff::OldFile)));
+  QFile file(mRepo->workdir().filePath(name(Diff::OldFile)));
   if (file.open(QFile::ReadOnly)) {
     QList<QByteArray> lines;
     bool conflicted = isConflicted();
@@ -138,12 +103,7 @@ Patch::Patch(git_patch *patch)
   // Check if file is a submodule.
   mIsSubmodule = false;
   if (!mIsBinary && !mIsLfsPointer)
-    mIsSubmodule = repo.lookupSubmodule(name()).isValid();
-}
-
-Repository Patch::repo() const
-{
-  return git_patch_owner(d.data());
+    mIsSubmodule = mRepo->lookupSubmodule(name()).isValid();
 }
 
 QString Patch::name(Diff::File file) const
@@ -304,29 +264,16 @@ QByteArray Patch::lineContent(int index, int ln) const
 
 Patch::ConflictResolution Patch::conflictResolution(int index)
 {
-  Repository repo(git_patch_owner(d.data()));
-  QMap<QString,QMap<int,int>> map = readConflictResolutions(repo);
-  auto it = map.constFind(name());
-  if (it == map.constEnd())
+  int resolution = mRepo->conflictResolution(name(), index);
+  if (resolution < 0)
     return Unresolved;
 
-  QMap<int,int> conflicts = it.value();
-  auto conflictIt = conflicts.constFind(lineNumber(index, 0));
-  if (conflictIt == conflicts.constEnd())
-    return Unresolved;
-
-  return static_cast<ConflictResolution>(conflictIt.value());
+  return static_cast<ConflictResolution>(resolution);
 }
 
 void Patch::setConflictResolution(int index, ConflictResolution resolution)
 {
-  Repository repo(git_patch_owner(d.data()));
-  QMap<QString,QMap<int,int>> map = readConflictResolutions(repo);
-  map[name()][lineNumber(index, 0)] = resolution;
-  writeConflictResolutions(repo, map);
-
-  // Conflict resolution status changed.
-  emit repo.notifier()->statusChanged();
+  mRepo->setConflictResolution(name(), index, resolution);
 }
 
 QByteArray Patch::apply(
@@ -361,7 +308,7 @@ QByteArray Patch::apply(
     // of context and there's an addition after the first line.
     int index = hunk->old_start ? hunk->old_start - 1 : 0;
     bool prepend = (index == 0);
-    for (int j = 0; j < lines; ++j) {
+    for (size_t j = 0; j < lines; ++j) {
       const git_diff_line *line = nullptr;
       if (git_patch_get_line_in_hunk(&line, d.data(), i, j))
         continue;
@@ -427,11 +374,6 @@ Patch Patch::fromBuffers(
     &patch, oldBuffer.constData(), oldBuffer.length(), oldPath.toUtf8(),
     newBuffer.constData(), newBuffer.length(), newPath.toUtf8(), &opts);
   return Patch(patch);
-}
-
-void Patch::clearConflictResolutions(const Repository &repo)
-{
-  repo.appDir().remove(kConflictResolutionFile);
 }
 
 } // namespace git

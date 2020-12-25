@@ -279,7 +279,7 @@ bool Commit::reset(git_reset_t type, const QStringList &paths) const
   int error = git_reset(repo, d.data(), type, &opts);
   emit repo.notifier()->referenceUpdated(repo.head());
   if (repo.state() != state) {
-    Patch::clearConflictResolutions(repo);
+    repo.clearConflictResolutions();
     emit repo.notifier()->stateChanged();
   }
 

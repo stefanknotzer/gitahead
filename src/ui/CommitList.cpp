@@ -1285,11 +1285,11 @@ CommitList::CommitList(Index *index, QWidget *parent)
     if (selectedIndexes().isEmpty())
       selectFirstCommit();
 
+    // Setup diff view.
+    emit diffSelected(selectedDiff(), mFile, true);
+
     // Notify main window.
     emit statusChanged(visible);
-
-    // Fake spontaneous to trigger DetailView update.
-    emit diffSelected(selectedDiff(), mFile, true);
   });
 
   connect(this, &CommitList::entered, [this](const QModelIndex &index) {
@@ -1431,8 +1431,6 @@ void CommitList::selectFirstCommit(bool spontaneous)
   QModelIndex index = model()->index(0, 0);
   if (index.isValid()) {
     selectIndexes(QItemSelection(index, index), QString(), spontaneous);
-  } else {
-    emit diffSelected(git::Diff());
   }
 }
 
@@ -1835,10 +1833,6 @@ void CommitList::storeSelection()
 
 void CommitList::restoreSelection()
 {
-  // Restore selection.
-  if (!mSelectedRange.isEmpty() && !selectRange(mSelectedRange))
-    emit diffSelected(git::Diff());
-
   mSelectedRange = QString();
 }
 
