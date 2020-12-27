@@ -613,7 +613,7 @@
     </message>
     <message>
         <location filename="../src/ui/DetailView.cpp" line="1118"/>
-        <location filename="../src/ui/DetailView.cpp" line="1523"/>
+        <location filename="../src/ui/DetailView.cpp" line="1506"/>
         <source>Subject Line Length Check: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -624,7 +624,7 @@
     </message>
     <message>
         <location filename="../src/ui/DetailView.cpp" line="1151"/>
-        <location filename="../src/ui/DetailView.cpp" line="1544"/>
+        <location filename="../src/ui/DetailView.cpp" line="1527"/>
         <source>Body Text Length Check: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -645,72 +645,72 @@
     </message>
     <message>
         <location filename="../src/ui/DetailView.cpp" line="1310"/>
-        <location filename="../src/ui/DetailView.cpp" line="1494"/>
+        <location filename="../src/ui/DetailView.cpp" line="1477"/>
         <source>Commit</source>
         <translation>Confirmar</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1437"/>
+        <location filename="../src/ui/DetailView.cpp" line="1420"/>
         <source>Update %1</source>
         <translation>Actualizar %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1441"/>
+        <location filename="../src/ui/DetailView.cpp" line="1424"/>
         <source>Update %1 and %2</source>
         <translation>Actualizar %1 y %2</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1445"/>
+        <location filename="../src/ui/DetailView.cpp" line="1428"/>
         <source>Update %1, %2, and %3</source>
         <translation>Actualizar %1, %2 y %3</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1450"/>
+        <location filename="../src/ui/DetailView.cpp" line="1433"/>
         <source>Update %1, %2, and %3 more files...</source>
         <translation>Actualizar %1, %2 y %3 más archivos...</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1466"/>
+        <location filename="../src/ui/DetailView.cpp" line="1449"/>
         <source>Nothing staged</source>
         <translation>Nada preparado</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1469"/>
+        <location filename="../src/ui/DetailView.cpp" line="1452"/>
         <source>%1 of %2 file staged</source>
         <translation>Archivo preparado: %1 de %2</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1469"/>
+        <location filename="../src/ui/DetailView.cpp" line="1452"/>
         <source>%1 of %2 files staged</source>
         <translation>Archivo preparado: %1 de %2</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1474"/>
+        <location filename="../src/ui/DetailView.cpp" line="1457"/>
         <source>%1 file partially staged</source>
         <translation>%1 archivo parcialmente preparado</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1474"/>
+        <location filename="../src/ui/DetailView.cpp" line="1457"/>
         <source>%1 files partially staged</source>
         <translation>%1 archivos parcialmente preparados</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1480"/>
+        <location filename="../src/ui/DetailView.cpp" line="1463"/>
         <source>%1 of %2 conflict resolved</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1480"/>
+        <location filename="../src/ui/DetailView.cpp" line="1463"/>
         <source>%1 of %2 conflicts resolved</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1483"/>
+        <location filename="../src/ui/DetailView.cpp" line="1466"/>
         <source>all conflicts resolved</source>
         <translation>todos los conflictos resueltos</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1494"/>
+        <location filename="../src/ui/DetailView.cpp" line="1477"/>
         <source>Commit Merge</source>
         <translation>Confirmación de Fusión</translation>
     </message>
@@ -1148,37 +1148,37 @@
 <context>
     <name>DetailView</name>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1725"/>
+        <location filename="../src/ui/DetailView.cpp" line="1708"/>
         <source>1 file is</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1726"/>
+        <location filename="../src/ui/DetailView.cpp" line="1709"/>
         <source>%1 files are</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1729"/>
+        <location filename="../src/ui/DetailView.cpp" line="1712"/>
         <source>Staging All Files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1730"/>
+        <location filename="../src/ui/DetailView.cpp" line="1713"/>
         <source>Unstaging All Files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1731"/>
+        <location filename="../src/ui/DetailView.cpp" line="1714"/>
         <source>%1 not staged</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1732"/>
+        <location filename="../src/ui/DetailView.cpp" line="1715"/>
         <source>%1 not unstaged</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1734"/>
+        <location filename="../src/ui/DetailView.cpp" line="1717"/>
         <source>Check for unresolved merge conflicts or filesystem issues in the working directory.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1471,12 +1471,12 @@
         <translation>No preparar</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="238"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="224"/>
         <source>Discard Changes</source>
         <translation>Descartar Cambios</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="233"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="219"/>
         <source>Remove Untracked Files</source>
         <translation>Remover archivos sin seguimiento</translation>
     </message>
@@ -1516,92 +1516,92 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="244"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="230"/>
         <source>Ignore</source>
         <translation>Ignorar</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="266"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="252"/>
         <source>Checkout</source>
         <translation>Revisar</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="294"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="280"/>
         <source>Unlock</source>
         <translation>Desbloquear</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="294"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="280"/>
         <source>Lock</source>
         <translation>Bloquear</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="309"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="295"/>
         <source>Copy File Name</source>
         <translation>Copiar Nombre de Archivo</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="325"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="311"/>
         <source>Filter History</source>
         <translation>Filtrar Historia</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="330"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="316"/>
         <source>Navigate to</source>
         <translation>Navegar a</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="331"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="317"/>
         <source>Next Revision</source>
         <translation>Siguiente revisión</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="336"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="322"/>
         <source>next</source>
         <translation>siguiente</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="340"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="326"/>
         <source>Previous Revision</source>
         <translation>Revisión Anterior</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="345"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="331"/>
         <source>previous</source>
         <translation>anterior</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="355"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="341"/>
         <source>Unset Executable</source>
         <translation>Desestablecer Ejecutable</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="355"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="341"/>
         <source>Set Executable</source>
         <translation>Establecer Ejecutable</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="384"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="370"/>
         <source>edit</source>
         <translation>Editar</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="388"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="374"/>
         <source>diff</source>
         <translation>diferencia</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="392"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="378"/>
         <source>merge</source>
         <translation>fusionar</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="396"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="382"/>
         <source>External Tool Not Found</source>
         <translation>Herramienta Externa No Encontrada</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="397"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="383"/>
         <source>Failed to execute external %1 tool.</source>
         <translation>Falló al ejecutar la herramienta %1 externa.</translation>
     </message>
@@ -1670,107 +1670,107 @@
 <context>
     <name>FileList</name>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="439"/>
+        <location filename="../src/ui/FileList.cpp" line="430"/>
         <source>Sort By</source>
         <translation>Ordenar Por</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="605"/>
+        <location filename="../src/ui/FileList.cpp" line="596"/>
         <source>Select</source>
         <translation>Seleccionar</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="416"/>
-        <location filename="../src/ui/FileList.cpp" line="560"/>
+        <location filename="../src/ui/FileList.cpp" line="407"/>
+        <location filename="../src/ui/FileList.cpp" line="551"/>
         <source>Status</source>
         <translation>Estado</translation>
     </message>
     <message>
+        <location filename="../src/ui/FileList.cpp" line="401"/>
+        <location filename="../src/ui/FileList.cpp" line="545"/>
+        <source>File Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/FileList.cpp" line="404"/>
+        <location filename="../src/ui/FileList.cpp" line="548"/>
+        <source>File Path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/ui/FileList.cpp" line="410"/>
         <location filename="../src/ui/FileList.cpp" line="554"/>
-        <source>File Name</source>
+        <source>Text/Binary</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/FileList.cpp" line="413"/>
         <location filename="../src/ui/FileList.cpp" line="557"/>
-        <source>File Path</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/FileList.cpp" line="419"/>
-        <location filename="../src/ui/FileList.cpp" line="563"/>
-        <source>Text/Binary</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/FileList.cpp" line="422"/>
-        <location filename="../src/ui/FileList.cpp" line="566"/>
         <source>File Extension</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="429"/>
+        <location filename="../src/ui/FileList.cpp" line="420"/>
         <source>Use mouse wheel and &apos;+&apos;, &apos;-&apos;, space key</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="609"/>
+        <location filename="../src/ui/FileList.cpp" line="600"/>
         <source>Ignore Whitespace (-w)</source>
         <translation>Ignorar Espacio en Blanco (-w)</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="829"/>
+        <location filename="../src/ui/FileList.cpp" line="820"/>
         <source>Added</source>
         <translation>Añadido</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="830"/>
+        <location filename="../src/ui/FileList.cpp" line="821"/>
         <source>Deleted</source>
         <translation>Borrado</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="831"/>
+        <location filename="../src/ui/FileList.cpp" line="822"/>
         <source>Modified</source>
         <translation>Modificado</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="832"/>
+        <location filename="../src/ui/FileList.cpp" line="823"/>
         <source>Renamed</source>
         <translation>Renombrado</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="833"/>
+        <location filename="../src/ui/FileList.cpp" line="824"/>
         <source>Copied</source>
         <translation>Copiado</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="834"/>
+        <location filename="../src/ui/FileList.cpp" line="825"/>
         <source>Ignored</source>
         <translation>Ignorado</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="835"/>
+        <location filename="../src/ui/FileList.cpp" line="826"/>
         <source>Untracked</source>
         <translation>Sin seguimiento</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="836"/>
+        <location filename="../src/ui/FileList.cpp" line="827"/>
         <source>Unreadable</source>
         <translation>Ilegible</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="837"/>
+        <location filename="../src/ui/FileList.cpp" line="828"/>
         <source>Conflicted</source>
         <translation>Con Conflicto</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="838"/>
+        <location filename="../src/ui/FileList.cpp" line="829"/>
         <source>Unmodified</source>
         <translation>Sin modificar</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="839"/>
+        <location filename="../src/ui/FileList.cpp" line="830"/>
         <source>Type Change</source>
         <translation>Tipo de Cambio</translation>
     </message>
@@ -1788,7 +1788,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FileList.cpp" line="89"/>
+        <location filename="../src/ui/FileList.cpp" line="81"/>
         <source>Resolved</source>
         <translation type="unfinished"></translation>
     </message>

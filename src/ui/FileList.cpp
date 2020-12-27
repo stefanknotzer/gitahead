@@ -77,18 +77,9 @@ public:
         else if (patch->isLfsPointer())
           ret.append("LFS");
         else if (patch->isConflicted()) {
-          bool res = true;
-          if (patch->isBinary())
-            res = patch->conflictResolution(-1) != git::Patch::Unresolved;
-
-          for (int i = 0; i < patch->count(); i++)
-            if (patch->conflictResolution(i) == git::Patch::Unresolved)
-              res = false;
-
-          if (res)
+          if (patch->isResolved())
             ret.append(tr("Resolved"));
-        }
-        else if (patch->isBinary())
+        } else if (patch->isBinary())
           ret.append("BIN");
 
         return ret;

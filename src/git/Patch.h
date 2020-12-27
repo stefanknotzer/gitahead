@@ -45,12 +45,13 @@ public:
   Repository *repo() const { return mRepo; }
 
   QString name(Diff::File file = Diff::NewFile) const;
-  git_delta_t status() const;
-  bool isUntracked() const;
-  bool isConflicted() const;
-  bool isBinary() const;
-  bool isLfsPointer() const;
-  bool isSubmodule() const;
+  git_delta_t status() const { return mStatus; }
+  bool isUntracked() const { return (mStatus == GIT_DELTA_UNTRACKED); }
+  bool isConflicted() const { return (mStatus == GIT_DELTA_CONFLICTED); }
+  bool isResolved() const;
+  bool isBinary() const { return mIsBinary; }
+  bool isLfsPointer() const { return mIsLfsPointer; }
+  bool isSubmodule() const { return mIsSubmodule; }
 
   Blob blob(Diff::File file) const;
 
@@ -64,7 +65,7 @@ public:
   int lineNumber(int index, int line, Diff::File file = Diff::NewFile) const;
   QByteArray lineContent(int index, int line) const;
 
-  ConflictResolution conflictResolution(int index);
+  ConflictResolution conflictResolution(int index) const;
   void setConflictResolution(int index, ConflictResolution resolution);
 
   // Apply the given hunk indexes to the old buffer.
@@ -94,9 +95,11 @@ private:
   Repository *mRepo;
   QList<ConflictHunk> mConflicts;
 
-  bool mIsBinary;
-  bool mIsLfsPointer;
-  bool mIsSubmodule;
+  git_delta_t mStatus = GIT_DELTA_UNMODIFIED;
+
+  bool mIsBinary = false;
+  bool mIsLfsPointer = false;
+  bool mIsSubmodule = false;
 
   friend class Diff;
 };

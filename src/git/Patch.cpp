@@ -29,6 +29,7 @@ Patch::Patch(git_patch *patch)
   if ((mRepo == nullptr) || !mRepo->isValid())
     return;
 
+  mStatus = git_patch_get_delta(d.data())->status;
   mIsBinary = git_patch_get_delta(d.data())->flags & GIT_DIFF_FLAG_BINARY;
 
   QFile file(mRepo->workdir().filePath(name(Diff::OldFile)));
@@ -115,37 +116,17 @@ QString Patch::name(Diff::File file) const
   return (file == Diff::NewFile) ? delta->new_file.path : delta->old_file.path;
 }
 
-git_delta_t Patch::status() const
+bool Patch::isResolved() const
 {
-  if (!isValid()) // Patch data is invalid
-    return GIT_DELTA_UNMODIFIED;
+  if (mStatus == GIT_DELTA_CONFLICTED) {
+    if (mIsBinary)
+      return conflictResolution(-1) != git::Patch::Unresolved;
 
-  return git_patch_get_delta(d.data())->status;
-}
-
-bool Patch::isUntracked() const
-{
-  return (status() == GIT_DELTA_UNTRACKED);
-}
-
-bool Patch::isConflicted() const
-{
-  return (status() == GIT_DELTA_CONFLICTED);
-}
-
-bool Patch::isBinary() const
-{
-  return mIsBinary;
-}
-
-bool Patch::isLfsPointer() const
-{
-  return mIsLfsPointer;
-}
-
-bool Patch::isSubmodule() const
-{
-  return mIsSubmodule;
+    for (int i = 0; i < mConflicts.size(); i++)
+      if (conflictResolution(i) == git::Patch::Unresolved)
+        return false;
+  }
+  return true;
 }
 
 Blob Patch::blob(Diff::File file) const
@@ -262,7 +243,7 @@ QByteArray Patch::lineContent(int index, int ln) const
   return !result ? QByteArray(line->content, line->content_len) : QByteArray();
 }
 
-Patch::ConflictResolution Patch::conflictResolution(int index)
+Patch::ConflictResolution Patch::conflictResolution(int index) const
 {
   int resolution = mRepo->conflictResolution(name(), index);
   if (resolution < 0)

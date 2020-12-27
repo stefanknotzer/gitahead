@@ -1377,21 +1377,12 @@ public:
           break;
 
         case git::Index::PartiallyStaged: {
-          git::Patch *patch = mDiff.patch(idx);
-
           // Merge conflict: file was added in ours and theirs commit.
+          git::Patch *patch = mDiff.patch(idx);
           if (patch->isConflicted()) {
             ++conflicted;
 
-            bool res = true;
-            if (patch->isBinary())
-              res = patch->conflictResolution(-1) != git::Patch::Unresolved;
-
-            for (int i = 0; i < patch->count(); i++)
-              if (patch->conflictResolution(i) == git::Patch::Unresolved)
-                res = false;
-
-            if (res)
+            if (patch->isResolved())
               ++resolved;
           } else {
             list.append(QFileInfo(name).fileName());
@@ -1409,15 +1400,7 @@ public:
           ++conflicted;
 
           git::Patch *patch = mDiff.patch(idx);
-          bool res = true;
-          if (patch->isBinary())
-            res = patch->conflictResolution(-1) != git::Patch::Unresolved;
-
-          for (int i = 0; i < patch->count(); i++)
-            if (patch->conflictResolution(i) == git::Patch::Unresolved)
-              res = false;
-
-          if (res)
+          if (patch->isResolved())
             ++resolved;
           break;
         }

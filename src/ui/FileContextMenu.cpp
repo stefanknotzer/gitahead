@@ -158,7 +158,7 @@ FileContextMenu::FileContextMenu(
 
       int staged = 0;
       int unstaged = 0;
-      bool res = true;
+      bool resolved = true;
       foreach (const QString &file, files) {
         switch (index.isStaged(file)) {
           case git::Index::Disabled:
@@ -172,17 +172,9 @@ FileContextMenu::FileContextMenu(
             ++staged;
             ++unstaged;
 
-            git::Patch *patch = diff.patch(diff.indexOf(file));
-
             // Merge conflict: file was added in ours and theirs commit.
-            if (patch->isConflicted()) {
-              if (patch->isBinary())
-                res = patch->conflictResolution(-1);
-
-              for (int i = 0; i < patch->count(); i++)
-                if (patch->conflictResolution(i) == git::Patch::Unresolved)
-                  res = false;
-            }
+            git::Patch *patch = diff.patch(diff.indexOf(file));
+            resolved = patch->isResolved();
             break;
           }
 
@@ -194,22 +186,16 @@ FileContextMenu::FileContextMenu(
             ++unstaged;
 
             git::Patch *patch = diff.patch(diff.indexOf(file));
-            if (patch->isBinary())
-              res = patch->conflictResolution(-1) != git::Patch::Unresolved;
-
-            for (int i = 0; i < patch->count(); i++)
-              if (patch->conflictResolution(i) == git::Patch::Unresolved)
-                res = false;
-
+            resolved = patch->isResolved();
             break;
           }
         }
       }
 
-      stage->setEnabled((unstaged > 0) && res);
-      unstage->setEnabled((staged > 0) && res);
-      stageAll->setVisible((unstaged > 0) && res && !statusText.isEmpty());
-      unstageAll->setVisible((staged > 0) && res && !statusText.isEmpty());
+      stage->setEnabled((unstaged > 0) && resolved);
+      unstage->setEnabled((staged > 0) && resolved);
+      stageAll->setVisible((unstaged > 0) && resolved && !statusText.isEmpty());
+      unstageAll->setVisible((staged > 0) && resolved && !statusText.isEmpty());
 
       addSeparator();
     }

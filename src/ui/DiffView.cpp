@@ -3873,34 +3873,25 @@ bool DiffView::stageRequest(int index, bool staged)
     fetchAll(index);
 
     if (index < mFiles.size()) {
-      bool stage = true;
-
       // Check conflict resolution state.
       git::Patch *patch = mDiff.patch(index);
       if (patch->isConflicted()) {
-        if (patch->isBinary())
-          stage = patch->conflictResolution(-1) != git::Patch::Unresolved;
+        bool resolved = patch->isResolved();
 
-        for (int i = 0; i < patch->count(); i++)
-          if (patch->isConflicted() &&
-              (patch->conflictResolution(i) == git::Patch::Unresolved))
-            stage = false;
-
-        // Write resolution to disk.
-        if (stage && staged) {
+        // Write conflict resolution to disk.
+        if (resolved && staged) {
           QWidget *widget = file(index);
           FileWidget *file = static_cast<FileWidget *>(widget);
 
           foreach (ResolutionWidget *resolution, file->resolutions())
             if (!resolution->write())
-              stage = false;
+              resolved = false;
         }
+        return resolved;
       }
-
-      return stage;
+      return true;;
     }
   }
-
   return false;
 }
 
