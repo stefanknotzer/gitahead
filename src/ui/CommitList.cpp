@@ -1286,7 +1286,7 @@ CommitList::CommitList(Index *index, QWidget *parent)
       selectFirstCommit();
 
     // Setup diff view.
-    emit diffSelected(selectedDiff(), mFile, true);
+    emit diffSelected(selectedDiff(), mFile, mSpontaneous);
 
     // Notify main window.
     emit statusChanged(visible);
