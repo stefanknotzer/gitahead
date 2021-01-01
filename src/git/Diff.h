@@ -67,7 +67,7 @@ public:
   git_diff_file newFile(int index) const { return d->delta(index)->new_file; }
 
   int count() const;
-  Patch *patch(int index) const;
+  Patch patch(int index) const;
   QString name(int index) const;
   bool isBinary(int index) const;
   git_delta_t status(int index) const;

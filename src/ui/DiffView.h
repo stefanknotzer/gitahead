@@ -61,7 +61,7 @@ private:
   void fetchAll(int index = -1);
 
   git::Diff mDiff;
-  QMap<QString,git::Patch *> mStagedPatches;
+  QMap<QString,git::Patch> mStagedPatches;
 
   QList<QWidget *> mFiles;
   QList<QMetaObject::Connection> mConnections;

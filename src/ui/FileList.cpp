@@ -67,19 +67,19 @@ public:
       case Qt::DecorationRole: {
         QString ret(git::Diff::statusChar(mDiff.status(index.row())));
         QString name = mDiff.name(index.row());
-        git::Patch *patch = mDiff.patch(index.row());
+        git::Patch patch = mDiff.patch(index.row());
 
         // Append file type.
-        if (patch->isSubmodule())
+        if (patch.isSubmodule())
           ret.append(tr("Submodule"));
-        else if (!patch->isValid())
+        else if (!patch.isValid())
           ret.append(tr("Invalid"));
-        else if (patch->isLfsPointer())
+        else if (patch.isLfsPointer())
           ret.append("LFS");
-        else if (patch->isConflicted()) {
-          if (patch->isResolved())
+        else if (patch.isConflicted()) {
+          if (patch.isResolved())
             ret.append(tr("Resolved"));
-        } else if (patch->isBinary())
+        } else if (patch.isBinary())
           ret.append("BIN");
 
         return ret;
@@ -97,7 +97,7 @@ public:
             return Qt::Unchecked;
 
           case git::Index::PartiallyStaged:
-            if (mDiff.patch(index.row())->isConflicted())
+            if (mDiff.patch(index.row()).isConflicted())
               return Qt::Unchecked;
             else
               return Qt::PartiallyChecked;

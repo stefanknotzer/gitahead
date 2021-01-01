@@ -87,7 +87,7 @@ int Diff::count() const
   return git_diff_num_deltas(d->diff);
 }
 
-Patch *Diff::patch(int index) const
+Patch Diff::patch(int index) const
 {
   Patch *ret = d->patch.value(d->map.at(index), nullptr);
   if ((ret == nullptr) || !ret->isValid()) {
@@ -96,7 +96,7 @@ Patch *Diff::patch(int index) const
     ret = new Patch(patch);
     d->patch.insert(d->map.at(index), ret);
   }
-  return ret;
+  return *ret;
 }
 
 QString Diff::name(int index) const

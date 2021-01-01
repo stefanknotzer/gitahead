@@ -279,47 +279,47 @@ public:
         continue;
 
       // Generate patch.
-      git::Patch *patch = diff.patch(pidx);
-      if (!patch->isValid())
+      git::Patch patch = diff.patch(pidx);
+      if (!patch.isValid())
         continue;
 
       // Index file name and path.
-      QFileInfo info(patch->name().toLower());
+      QFileInfo info(patch.name().toLower());
       result.fields[Index::Path][info.filePath().toUtf8()].append(filePos);
       result.fields[Index::File][info.fileName().toUtf8()].append(filePos++);
 
       // Look up lexer.
-      QByteArray name = Settings::instance()->lexer(patch->name()).toUtf8();
+      QByteArray name = Settings::instance()->lexer(patch.name()).toUtf8();
       Lexer *lexer = (name == "null") ? &generic : mLexers.acquire(name);
 
       // Lex one line at a time.
-      int hunks = patch->count();
+      int hunks = patch.count();
       for (int hidx = 0; hidx < hunks; ++hidx) {
         if (canceled || diffPos > mTermLimit)
           break;
 
         // Index hunk header.
-        QByteArray header = patch->header(hidx);
+        QByteArray header = patch.header(hidx);
         if (lexer->lex(header)) {
           while (lexer->hasNext())
             index(lexer->next(), result.fields, Index::Scope, hunkPos);
         }
 
         // Index content.
-        int lines = patch->lineCount(hidx);
+        int lines = patch.lineCount(hidx);
         for (int line = 0; line < lines; ++line) {
           if (canceled || diffPos > mTermLimit)
             break;
 
           Index::Field field;
-          switch (patch->lineOrigin(hidx, line)) {
+          switch (patch.lineOrigin(hidx, line)) {
             case GIT_DIFF_LINE_CONTEXT:  field = Index::Context;  break;
             case GIT_DIFF_LINE_ADDITION: field = Index::Addition; break;
             case GIT_DIFF_LINE_DELETION: field = Index::Deletion; break;
             default: continue;
           }
 
-          if (lexer->lex(patch->lineContent(hidx, line))) {
+          if (lexer->lex(patch.lineContent(hidx, line))) {
             while (!canceled && lexer->hasNext())
               index(lexer->next(), result.fields, field, diffPos);
           }

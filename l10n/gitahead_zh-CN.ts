@@ -1468,12 +1468,12 @@
         <translation>取消暂存</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="224"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="222"/>
         <source>Discard Changes</source>
         <translation>放弃更改</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="219"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="217"/>
         <source>Remove Untracked Files</source>
         <translation>删除未跟踪的文件</translation>
     </message>
@@ -1513,92 +1513,92 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="230"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="228"/>
         <source>Ignore</source>
         <translation>忽略</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="252"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="250"/>
         <source>Checkout</source>
         <translation>检出</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="280"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="278"/>
         <source>Unlock</source>
         <translation>解除锁定</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="280"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="278"/>
         <source>Lock</source>
         <translation>锁定</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="295"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="293"/>
         <source>Copy File Name</source>
         <translation>复制文件名</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="311"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="309"/>
         <source>Filter History</source>
         <translation>筛选记录</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="316"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="314"/>
         <source>Navigate to</source>
         <translation>导航至</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="317"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="315"/>
         <source>Next Revision</source>
         <translation>下一个修订</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="322"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="320"/>
         <source>next</source>
         <translation>下一个</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="326"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="324"/>
         <source>Previous Revision</source>
         <translation>上一个修订</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="331"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="329"/>
         <source>previous</source>
         <translation>上一个</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="341"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="339"/>
         <source>Unset Executable</source>
         <translation>未设置可执行文件</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="341"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="339"/>
         <source>Set Executable</source>
         <translation>设置可执行</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="370"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="368"/>
         <source>edit</source>
         <translation>编辑</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="374"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="372"/>
         <source>diff</source>
         <translation>比较</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="378"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="376"/>
         <source>merge</source>
         <translation>合并</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="382"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="380"/>
         <source>External Tool Not Found</source>
         <translation>找不到外部工具</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="383"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="381"/>
         <source>Failed to execute external %1 tool.</source>
         <translation>无法执行外部%1工具。</translation>
     </message>

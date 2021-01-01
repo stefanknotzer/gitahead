@@ -126,7 +126,7 @@ MainWindow::MainWindow(
 
   setCentralWidget(splitter);
 
-  if (repo)
+  if (repo.isValid())
     addTab(repo);
 
   // Set search completer.

@@ -173,8 +173,7 @@ FileContextMenu::FileContextMenu(
             ++unstaged;
 
             // Merge conflict: file was added in ours and theirs commit.
-            git::Patch *patch = diff.patch(diff.indexOf(file));
-            resolved = patch->isResolved();
+            resolved = diff.patch(diff.indexOf(file)).isResolved();
             break;
           }
 
@@ -185,8 +184,7 @@ FileContextMenu::FileContextMenu(
           case git::Index::Conflicted: {
             ++unstaged;
 
-            git::Patch *patch = diff.patch(diff.indexOf(file));
-            resolved = patch->isResolved();
+            resolved = diff.patch(diff.indexOf(file)).isResolved();
             break;
           }
         }
@@ -249,7 +247,7 @@ FileContextMenu::FileContextMenu(
 
   } else {
     // Checkout
-    QAction *checkout = addAction(tr("Checkout"), [this, view, files] {
+    QAction *checkout = addAction(tr("Checkout"), [view, files] {
       view->checkout(view->commits().first(), files);
       view->setViewMode(RepoView::Diff);
     });

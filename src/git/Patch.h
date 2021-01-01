@@ -66,7 +66,7 @@ public:
   QByteArray lineContent(int index, int line) const;
 
   ConflictResolution conflictResolution(int index) const;
-  void setConflictResolution(int index, ConflictResolution resolution);
+  void setConflictResolution(int index, ConflictResolution resolution) const;
 
   // Apply the given hunk indexes to the old buffer.
   QByteArray apply(

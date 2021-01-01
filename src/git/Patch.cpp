@@ -252,7 +252,7 @@ Patch::ConflictResolution Patch::conflictResolution(int index) const
   return static_cast<ConflictResolution>(resolution);
 }
 
-void Patch::setConflictResolution(int index, ConflictResolution resolution)
+void Patch::setConflictResolution(int index, ConflictResolution resolution) const
 {
   mRepo->setConflictResolution(name(), index, resolution);
 }
