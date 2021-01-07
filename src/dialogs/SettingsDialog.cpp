@@ -1030,11 +1030,13 @@ SettingsDialog::SettingsDialog(Index index, QWidget *parent)
 
 #ifdef Q_OS_LINUX
   // Hook up app settings edit.
-  connect(editGlobal, &QAction::triggered, [generalPanel, diffPanel, windowPanel, editorPanel, updatePanel, miscPanel] {
+  connect(editGlobal, &QAction::triggered, 
+  [generalPanel, diffPanel, windowPanel, editorPanel, updatePanel, miscPanel] {
     // Update on save.
     QSettings settings;
     EditorWindow *window = EditorWindow::open(settings.fileName());
-    connect(window->widget(), &BlameEditor::saved, [generalPanel, diffPanel, windowPanel, editorPanel, updatePanel, miscPanel] {
+    connect(window->widget(), &BlameEditor::saved, 
+	[generalPanel, diffPanel, windowPanel, editorPanel, updatePanel, miscPanel] {
       // Gitahead settings changed.
       generalPanel->refresh();
       diffPanel->refresh();

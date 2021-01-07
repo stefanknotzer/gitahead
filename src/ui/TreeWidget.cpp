@@ -45,8 +45,8 @@ TreeWidget::TreeWidget(const git::Repository &repo, QWidget *parent)
           this, &TreeWidget::loadEditorContent);
 
   // Stage files request.
-  connect(treeModel, &TreeModel::stageFiles, [this]
-  (const QStringList &files, bool staged) {
+  connect(treeModel, &TreeModel::stageFiles,
+  [this](const QStringList &files, bool staged) {
     RepoView::parentView(this)->stageFiles(files, staged);
   });
 

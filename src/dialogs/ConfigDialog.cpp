@@ -915,10 +915,11 @@ ConfigDialog::ConfigDialog(RepoView *view, Index index)
 
   // Add app config remove.
   connect(discardGitAhead, &QAction::triggered, [view, generalPanel, diffPanel, searchPanel, pluginsPanel] {
-    QMessageBox msg(QMessageBox::Question,
-                    tr("Discard GitAhead Config File?"),
-                    tr("Are you sure you want to discard the local GitAhead configuration?"),
-                    QMessageBox::Cancel);
+    QMessageBox msg(
+	  QMessageBox::Question,
+      tr("Discard GitAhead Config File?"),
+      tr("Are you sure you want to discard the local GitAhead configuration?"),
+      QMessageBox::Cancel);
     msg.setInformativeText(
       tr("If the local configuration is invalid or missing, "
          "the global GitAhead configuration is used. "

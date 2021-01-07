@@ -54,9 +54,10 @@ public:
   const QList<LogEntry *> &entries() const { return mEntries; }
 
   void addEntries(const QList<LogEntry *> &entries);
-  LogEntry *addEntry(Kind kind,
-                     const QString &text,
-                     const QString &title = QString());
+  LogEntry *addEntry(
+    Kind kind,
+    const QString &text,
+    const QString &title = QString());
   LogEntry *addEntry(
     const QString &text,
     const QString &title = QString(),

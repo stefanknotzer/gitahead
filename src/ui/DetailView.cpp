@@ -408,7 +408,7 @@ public:
 
     QString initial = kItalicFmt.arg(tr("initial commit"));
     QString text = parents.isEmpty() ? initial : parents.join(", ");
-    mParents->setText(brightText("Parents:") + " " + text);
+    mParents->setText(brightText(tr("Parents:")) + " " + text);
 
     QString msg = commit.message(git::Commit::SubstituteEmoji).trimmed();
     mMessage->setPlainText(msg);
@@ -490,7 +490,7 @@ public:
     // Spell check with delay timeout.
     connect(&mTimer, &QTimer::timeout, [this] {
       mTimer.stop();
-      if (mSpellCheckValid)
+      if (mSpellChecker)
         checkSpelling();
     });
 
@@ -502,34 +502,37 @@ public:
     });
   }
 
-  bool SpellCheckSetup(const QString &dictPath,
-                       const QString &userDict,
-                       const QTextCharFormat &spellFormat,
-                       const QTextCharFormat &ignoredFormat)
+  bool setupSpellCheck(
+    const QString &dictPath,
+    const QString &userDict,
+    const QTextCharFormat &spellFormat,
+    const QTextCharFormat &ignoredFormat)
   {
     mSpellChecker = new SpellChecker(dictPath, userDict);
-    if (mSpellChecker->isValid()) {
-      mSpellFormat = spellFormat;
-      mIgnoredFormat = ignoredFormat;
-      checkSpelling();
-      mSpellCheckValid = true;
-    } else {
+    if (!mSpellChecker->isValid()) {
+      delete mSpellChecker;
+      mSpellChecker = nullptr;
       mSpellList.clear();
       setSelections();
-      mSpellCheckValid = false;
+      return false;
     }
-    return mSpellCheckValid;
+
+    mSpellFormat = spellFormat;
+    mIgnoredFormat = ignoredFormat;
+    checkSpelling();
+    return true;
   }
 
-  void SpellCheck(void)
+  void spellCheck()
   {
-    if (mSpellCheckValid)
+    if (mSpellChecker)
       checkSpelling();
   }
 
-  void LengthSetup(const QList<int> &lineLength,
-                   const QList<int> &blankLines,
-                   const QTextCharFormat &lineFormat)
+  void setupLengthCheck(
+    const QList<int> &lineLength,
+    const QList<int> &blankLines,
+    const QTextCharFormat &lineFormat)
   {
     // Length set or blank line enabled.
     if (!lineLength.isEmpty() && !blankLines.isEmpty()) {
@@ -545,7 +548,7 @@ public:
     }
   }
 
-  void LineLengthCheck(void)
+  void lineLengthCheck()
   {
     if (mLineLengthCheckValid)
       checkLength();
@@ -558,7 +561,7 @@ private:
     bool replaced = false;
 
     // Spell checking enabled.
-    if (mSpellCheckValid) {
+    if (mSpellChecker) {
       QTextCursor cursor = cursorForPosition(event->pos());
       cursor.select(QTextCursor::WordUnderCursor);
       QString word = cursor.selectedText();
@@ -566,8 +569,7 @@ private:
       // Selected word under cursor.
       if (!word.isEmpty()) {
         foreach (const QTextEdit::ExtraSelection &es, mSpellList) {
-          if ((es.cursor == cursor) &&
-              (es.format == mSpellFormat)) {
+          if (es.cursor == cursor && es.format == mSpellFormat) {
 
             // Replace standard context menu.
             menu->clear();
@@ -640,8 +642,7 @@ private:
           }
 
           // Ignored words.
-          if ((es.cursor == cursor) &&
-              (es.format == mIgnoredFormat)) {
+          if (es.cursor == cursor && es.format == mIgnoredFormat) {
 
             // Replace standard context menu.
             menu->clear();
@@ -719,42 +720,41 @@ private:
     QTextEdit::keyPressEvent(event);
 
     QString text = event->text();
-    if (text.length()) {
+    if (!text.isEmpty()) {
       QChar chr = text.at(0);
 
       // Spell check:
       //   delayed check while writing
       //   immediate check if space, comma, ... is pressed
-      if (chr.isLetter() || chr.isNumber())
+      if (chr.isLetter() || chr.isNumber()) {
         mTimer.start(500);
-      else if (mSpellCheckValid && !event->isAutoRepeat())
+      } else if (mSpellChecker && !event->isAutoRepeat()) {
         checkSpelling();
+      }
     }
   }
 
-  void checkSpelling(void)
+  void checkSpelling()
   {
     QTextCursor cursor(document());
     mSpellList.clear();
 
     while (!cursor.atEnd()) {
-      cursor.movePosition(QTextCursor::EndOfWord,
-                          QTextCursor::KeepAnchor, 1);
+      cursor.movePosition(
+	    QTextCursor::EndOfWord,
+        QTextCursor::KeepAnchor, 1);
       QString word = wordAt(cursor);
       if (!word.isEmpty() && !mSpellChecker->spell(word)) {
-
         // Highlight the unknown or ignored word.
         QTextEdit::ExtraSelection es;
         es.cursor = cursor;
-        if (ignoredAt(cursor))
-          es.format = mIgnoredFormat;
-        else
-          es.format = mSpellFormat;
+        es.format = ignoredAt(cursor) ? mIgnoredFormat : mSpellFormat;
 
         mSpellList << es;
       }
-      cursor.movePosition(QTextCursor::NextWord,
-                          QTextCursor::MoveAnchor, 1);
+      cursor.movePosition(
+	    QTextCursor::NextWord,
+        QTextCursor::MoveAnchor, 1);
     }
     setSelections();
   }
@@ -762,10 +762,10 @@ private:
   bool ignoredAt(const QTextCursor &cursor)
   {
     foreach (const QTextEdit::ExtraSelection &es, extraSelections()) {
-      if ((es.cursor == cursor) &&
-          (es.format == mIgnoredFormat))
+      if (es.cursor == cursor && es.format == mIgnoredFormat)
         return true;
     }
+
     return false;
   }
 
@@ -796,7 +796,7 @@ private:
 
       // Forced blank lines.
       if (mBlankLines.contains(row) && (len > 0)) {
-          cursor.insertText("\n");
+        cursor.insertText("\n");
         break;
       }
 
@@ -806,11 +806,13 @@ private:
       else
         limit = mLineLength.at(row);
 
-      cursor.movePosition(QTextCursor::EndOfBlock,
-                          QTextCursor::MoveAnchor, 1);
+      cursor.movePosition(
+	    QTextCursor::EndOfBlock,
+        QTextCursor::MoveAnchor, 1);
       if ((limit > 0) && (len > limit)) {
-        cursor.movePosition(QTextCursor::Left,
-                            QTextCursor::KeepAnchor, len - limit);
+        cursor.movePosition(
+		  QTextCursor::Left,
+          QTextCursor::KeepAnchor, len - limit);
 
         // Highlight length violation.
         QTextEdit::ExtraSelection es;
@@ -818,11 +820,13 @@ private:
         es.format = mLineFormat;
         mLineList << es;
 
-        cursor.movePosition(QTextCursor::EndOfBlock,
-                            QTextCursor::MoveAnchor, 1);
+        cursor.movePosition(
+		  QTextCursor::EndOfBlock,
+          QTextCursor::MoveAnchor, 1);
       }
-      cursor.movePosition(QTextCursor::NextCharacter,
-                          QTextCursor::MoveAnchor, 1);
+      cursor.movePosition(
+	    QTextCursor::NextCharacter,
+        QTextCursor::MoveAnchor, 1);
     }
     setSelections();
   }
@@ -847,15 +851,18 @@ private:
       } else {
 
         // Insert Wordwrap.
-        cursor.movePosition(QTextCursor::PreviousWord,
-                            QTextCursor::MoveAnchor, 1);
+        cursor.movePosition(
+		  QTextCursor::PreviousWord,
+          QTextCursor::MoveAnchor, 1);
         if (cursor.positionInBlock() > 0) {
-          cursor.movePosition(QTextCursor::Left,
-                              QTextCursor::KeepAnchor, 1);
+          cursor.movePosition(
+		    QTextCursor::Left,
+            QTextCursor::KeepAnchor, 1);
           cursor.insertText("\n");
         } else {
-          cursor.movePosition(QTextCursor::Right,
-                              QTextCursor::MoveAnchor, limit);
+          cursor.movePosition(
+		    QTextCursor::Right,
+            QTextCursor::MoveAnchor, limit);
           cursor.insertText("\n");
         }
       }
@@ -891,7 +898,6 @@ private:
   QTextCharFormat mSpellFormat;
   QTextCharFormat mIgnoredFormat;
   QList<QTextEdit::ExtraSelection> mSpellList;
-  bool mSpellCheckValid = false;
 
   QList<int> mLineLength;
   QList<int> mBlankLines;
@@ -985,8 +991,7 @@ public:
                                     Theme::CommitEditor::LengthWarning));
 
     // Spell check configuration
-    git::Config appconfig = repo.appConfig();
-    mDictName = appconfig.value<QString>(kDictKey, "system");
+    mDictName = repo.appConfig().value<QString>(kDictKey, "system");
     mDictPath = Settings::dictionariesDir().path();
     mUserDict = Settings::userDir().path() + "/user.dic";
     QFile userDict(mUserDict);
@@ -1084,13 +1089,14 @@ public:
       }
 
       // Apply changes, disable invalid dictionary.
-      bool valid = mMessage->SpellCheckSetup(mDictPath + "/" + mDictName,
-                                             mUserDict,
-                                             mSpellError, mSpellIgnore);
-      if ((!valid) && (mDictName != "none")) {
-        QMessageBox mb(QMessageBox::Critical,
-                       tr("Spell Check Language"),
-                       tr("The dictionary '%1' is invalid").arg(action->text()));
+      QString path = mDictPath + "/" + mDictName;
+      if (!mMessage->setupSpellCheck(
+            path, mUserDict, mSpellError, mSpellIgnore) &&
+          mDictName != "none") {
+        QMessageBox mb(
+		  QMessageBox::Critical,
+          tr("Spell Check Language"),
+          tr("The dictionary '%1' is invalid").arg(action->text()));
         mb.setInformativeText(tr("Spell checking is disabled."));
         mb.setDetailedText(tr("The choosen dictionary '%1.dic' is not a "
                               "valid hunspell dictionary.").arg(mDictName));
@@ -1103,13 +1109,12 @@ public:
       }
 
       // Save settings.
-      git::Config appconfig = mRepo.appConfig();
-      appconfig.setValue(kDictKey, mDictName);
+      mRepo.appConfig().setValue(kDictKey, mDictName);
     });
 
     // Line length limit configuration.
-    mSubjectLimit = appconfig.value<int>(kSubjectLimitKey, 50);
-    mBodyLimit = appconfig.value<int>(kBodyLimitKey, 72);
+    mSubjectLimit = repo.appConfig().value<int>(kSubjectLimitKey, 50);
+    mBodyLimit = repo.appConfig().value<int>(kBodyLimitKey, 72);
 
     Menu *lineLengthChecks = new Menu();
     lineLengthChecks->setTitle(tr("Line Length Checks"));
@@ -1117,52 +1122,52 @@ public:
     mSubjectCheck = lineLengthChecks->addAction(
     tr("Subject Line Length Check: %1").arg(mSubjectLimit), [this] {
       // Save settings.
-      git::Config appconfig = mRepo.appConfig();
-      appconfig.setValue(kSubjectCheckKey, mSubjectCheck->isChecked());
+      mRepo.appConfig().setValue(kSubjectCheckKey, mSubjectCheck->isChecked());
 
       // Apply changes.
-      mMessage->LengthSetup({mSubjectCheck->isChecked() ? mSubjectLimit : 0,
-                             mBodyCheck->isChecked() ? mBodyLimit : 0},
-                            {mInsertBlank->isChecked() ? 1 : -1},
-                            mLineLengthWarn);
+      mMessage->setupLengthCheck(
+        {mSubjectCheck->isChecked() ? mSubjectLimit : 0,
+         mBodyCheck->isChecked() ? mBodyLimit : 0},
+        {mInsertBlank->isChecked() ? 1 : -1},
+        mLineLengthWarn);
     });
     mSubjectCheck->setData(1);
     mSubjectCheck->setCheckable(true);
     mSubjectCheck->setToolTip(tr("Use mouse wheel, numeric keys and space key"));
-    mSubjectCheck->setChecked(appconfig.value<bool>(kSubjectCheckKey, false));
+    mSubjectCheck->setChecked(repo.appConfig().value<bool>(kSubjectCheckKey, false));
 
     mInsertBlank = lineLengthChecks->addAction(
     tr("Insert Blank Line between Subject and Body"), [this] {
       // Save settings.
-      git::Config appconfig = mRepo.appConfig();
-      appconfig.setValue(kBlankKey, mInsertBlank->isChecked());
+      mRepo.appConfig().setValue(kBlankKey, mInsertBlank->isChecked());
 
       // Apply changes.
-      mMessage->LengthSetup({mSubjectCheck->isChecked() ? mSubjectLimit : 0,
-                             mBodyCheck->isChecked() ? mBodyLimit : 0},
-                            {mInsertBlank->isChecked() ? 1 : -1},
-                            mLineLengthWarn);
+      mMessage->setupLengthCheck(
+        {mSubjectCheck->isChecked() ? mSubjectLimit : 0,
+         mBodyCheck->isChecked() ? mBodyLimit : 0},
+        {mInsertBlank->isChecked() ? 1 : -1},
+        mLineLengthWarn);
     });
     mInsertBlank->setData(2);
     mInsertBlank->setCheckable(true);
-    mInsertBlank->setChecked(appconfig.value<bool>(kBlankKey, false));
+    mInsertBlank->setChecked(repo.appConfig().value<bool>(kBlankKey, false));
 
     mBodyCheck = lineLengthChecks->addAction(
     tr("Body Text Length Check: %1").arg(mBodyLimit), [this] {
       // Save settings.
-      git::Config appconfig = mRepo.appConfig();
-      appconfig.setValue(kBodyCheckKey, mBodyCheck->isChecked());
+      mRepo.appConfig().setValue(kBodyCheckKey, mBodyCheck->isChecked());
 
       // Apply changes.
-      mMessage->LengthSetup({mSubjectCheck->isChecked() ? mSubjectLimit : 0,
-                             mBodyCheck->isChecked() ? mBodyLimit : 0},
-                            {mInsertBlank->isChecked() ? 1 : -1},
-                            mLineLengthWarn);
+      mMessage->setupLengthCheck(
+        {mSubjectCheck->isChecked() ? mSubjectLimit : 0,
+         mBodyCheck->isChecked() ? mBodyLimit : 0},
+        {mInsertBlank->isChecked() ? 1 : -1},
+        mLineLengthWarn);
     });
     mBodyCheck->setData(3);
     mBodyCheck->setCheckable(true);
     mBodyCheck->setToolTip(mSubjectCheck->toolTip());
-    mBodyCheck->setChecked(appconfig.value<bool>(kBodyCheckKey, false));
+    mBodyCheck->setChecked(repo.appConfig().value<bool>(kBodyCheckKey, false));
 
     connect(lineLengthChecks, &Menu::mouseWheel,
     [this](QAction *action, int wheelX, int wheelY) {
@@ -1266,10 +1271,9 @@ public:
 
     // Setup spell check.
     if (mDictName != "none") {
-      bool valid = mMessage->SpellCheckSetup(mDictPath + "/" + mDictName,
-                                             mUserDict,
-                                             mSpellError, mSpellIgnore);
-      if (!valid) {
+      QString path = mDictPath + "/" + mDictName;
+      if (!mMessage->setupSpellCheck(
+            path, mUserDict, mSpellError, mSpellIgnore)) {
         foreach (QAction *action, dictActionGroup->actions()) {
           action->setChecked(false);
           if (mDictName == action->data().toString()) {
@@ -1283,10 +1287,11 @@ public:
     }
 
     // Setup line length check.
-    mMessage->LengthSetup({mSubjectCheck->isChecked() ? mSubjectLimit : 0,
-                           mBodyCheck->isChecked() ? mBodyLimit : 0},
-                          {mInsertBlank->isChecked() ? 1 : -1},
-                          mLineLengthWarn);
+    mMessage->setupLengthCheck(
+      {mSubjectCheck->isChecked() ? mSubjectLimit : 0,
+       mBodyCheck->isChecked() ? mBodyLimit : 0},
+      {mInsertBlank->isChecked() ? 1 : -1},
+      mLineLengthWarn);
 
     // Update menu items.
     MenuBar *menuBar = MenuBar::instance(this);
@@ -1537,10 +1542,11 @@ private:
 
     // Apply changes.
     if (saved) {
-      mMessage->LengthSetup({mSubjectCheck->isChecked() ? mSubjectLimit : 0,
-                             mBodyCheck->isChecked() ? mBodyLimit : 0},
-                            {mInsertBlank->isChecked() ? 1 : -1},
-                            mLineLengthWarn);
+      mMessage->setupLengthCheck(
+        {mSubjectCheck->isChecked() ? mSubjectLimit : 0,
+         mBodyCheck->isChecked() ? mBodyLimit : 0},
+        {mInsertBlank->isChecked() ? 1 : -1},
+        mLineLengthWarn);
     }
   }
 
@@ -1705,17 +1711,18 @@ void DetailView::stageFiles(const QStringList files, bool staged,
 
   // User information: rejected files.
   if (userinfo && !rejectFiles.isEmpty()) {
-    QString singular = rejectFiles.count() == 1 ? tr("1 file is") :
-                                                  tr("%1 files are")
-                                                  .arg(rejectFiles.count());
-    QMessageBox mb(QMessageBox::Information,
-                   staged ? tr("Staging All Files") :
-                            tr("Unstaging All Files"),
-                   staged ? tr("%1 not staged").arg(singular) :
-                            tr("%1 not unstaged").arg(singular),
-                   QMessageBox::Ok, this);
-    mb.setInformativeText(tr("Check for unresolved merge conflicts or "
-                             "filesystem issues in the working directory."));
+    QString singular = 
+	  rejectFiles.count() == 1 ? tr("1 file is") :
+      tr("%1 files are")
+        .arg(rejectFiles.count());
+    QMessageBox mb(
+	  QMessageBox::Information,
+      staged ? tr("Staging All Files") : tr("Unstaging All Files"),
+      staged ? tr("%1 not staged").arg(singular) : tr("%1 not unstaged").arg(singular),
+      QMessageBox::Ok, this);
+    mb.setInformativeText(
+	  tr("Check for unresolved merge conflicts or "
+         "filesystem issues in the working directory."));
     mb.setDetailedText(rejectFiles.join('\n'));
     mb.exec();
   }

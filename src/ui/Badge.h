@@ -20,7 +20,9 @@ class Badge : public QWidget
 public:
   struct Label
   {
-    Label(const QString &text = QString(), Theme::BadgeState state = Theme::BadgeState::Normal)
+    Label(
+	  const QString &text = QString(),
+	  Theme::BadgeState state = Theme::BadgeState::Normal)
       : text(text), state(state)
     {}
 

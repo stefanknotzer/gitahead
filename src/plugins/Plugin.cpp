@@ -399,9 +399,7 @@ int lineLexemes(lua_State *L)
 
   // Ensure styled to end of line.
   int endStyled = editor->endStyled();
-
-  // FIXME: avoid hang on very long lines.
-  if ((max > endStyled) && ((max - endStyled) < 1024))
+  if (max > endStyled)
     editor->colorize(endStyled, max);
 
   int count = 0;

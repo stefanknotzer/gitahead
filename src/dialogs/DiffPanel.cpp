@@ -21,8 +21,9 @@
 #include <QTextCodec>
 
 DiffPanel::DiffPanel(const git::Repository &repo, QWidget *parent)
-  : QWidget(parent), mConfig(repo ? repo.config() : git::Config::global()),
-                     mAppConfig(repo ? repo.appConfig() : git::Config::appGlobal())
+  : QWidget(parent), 
+    mConfig(repo ? repo.config() : git::Config::global()),
+    mAppConfig(repo ? repo.appConfig() : git::Config::appGlobal())
 {
   bool global = repo ? false : true;
 

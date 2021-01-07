@@ -75,9 +75,10 @@ QModelIndex lastRootIndex(
 
 } // anon. namespace
 
-LogView::LogView(LogEntry *root,
-                 const git::Repository *repo,
-                 QWidget *parent)
+LogView::LogView(
+  LogEntry *root,
+  const git::Repository *repo,
+  QWidget *parent)
   : QTreeView(parent), mRoot(root)
 {
   setMouseTracking(true);
@@ -315,11 +316,12 @@ void LogView::save(bool as)
 
   if (as) {
     QStringList filter = { tr("Text Log (*.json)"), tr("Binary Log (*.dat)") };
-    filename = QFileDialog::getSaveFileName(nullptr,
-                                            tr("Save Log"),
-                                            QDir::homePath() + "/log.json",
-                                            filter.join(";;"),
-                                            &filter.first());
+    filename = QFileDialog::getSaveFileName(
+	  nullptr,
+      tr("Save Log"),
+      QDir::homePath() + "/log.json",
+      filter.join(";;"),
+      &filter.first());
   } else if (mRepo.isValid()) {
     filename = mRepo.dir().filePath("gitahead/log.json");
   }
@@ -440,7 +442,9 @@ void LogView::mouseReleaseEvent(QMouseEvent *event)
   QTreeView::mouseReleaseEvent(event);
 }
 
-void LogView::selectionChanged(const QItemSelection &selected, const QItemSelection &deselected)
+void LogView::selectionChanged(
+  const QItemSelection &selected,
+  const QItemSelection &deselected)
 {
   bool enable = !selected.isEmpty();
   mCopyAction->setEnabled(enable);

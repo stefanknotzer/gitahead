@@ -375,16 +375,12 @@ protected:
     painter.drawLine(x - r + 1, y + r - 5, x - r + 5, y + r - 1);
     painter.drawLine(x + r - 6, y - r + 2, x + r - 2, y - r + 6);
 
-    // Menu indicator.
-    QColor indicator = painter.pen().color();
-    painter.setPen(QPen(indicator.darker(150), 1,
-                        Qt::SolidLine, Qt::FlatCap));
-    painter.drawLine(x + 3, y + 5, x + 8, y + 5);
-
-    painter.setPen(QPen(indicator, 1,
-                        Qt::SolidLine, Qt::FlatCap));
-    painter.drawLine(x + 4, y + 6, x + 7, y + 6);
-    painter.drawLine(x + 5, y + 7, x + 6, y + 7);
+    // Draw menu indicator.
+    QPainterPath indicator;
+    indicator.moveTo(x + 3, y + 4.5);
+    indicator.lineTo(x + 5.5, y + 7);
+    indicator.lineTo(x + 8, y + 4.5);
+    painter.drawPath(indicator);
   }
 };
 
@@ -589,27 +585,32 @@ public:
         if (!oldsize.isEmpty()) {
           QLabel *sizelabel = new QLabel(this);
           if (sameimage)
-            sizelabel->setStyleSheet(kBinaryStyleFmt.arg(palette().color(QPalette::BrightText).name(),
-                                                         "",
-                                                         fontfamily, fontsize));
+            sizelabel->setStyleSheet(
+			  kBinaryStyleFmt.arg(palette().color(QPalette::BrightText).name(),
+              "",
+              fontfamily, fontsize));
           else
-            sizelabel->setStyleSheet(kBinaryStyleFmt.arg(palette().color(QPalette::BrightText).name(),
-                                                         Application::theme()->diff(Theme::Diff::Deletion).name(),
-                                                         fontfamily, fontsize));
+            sizelabel->setStyleSheet(
+			  kBinaryStyleFmt.arg(palette().color(QPalette::BrightText).name(),
+              Application::theme()->diff(Theme::Diff::Deletion).name(),
+              fontfamily, fontsize));
 
-          sizelabel->setText(QString::number(oldsize.width()) + " x " + QString::number(oldsize.height()));
+          sizelabel->setText(QString::number(oldsize.width()) + " x " + 
+		                     QString::number(oldsize.height()));
           pixlay->addWidget(sizelabel, 0, Qt::AlignHCenter);
         }
         if (oldmime.isValid()) {
           QLabel *mimelabel = new QLabel(this);
           if (sameimage)
-            mimelabel->setStyleSheet(kBinaryStyleFmt.arg(palette().color(QPalette::BrightText).name(),
-                                                         "",
-                                                         fontfamily, fontsize));
+            mimelabel->setStyleSheet(
+			  kBinaryStyleFmt.arg(palette().color(QPalette::BrightText).name(),
+              "",
+              fontfamily, fontsize));
           else
-            mimelabel->setStyleSheet(kBinaryStyleFmt.arg(palette().color(QPalette::BrightText).name(),
-                                                         Application::theme()->diff(Theme::Diff::Deletion).name(),
-                                                         fontfamily, fontsize));
+            mimelabel->setStyleSheet(
+			  kBinaryStyleFmt.arg(palette().color(QPalette::BrightText).name(),
+              Application::theme()->diff(Theme::Diff::Deletion).name(),
+              fontfamily, fontsize));
 
           mimelabel->setText(oldmime.name());
           pixlay->addWidget(mimelabel, 0, Qt::AlignHCenter);
@@ -631,17 +632,20 @@ public:
 
         if (!newsize.isEmpty()) {
           QLabel *sizelabel = new QLabel(this);
-          sizelabel->setStyleSheet(kBinaryStyleFmt.arg(palette().color(QPalette::BrightText).name(),
-                                                       Application::theme()->diff(Theme::Diff::Addition).name(),
-                                                       fontfamily, fontsize));
-          sizelabel->setText(QString::number(newsize.width()) + " x " + QString::number(newsize.height()));
+          sizelabel->setStyleSheet(
+		    kBinaryStyleFmt.arg(palette().color(QPalette::BrightText).name(),
+            Application::theme()->diff(Theme::Diff::Addition).name(),
+            fontfamily, fontsize));
+          sizelabel->setText(QString::number(newsize.width()) + " x " + 
+		                     QString::number(newsize.height()));
           pixlay->addWidget(sizelabel, 0, Qt::AlignHCenter);
         }
         if (newmime.isValid()) {
           QLabel *mimelabel = new QLabel(this);
-          mimelabel->setStyleSheet(kBinaryStyleFmt.arg(palette().color(QPalette::BrightText).name(),
-                                                       Application::theme()->diff(Theme::Diff::Addition).name(),
-                                                       fontfamily, fontsize));
+          mimelabel->setStyleSheet(
+		    kBinaryStyleFmt.arg(palette().color(QPalette::BrightText).name(),
+            Application::theme()->diff(Theme::Diff::Addition).name(),
+            fontfamily, fontsize));
 
           mimelabel->setText(newmime.name());
           pixlay->addWidget(mimelabel, 0, Qt::AlignHCenter);
@@ -673,13 +677,16 @@ public:
     QMimeType oldmime, newmime;
 
     // Load pixmaps.
-    QPixmap oldpix = loadPixmap(patch, lfs, git::Diff::OldFile,
-                                oldsize, oldmime, scaled);
-    QPixmap newpix = loadPixmap(patch, lfs, git::Diff::NewFile,
-                                newsize, newmime, scaled);
+    QPixmap oldpix = loadPixmap(
+	  patch, lfs, git::Diff::OldFile,
+      oldsize, oldmime, scaled);
+    QPixmap newpix = loadPixmap(
+	  patch, lfs, git::Diff::NewFile,
+      newsize, newmime, scaled);
 
-    mImage = new Image(oldpix, oldsize, oldmime,
-                       newpix, newsize, newmime);
+    mImage = new Image(
+	  oldpix, oldsize, oldmime,
+      newpix, newsize, newmime);
     layout->addWidget(mImage);
     connect(mHeader->disclosureButton(), &DisclosureButton::toggled,
             mImage, &QWidget::setVisible);
@@ -2627,9 +2634,10 @@ private:
 class ElidedLabel : public QLabel
 {
 public:
-  ElidedLabel(const QString &text,
-              const Qt::TextElideMode &elidemode = Qt::ElideMiddle,
-              QWidget *parent = nullptr)
+  ElidedLabel(
+    const QString &text,
+    const Qt::TextElideMode &elidemode = Qt::ElideMiddle,
+    QWidget *parent = nullptr)
     : QLabel(parent), mText(text), mElideMode(elidemode)
   {
     QLabel(text, parent);
@@ -2790,8 +2798,9 @@ public:
 
       FileLabel *label;
       if (patch.status() == GIT_DELTA_RENAMED)
-        label = new FileLabel(patch.name(git::Diff::OldFile),
-                              name, submodule, this);
+        label = new FileLabel(
+		  patch.name(git::Diff::OldFile),
+          name, submodule, this);
       else
         label = new FileLabel(QString(), name, submodule, this);
 
@@ -2966,7 +2975,7 @@ public:
       }
       else if (mPatch.count() > 0) {
         title = mPatch.count() == 1 ? FileContextMenu::tr("Hunk") :
-                                       FileContextMenu::tr("Hunks");
+                                      FileContextMenu::tr("Hunks");
       }
 
       FileWidget *file = static_cast<FileWidget *>(parentWidget());
@@ -3198,16 +3207,18 @@ public:
             mImages.first()->disclosureButton()->setChecked(checked);
           } else if (checked) {
             // Load picture/icon.
-            layout->insertWidget(1, addImage(mPatch,
-                                             mPatch.isLfsPointer(),
-                                             scalebinary));
+            layout->insertWidget(
+			  1, addImage(mPatch,
+              mPatch.isLfsPointer(),
+              scalebinary));
           }
 
           // Load file info.
           if (mInfos.isEmpty())
-            layout->addWidget(addInfo(mDiff, mPatch,
-                                      mPatch.isBinary(),
-                                      mPatch.isLfsPointer()));
+            layout->addWidget(addInfo(
+			  mDiff, mPatch,
+              mPatch.isBinary(),
+              mPatch.isLfsPointer()));
 
           // File picture/icon or info loaded.
           if (!mImages.isEmpty() || !mInfos.isEmpty()) {
@@ -3236,9 +3247,10 @@ public:
             mInfos.first()->disclosureButton()->setChecked(checked);
           } else if (checked) {
             // Load file info.
-            layout->addWidget(addInfo(mDiff, mPatch,
-                                      mPatch.isBinary(),
-                                      mPatch.isLfsPointer()));
+            layout->addWidget(addInfo(
+			  mDiff, mPatch,
+              mPatch.isBinary(),
+              mPatch.isLfsPointer()));
           }
 
           // Hunk or info loaded.
@@ -3299,9 +3311,10 @@ public:
               mImages.first()->disclosureButton()->setChecked(checked);
             } else if (checked) {
               // Load picture/icon.
-              layout->insertWidget(1, addImage(mPatch,
-                                               mPatch.isLfsPointer(),
-                                               scalebinary));
+              layout->insertWidget(1, addImage(
+			    mPatch,
+                mPatch.isLfsPointer(),
+                scalebinary));
             }
 
             // Pointer, object or info loaded.
@@ -3359,9 +3372,10 @@ public:
                 mInfos.first()->disclosureButton()->setChecked(checked);
               } else if (checked) {
                 // Load file info.
-                layout->addWidget(addInfo(mDiff, mPatch,
-                                          mPatch.isBinary(),
-                                          mPatch.isLfsPointer()));
+                layout->addWidget(addInfo(
+				  mDiff, mPatch,
+                  mPatch.isBinary(),
+                  mPatch.isLfsPointer()));
               }
 
               // Hunk, picture/info or info loaded.
@@ -3479,8 +3493,8 @@ public:
 
     // Respond to check box click.
     QCheckBox *check = hunk->header()->check();
-    check->setVisible(diff.isStatusDiff() && !submodule &&
-                      !patch.isConflicted());
+    check->setVisible(
+	  diff.isStatusDiff() && !submodule && !patch.isConflicted());
     connect(check, &QCheckBox::clicked, this, &FileWidget::stageHunks);
 
     // Respond to editor diagnostic signal.

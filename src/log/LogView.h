@@ -21,9 +21,10 @@ class LogView : public QTreeView
   Q_OBJECT
 
 public:
-  LogView(LogEntry *root,
-          const git::Repository *repo,
-          QWidget *parent = nullptr);
+  LogView(
+    LogEntry *root,
+    const git::Repository *repo,
+    QWidget *parent = nullptr);
 
   QSize minimumSizeHint() const override;
 
@@ -45,7 +46,9 @@ protected:
   void mouseMoveEvent(QMouseEvent *event) override;
   void mousePressEvent(QMouseEvent *event) override;
   void mouseReleaseEvent(QMouseEvent *event) override;
-  void selectionChanged(const QItemSelection &selected, const QItemSelection &deselected) override;
+  void selectionChanged(
+    const QItemSelection &selected,
+    const QItemSelection &deselected) override;
 
 private:
   QString linkAt(const QModelIndex &index, const QPoint &pos);

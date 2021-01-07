@@ -405,7 +405,7 @@ RepoView::RepoView(const git::Repository &repo, MainWindow *parent)
   });
 
   connect(notifier, &git::RepositoryNotifier::indexStageError, this, [this] {
-    error(mLogRoot, "stage");
+    error(mLogRoot, tr("stage"));
   });
 
   QObject *context = new QObject(this);
@@ -470,10 +470,11 @@ void RepoView::promptToRemove(const QStringList &untracked)
     }
   }
 
-  QMessageBox mb(QMessageBox::Warning,
-                 tr("Remove Untracked Files"),
-                 tr("Remove %1 %2?").arg(
-                   QString::number(untracked.count()), phrase));
+  QMessageBox mb(
+    QMessageBox::Warning,
+    tr("Remove Untracked Files"),
+    tr("Remove %1 %2?").arg(
+      QString::number(untracked.count()), phrase));
   mb.setInformativeText(tr("This action cannot be undone."));
   mb.setDetailedText(untracked.join('\n'));
 
@@ -785,7 +786,7 @@ void RepoView::lfsInitialize()
 {
   LogEntry *entry = addLogEntry(tr("Git LFS"), tr("Initialize"));
   if (!mRepo.lfsInitialize()) {
-    error(entry, "initialize");
+    error(entry, tr("initialize"));
     return;
   }
 
@@ -796,7 +797,7 @@ void RepoView::lfsDeinitialize()
 {
   LogEntry *entry = addLogEntry(tr("Git LFS"), tr("Deinitialize"));
   if (!mRepo.lfsDeinitialize()) {
-    error(entry, "deinitialize");
+    error(entry, tr("deinitialize"));
     return;
   }
 
@@ -1926,12 +1927,11 @@ void RepoView::promptToDiscard(
   const QStringList &paths,
   bool all)
 {
-  QMessageBox mb(QMessageBox::Warning,
-                 tr("Discard %1 Files").arg(
-                   all ? tr("All") : tr("Selected")),
-                 tr("Discard %1 %2?").arg(
-                   (paths.size() == 0) ? "all" : QString::number(paths.count()),
-                   (paths.size() == 1) ? tr("file") : tr("files")));
+  QMessageBox mb(
+    QMessageBox::Warning,
+    tr("Discard %1 Files").arg(all ? tr("All") : tr("Selected")),
+    tr("Discard %1 %2?").arg(paths.size() == 0 ? "all" : QString::number(paths.count()),
+    paths.size() == 1 ? tr("file") : tr("files")));
   mb.setInformativeText(tr("This action cannot be undone."));
   mb.setDetailedText(paths.join('\n'));
 
@@ -1948,9 +1948,10 @@ void RepoView::promptToDiscard(
 
     CheckoutCallbacks callbacks(entry, GIT_CHECKOUT_NOTIFY_DIRTY);
     int strategy = GIT_CHECKOUT_FORCE;
-    mRepo.checkout(commit, &callbacks,
-                   all ? QStringList() : paths,
-                   strategy);
+    mRepo.checkout(
+	  commit, &callbacks,
+      all ? QStringList() : paths,
+      strategy);
     mRefs->select(mRepo.head());
   }
 }

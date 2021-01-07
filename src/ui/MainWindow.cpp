@@ -466,7 +466,8 @@ void MainWindow::updateTabNames()
 {
   TabWidget *tabs = tabWidget();
   for (int i = 0; i < count(); ++i) {
-    RecentRepository *repo = RecentRepositories::instance()->repository(view(i)->repo().workdir().path());
+    RecentRepository *repo = 
+	  RecentRepositories::instance()->repository(view(i)->repo().workdir().path());
     tabs->setTabText(i, repo->name());
   }
 }

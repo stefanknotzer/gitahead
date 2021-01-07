@@ -60,8 +60,9 @@ public:
   bool isStageEnabled() const;
   void unstage();
   bool isUnstageEnabled() const;
-  void stageFiles(const QStringList files, bool staged,
-                  bool userinfo = false);
+  void stageFiles(
+    const QStringList files, bool staged,
+    bool userinfo = false);
 
   // mode
   RepoView::ViewMode viewMode() const;

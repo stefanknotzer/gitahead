@@ -190,11 +190,11 @@ public:
       info.setTop(rect.y());
       info.setHeight(rect.height());
       if (text[0] == '!')
-        Badge::paint(painter, {{text.remove(0, 1), Theme::BadgeState::Tag}},
-                     info, &opt);
+        Badge::paint(
+		  painter, {{text.remove(0, 1), Theme::BadgeState::Tag}}, info, &opt);
       else
-        Badge::paint(painter, {{text.remove(0, 1), Theme::BadgeState::Head}},
-                     info, &opt);
+        Badge::paint(
+		  painter, {{text.remove(0, 1), Theme::BadgeState::Head}}, info, &opt);
     }
   }
 
@@ -212,7 +212,9 @@ public:
     // Add spacing for file type badge.
     QString text = index.data(Qt::DecorationRole).toString();
     if (text.length() > 1)
-      size.setWidth(size.width() + Badge::size(option.font, {text.remove(0, 1), Theme::BadgeState::Head}).width());
+      size.setWidth(size.width() + Badge::size(
+	                                 option.font, {text.remove(0, 1),
+									 Theme::BadgeState::Head}).width());
 
     return size;
   }
@@ -431,7 +433,8 @@ FileList::FileList(const git::Repository &repo, QWidget *parent)
   menu->addMenu(sortMenu);
 
   sortMenu->addActions(mActionList);
-  connect(sortMenu, &Menu::mouseWheel, [this, sortMenu](QAction *action, int wheelX, int wheelY) {
+  connect(sortMenu, &Menu::mouseWheel,
+  [this, sortMenu](QAction *action, int wheelX, int wheelY) {
     sortMenu->setToolTipsVisible(false);
 
     int i = action->data().toInt();
@@ -492,7 +495,8 @@ FileList::FileList(const git::Repository &repo, QWidget *parent)
     }
   });
 
-  connect(sortMenu, &Menu::keyPressed, [this, sortMenu](QAction *action, int key, ulong msDiff) {
+  connect(sortMenu, &Menu::keyPressed,
+  [this, sortMenu](QAction *action, int key, ulong msDiff) {
     sortMenu->setToolTipsVisible(false);
 
     int i = action->data().toInt();
