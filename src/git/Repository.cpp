@@ -26,7 +26,6 @@
 #include "Submodule.h"
 #include "TagRef.h"
 #include "Tree.h"
-#include "conf/Settings.h"
 #include "git2/buffer.h"
 #include "git2/branch.h"
 #include "git2/checkout.h"
@@ -282,7 +281,8 @@ void Repository::setIndex(const Index &index)
 
 Diff Repository::status(
   const Index &index,
-  Diff::Callbacks *callbacks) const
+  Diff::Callbacks *callbacks,
+  bool ignoreWhitespace) const
 {
   Tree tree;
   if (Reference ref = head()) {
@@ -290,8 +290,8 @@ Diff Repository::status(
       tree = commit.tree();
   }
 
-  Diff diff = diffTreeToIndex(tree, index);
-  Diff workdir = diffIndexToWorkdir(index, callbacks);
+  Diff diff = diffTreeToIndex(tree, index, ignoreWhitespace);
+  Diff workdir = diffIndexToWorkdir(index, callbacks, ignoreWhitespace);
   if (!diff.isValid() || !workdir.isValid())
     return Diff();
 
@@ -303,11 +303,12 @@ Diff Repository::status(
 
 Diff Repository::diffTreeToIndex(
   const Tree &tree,
-  const Index &index) const
+  const Index &index,
+  bool ignoreWhitespace) const
 {
   git_diff_options opts = GIT_DIFF_OPTIONS_INIT;
   opts.flags |= GIT_DIFF_INCLUDE_UNTRACKED;
-  if (Settings::instance()->isWhitespaceIgnored())
+  if (ignoreWhitespace)
     opts.flags |= GIT_DIFF_IGNORE_WHITESPACE;
 
   git_diff *diff = nullptr;
@@ -317,11 +318,12 @@ Diff Repository::diffTreeToIndex(
 
 Diff Repository::diffIndexToWorkdir(
   const Index &index,
-  Diff::Callbacks *callbacks) const
+  Diff::Callbacks *callbacks,
+  bool ignoreWhitespace) const
 {
   git_diff_options opts = GIT_DIFF_OPTIONS_INIT;
   opts.flags |= (GIT_DIFF_INCLUDE_UNTRACKED | GIT_DIFF_DISABLE_MMAP);
-  if (Settings::instance()->isWhitespaceIgnored())
+  if (ignoreWhitespace)
     opts.flags |= GIT_DIFF_IGNORE_WHITESPACE;
 
   if (callbacks) {
@@ -332,6 +334,15 @@ Diff Repository::diffIndexToWorkdir(
   git_diff *diff = nullptr;
   git_diff_index_to_workdir(&diff, d->repo, index, &opts);
   return Diff(diff);
+}
+
+bool Repository::applyDiff(const Diff &diff, git_apply_location_t location)
+{
+  if (git_apply(d->repo, diff, location, nullptr))
+    return false;
+
+  emit d->notifier->referenceUpdated(head());
+  return true;
 }
 
 Reference Repository::head() const

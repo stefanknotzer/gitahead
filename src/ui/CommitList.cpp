@@ -16,7 +16,7 @@
 #include "app/Application.h"
 #include "conf/Settings.h"
 #include "dialogs/MergeDialog.h"
-#include "index/Index.h"
+#include "dialogs/PatchDialog.h"
 #include "git/Branch.h"
 #include "git/Commit.h"
 #include "git/Config.h"
@@ -27,6 +27,8 @@
 #include "git/Signature.h"
 #include "git/TagRef.h"
 #include "git/Tree.h"
+#include "index/Index.h"
+#include "log/LogEntry.h"
 #include <QAbstractListModel>
 #include <QApplication>
 #include <QMenu>
@@ -150,7 +152,8 @@ public:
     mTimer.start(50);
     mStatus.setFuture(QtConcurrent::run([this] {
       // Pass the repo's index to suppress reload.
-      return mRepo.status(mRepo.index(), &mStatusCallbacks);
+      bool ignoreWhitespace = Settings::instance()->isWhitespaceIgnored();
+      return mRepo.status(mRepo.index(), &mStatusCallbacks, ignoreWhitespace);
     }));
   }
 
@@ -392,7 +395,8 @@ public:
         if (status)
           return QVariant::fromValue(this->status());
 
-        git::Diff diff = row.commit.diff();
+        bool ignoreWhitespace = Settings::instance()->isWhitespaceIgnored();
+        git::Diff diff = row.commit.diff(git::Commit(), -1, ignoreWhitespace);
         diff.findSimilar();
         return QVariant::fromValue(diff);
       }
@@ -641,7 +645,9 @@ public:
   {
     switch (role) {
       case DiffRole: {
-        git::Diff diff = mCommits.at(index.row()).diff();
+        git::Commit commit = mCommits.at(index.row());
+        bool ignoreWhitespace = Settings::instance()->isWhitespaceIgnored();
+        git::Diff diff = commit.diff(git::Commit(), -1, ignoreWhitespace);
         diff.findSimilar();
         return QVariant::fromValue(diff);
       }
@@ -1355,7 +1361,8 @@ git::Diff CommitList::selectedDiff() const
     return git::Diff();
 
   git::Commit last = indexes.last().data(CommitRole).value<git::Commit>();
-  git::Diff diff = first.diff(last);
+  bool ignoreWhitespace = Settings::instance()->isWhitespaceIgnored();
+  git::Diff diff = first.diff(last, -1, ignoreWhitespace);
   diff.findSimilar();
   return diff;
 }
@@ -1586,11 +1593,15 @@ void CommitList::contextMenuEvent(QContextMenuEvent *event)
   } else {
     // multiple selection
     bool anyStarred = false;
+	bool allValid = true;
     foreach (const QModelIndex &index, selectionModel()->selectedIndexes()) {
-      if (index.data(CommitRole).isValid() && index.data(CommitRole).value<git::Commit>().isStarred()) {
-        anyStarred = true;
-        break;
+      QVariant variant = index.data(CommitRole);
+      if (!variant.isValid()) {
+        allValid = false;
+        continue;
       }
+      if (variant.value<git::Commit>().isStarred())
+        anyStarred = true;
     }
 
     menu.addAction(anyStarred ? tr("Unstar") : tr("Star"), [this, anyStarred] {
@@ -1598,6 +1609,12 @@ void CommitList::contextMenuEvent(QContextMenuEvent *event)
         if (index.data(CommitRole).isValid())
           index.data(CommitRole).value<git::Commit>().setStarred(!anyStarred);
     });
+
+    QAction *savePatch = menu.addAction(tr("Save Patch..."), [this] {
+       SavePatchDialog *dialog = new SavePatchDialog(this, selectedCommits());
+       dialog->open();
+    });
+    savePatch->setEnabled(allValid);
 
     // single selection
     if (selectionModel()->selectedIndexes().size() <= 1) {

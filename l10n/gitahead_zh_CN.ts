@@ -313,14 +313,27 @@
 <context>
     <name>Application</name>
     <message>
-        <location filename="../src/app/Application.cpp" line="394"/>
+        <location filename="../src/app/Application.cpp" line="397"/>
         <source>SSL Errors</source>
         <translation>SSL错误</translation>
     </message>
     <message>
-        <location filename="../src/app/Application.cpp" line="396"/>
+        <location filename="../src/app/Application.cpp" line="399"/>
         <source>Failed to set up SSL session. Do you want to ignore these errors?</source>
         <translation>无法设置SSL会话。您要忽略这些错误吗？</translation>
+    </message>
+</context>
+<context>
+    <name>ApplyPatchDialog</name>
+    <message>
+        <location filename="../src/dialogs/PatchDialog.cpp" line="62"/>
+        <source>Apply Patch File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/PatchDialog.cpp" line="69"/>
+        <source>Git Diff (*.diff *.patch);;All files (*)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -572,147 +585,147 @@
 <context>
     <name>CommitEditor</name>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="981"/>
+        <location filename="../src/ui/DetailView.cpp" line="979"/>
         <source>&lt;b&gt;Commit Message:&lt;/b&gt;</source>
         <translation>&lt;b&gt;提交消息：&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1098"/>
-        <location filename="../src/ui/DetailView.cpp" line="1237"/>
+        <location filename="../src/ui/DetailView.cpp" line="1095"/>
+        <location filename="../src/ui/DetailView.cpp" line="1234"/>
         <source>Spell Check Language</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1099"/>
+        <location filename="../src/ui/DetailView.cpp" line="1096"/>
         <source>The dictionary &apos;%1&apos; is invalid</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1100"/>
+        <location filename="../src/ui/DetailView.cpp" line="1097"/>
         <source>Spell checking is disabled.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1101"/>
+        <location filename="../src/ui/DetailView.cpp" line="1098"/>
         <source>The choosen dictionary &apos;%1.dic&apos; is not a valid hunspell dictionary.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1107"/>
-        <location filename="../src/ui/DetailView.cpp" line="1281"/>
+        <location filename="../src/ui/DetailView.cpp" line="1104"/>
+        <location filename="../src/ui/DetailView.cpp" line="1278"/>
         <source>Invalid dictionary &apos;%1.dic&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1120"/>
+        <location filename="../src/ui/DetailView.cpp" line="1117"/>
         <source>Line Length Checks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1123"/>
-        <location filename="../src/ui/DetailView.cpp" line="1511"/>
+        <location filename="../src/ui/DetailView.cpp" line="1120"/>
+        <location filename="../src/ui/DetailView.cpp" line="1508"/>
         <source>Subject Line Length Check: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1136"/>
+        <location filename="../src/ui/DetailView.cpp" line="1133"/>
         <source>Use mouse wheel, numeric keys and space key</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1140"/>
+        <location filename="../src/ui/DetailView.cpp" line="1137"/>
         <source>Insert Blank Line between Subject and Body</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1156"/>
-        <location filename="../src/ui/DetailView.cpp" line="1532"/>
+        <location filename="../src/ui/DetailView.cpp" line="1153"/>
+        <location filename="../src/ui/DetailView.cpp" line="1529"/>
         <source>Body Text Length Check: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1243"/>
+        <location filename="../src/ui/DetailView.cpp" line="1240"/>
         <source>Edit User Dictionary</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1310"/>
+        <location filename="../src/ui/DetailView.cpp" line="1307"/>
         <source>Stage All</source>
         <translation>全部暂存</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1313"/>
+        <location filename="../src/ui/DetailView.cpp" line="1310"/>
         <source>Unstage All</source>
         <translation>全部取消暂存</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1315"/>
-        <location filename="../src/ui/DetailView.cpp" line="1482"/>
+        <location filename="../src/ui/DetailView.cpp" line="1312"/>
+        <location filename="../src/ui/DetailView.cpp" line="1479"/>
         <source>Commit</source>
         <translation>提交</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1425"/>
+        <location filename="../src/ui/DetailView.cpp" line="1422"/>
         <source>Update %1</source>
         <translation>更新%1</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1429"/>
+        <location filename="../src/ui/DetailView.cpp" line="1426"/>
         <source>Update %1 and %2</source>
         <translation>更新%1和%2</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1433"/>
+        <location filename="../src/ui/DetailView.cpp" line="1430"/>
         <source>Update %1, %2, and %3</source>
         <translation>更新%1，%2和%3</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1438"/>
+        <location filename="../src/ui/DetailView.cpp" line="1435"/>
         <source>Update %1, %2, and %3 more files...</source>
         <translation>更新%1，%2和%3多个文件...</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1454"/>
+        <location filename="../src/ui/DetailView.cpp" line="1451"/>
         <source>Nothing staged</source>
         <translation>没有暂存</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1457"/>
+        <location filename="../src/ui/DetailView.cpp" line="1454"/>
         <source>%1 of %2 file staged</source>
         <translation>已暂存%2个文件中的%1个</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1457"/>
+        <location filename="../src/ui/DetailView.cpp" line="1454"/>
         <source>%1 of %2 files staged</source>
         <translation>已暂存%2个文件中的%1个</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1462"/>
+        <location filename="../src/ui/DetailView.cpp" line="1459"/>
         <source>%1 file partially staged</source>
         <translation>%1文件已部分暂存</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1462"/>
+        <location filename="../src/ui/DetailView.cpp" line="1459"/>
         <source>%1 files partially staged</source>
         <translation>部分暂存了%1个文件</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1468"/>
+        <location filename="../src/ui/DetailView.cpp" line="1465"/>
         <source>%1 of %2 conflict resolved</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1468"/>
+        <location filename="../src/ui/DetailView.cpp" line="1465"/>
         <source>%1 of %2 conflicts resolved</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1471"/>
+        <location filename="../src/ui/DetailView.cpp" line="1468"/>
         <source>all conflicts resolved</source>
         <translation>所有冲突已解决</translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1482"/>
+        <location filename="../src/ui/DetailView.cpp" line="1479"/>
         <source>Commit Merge</source>
         <translation>提交合并</translation>
     </message>
@@ -720,136 +733,141 @@
 <context>
     <name>CommitList</name>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1553"/>
+        <location filename="../src/ui/CommitList.cpp" line="1560"/>
         <source>Remove Untracked Files</source>
         <translation>删除未跟踪的文件</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1574"/>
+        <location filename="../src/ui/CommitList.cpp" line="1581"/>
         <source>Apply</source>
         <translation>应用</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1578"/>
+        <location filename="../src/ui/CommitList.cpp" line="1585"/>
         <source>Pop</source>
         <translation>填充（Pop）</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1582"/>
+        <location filename="../src/ui/CommitList.cpp" line="1589"/>
         <source>Drop</source>
         <translation>丢弃（Drop）</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1596"/>
+        <location filename="../src/ui/CommitList.cpp" line="1607"/>
         <source>Unstar</source>
         <translation>取消星标</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1596"/>
+        <location filename="../src/ui/CommitList.cpp" line="1607"/>
         <source>Star</source>
         <translation>星标</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1606"/>
+        <location filename="../src/ui/CommitList.cpp" line="1623"/>
         <source>Add Tag...</source>
         <translation>添加标签...</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1548"/>
-        <location filename="../src/ui/CommitList.cpp" line="1610"/>
+        <location filename="../src/ui/CommitList.cpp" line="1555"/>
+        <location filename="../src/ui/CommitList.cpp" line="1627"/>
         <source>New Branch...</source>
         <translation>新建分支...</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1559"/>
+        <location filename="../src/ui/CommitList.cpp" line="1566"/>
         <source>Discard All Changes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1621"/>
+        <location filename="../src/ui/CommitList.cpp" line="1613"/>
+        <source>Save Patch...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/CommitList.cpp" line="1638"/>
         <source>Delete Tag %1</source>
         <translation>删除标签%1</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1631"/>
+        <location filename="../src/ui/CommitList.cpp" line="1648"/>
         <source>Delete Branch %1</source>
         <translation>删除分支%1</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1639"/>
+        <location filename="../src/ui/CommitList.cpp" line="1656"/>
         <source>Merge...</source>
         <translation>合并...</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1654"/>
+        <location filename="../src/ui/CommitList.cpp" line="1671"/>
         <source>Rebase...</source>
         <translation>变基...</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1669"/>
+        <location filename="../src/ui/CommitList.cpp" line="1686"/>
         <source>Squash...</source>
         <translation>聚合（Squash）...</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1686"/>
+        <location filename="../src/ui/CommitList.cpp" line="1703"/>
         <source>Revert</source>
         <translation>还原</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1690"/>
+        <location filename="../src/ui/CommitList.cpp" line="1707"/>
         <source>Cherry-pick</source>
         <translation>拣选操作</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1699"/>
-        <location filename="../src/ui/CommitList.cpp" line="1715"/>
-        <location filename="../src/ui/CommitList.cpp" line="1749"/>
+        <location filename="../src/ui/CommitList.cpp" line="1716"/>
+        <location filename="../src/ui/CommitList.cpp" line="1732"/>
+        <location filename="../src/ui/CommitList.cpp" line="1766"/>
         <source>Checkout %1</source>
         <translation>检出%1</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1706"/>
-        <location filename="../src/ui/CommitList.cpp" line="1735"/>
-        <location filename="../src/ui/CommitList.cpp" line="1756"/>
+        <location filename="../src/ui/CommitList.cpp" line="1723"/>
+        <location filename="../src/ui/CommitList.cpp" line="1752"/>
+        <location filename="../src/ui/CommitList.cpp" line="1773"/>
         <source>HEAD is invalid</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1709"/>
-        <location filename="../src/ui/CommitList.cpp" line="1738"/>
-        <location filename="../src/ui/CommitList.cpp" line="1759"/>
+        <location filename="../src/ui/CommitList.cpp" line="1726"/>
+        <location filename="../src/ui/CommitList.cpp" line="1755"/>
+        <location filename="../src/ui/CommitList.cpp" line="1776"/>
         <source>Local branch is already checked out</source>
         <translation>本地分支已检出</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1712"/>
-        <location filename="../src/ui/CommitList.cpp" line="1743"/>
-        <location filename="../src/ui/CommitList.cpp" line="1762"/>
+        <location filename="../src/ui/CommitList.cpp" line="1729"/>
+        <location filename="../src/ui/CommitList.cpp" line="1760"/>
+        <location filename="../src/ui/CommitList.cpp" line="1779"/>
         <source>This is a bare repository</source>
         <translation>这是一个纯仓库</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1740"/>
+        <location filename="../src/ui/CommitList.cpp" line="1757"/>
         <source>Checkout %1 and Reset local branch %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1767"/>
+        <location filename="../src/ui/CommitList.cpp" line="1784"/>
         <source>Reset</source>
         <translation>重置</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1768"/>
+        <location filename="../src/ui/CommitList.cpp" line="1785"/>
         <source>Soft</source>
         <translation>软性</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1769"/>
+        <location filename="../src/ui/CommitList.cpp" line="1786"/>
         <source>Mixed</source>
         <translation>混合</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1770"/>
+        <location filename="../src/ui/CommitList.cpp" line="1787"/>
         <source>Hard</source>
         <translation>硬性</translation>
     </message>
@@ -857,12 +875,12 @@
 <context>
     <name>CommitModel</name>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="358"/>
+        <location filename="../src/ui/CommitList.cpp" line="361"/>
         <source>Uncommitted changes</source>
         <translation>未提交的更改</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="359"/>
+        <location filename="../src/ui/CommitList.cpp" line="362"/>
         <source>Checking for uncommitted changes</source>
         <translation>检查未提交的更改</translation>
     </message>
@@ -1150,37 +1168,37 @@
 <context>
     <name>DetailView</name>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1715"/>
+        <location filename="../src/ui/DetailView.cpp" line="1712"/>
         <source>1 file is</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1716"/>
+        <location filename="../src/ui/DetailView.cpp" line="1713"/>
         <source>%1 files are</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1720"/>
+        <location filename="../src/ui/DetailView.cpp" line="1717"/>
         <source>Staging All Files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1720"/>
+        <location filename="../src/ui/DetailView.cpp" line="1717"/>
         <source>Unstaging All Files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1721"/>
+        <location filename="../src/ui/DetailView.cpp" line="1718"/>
         <source>%1 not staged</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1721"/>
+        <location filename="../src/ui/DetailView.cpp" line="1718"/>
         <source>%1 not unstaged</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/DetailView.cpp" line="1724"/>
+        <location filename="../src/ui/DetailView.cpp" line="1721"/>
         <source>Check for unresolved merge conflicts or filesystem issues in the working directory.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2712,13 +2730,13 @@ Examples
     </message>
     <message>
         <location filename="../src/ui/MenuBar.cpp" line="316"/>
-        <location filename="../src/ui/MenuBar.cpp" line="854"/>
+        <location filename="../src/ui/MenuBar.cpp" line="861"/>
         <source>Show Log</source>
         <translation>显示日志</translation>
     </message>
     <message>
         <location filename="../src/ui/MenuBar.cpp" line="322"/>
-        <location filename="../src/ui/MenuBar.cpp" line="855"/>
+        <location filename="../src/ui/MenuBar.cpp" line="862"/>
         <source>Show Tree View</source>
         <translation>显示树状视图</translation>
     </message>
@@ -2769,377 +2787,382 @@ Examples
     </message>
     <message>
         <location filename="../src/ui/MenuBar.cpp" line="361"/>
-        <location filename="../src/ui/MenuBar.cpp" line="518"/>
+        <location filename="../src/ui/MenuBar.cpp" line="525"/>
         <source>Ctrl+Shift+A</source>
         <translation>Ctrl+Shift+A</translation>
     </message>
     <message>
         <location filename="../src/ui/MenuBar.cpp" line="368"/>
+        <source>Apply Patch...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/MenuBar.cpp" line="375"/>
         <source>Git LFS</source>
         <translation>Git LFS</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="369"/>
+        <location filename="../src/ui/MenuBar.cpp" line="376"/>
         <source>Remove all locks</source>
         <translation>移除所有锁定</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="376"/>
+        <location filename="../src/ui/MenuBar.cpp" line="383"/>
         <source>Initialize</source>
         <translation>初始化</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="382"/>
+        <location filename="../src/ui/MenuBar.cpp" line="389"/>
         <source>Remote</source>
         <translation>远程</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="384"/>
+        <location filename="../src/ui/MenuBar.cpp" line="391"/>
         <source>Configure Remotes...</source>
         <translation>配置远程...</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="392"/>
+        <location filename="../src/ui/MenuBar.cpp" line="399"/>
         <source>Fetch</source>
         <translation>获取</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="393"/>
+        <location filename="../src/ui/MenuBar.cpp" line="400"/>
         <source>Ctrl+Shift+Alt+F</source>
         <translation>Ctrl+Shift+Alt+F</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="398"/>
+        <location filename="../src/ui/MenuBar.cpp" line="405"/>
         <source>Fetch All</source>
         <translation>获取全部</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="399"/>
+        <location filename="../src/ui/MenuBar.cpp" line="406"/>
         <source>Ctrl+Shift+Alt+A</source>
         <translation>Ctrl+Shift+Alt+A</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="404"/>
+        <location filename="../src/ui/MenuBar.cpp" line="411"/>
         <source>Fetch From...</source>
         <translation>获取自...</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="405"/>
+        <location filename="../src/ui/MenuBar.cpp" line="412"/>
         <source>Ctrl+Shift+F</source>
         <translation>Ctrl+Shift+F</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="413"/>
+        <location filename="../src/ui/MenuBar.cpp" line="420"/>
         <source>Pull</source>
         <translation>拉取</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="414"/>
+        <location filename="../src/ui/MenuBar.cpp" line="421"/>
         <source>Ctrl+Shift+Alt+L</source>
         <translation>Ctrl+Shift+Alt+L</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="419"/>
+        <location filename="../src/ui/MenuBar.cpp" line="426"/>
         <source>Pull From...</source>
         <translation>拉取自...</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="420"/>
+        <location filename="../src/ui/MenuBar.cpp" line="427"/>
         <source>Ctrl+Shift+L</source>
         <translation>Ctrl+Shift+L</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="428"/>
+        <location filename="../src/ui/MenuBar.cpp" line="435"/>
         <source>Push</source>
         <translation>推送</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="429"/>
+        <location filename="../src/ui/MenuBar.cpp" line="436"/>
         <source>Ctrl+Shift+Alt+P</source>
         <translation>Ctrl+Shift+Alt+P</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="434"/>
+        <location filename="../src/ui/MenuBar.cpp" line="441"/>
         <source>Push To...</source>
         <translation>推送至...</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="435"/>
+        <location filename="../src/ui/MenuBar.cpp" line="442"/>
         <source>Ctrl+Shift+P</source>
         <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="442"/>
+        <location filename="../src/ui/MenuBar.cpp" line="449"/>
         <source>Branch</source>
         <translation>分支</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="444"/>
+        <location filename="../src/ui/MenuBar.cpp" line="451"/>
         <source>Configure Branches...</source>
         <translation>配置分支...</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="450"/>
+        <location filename="../src/ui/MenuBar.cpp" line="457"/>
         <source>New Branch...</source>
         <translation>新建分支...</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="457"/>
+        <location filename="../src/ui/MenuBar.cpp" line="464"/>
         <source>Checkout Current</source>
         <translation>检出（Checkout）当前</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="458"/>
+        <location filename="../src/ui/MenuBar.cpp" line="465"/>
         <source>Ctrl+Shift+Alt+H</source>
         <translation>Ctrl+Shift+Alt+H</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="468"/>
+        <location filename="../src/ui/MenuBar.cpp" line="475"/>
         <source>Checkout...</source>
         <translation>检出（Checkout）...</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="469"/>
+        <location filename="../src/ui/MenuBar.cpp" line="476"/>
         <source>Ctrl+Shift+H</source>
         <translation>Ctrl+Shift+H</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="476"/>
+        <location filename="../src/ui/MenuBar.cpp" line="483"/>
         <source>Merge...</source>
         <translation>合并（Merge）...</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="477"/>
+        <location filename="../src/ui/MenuBar.cpp" line="484"/>
         <source>Ctrl+Shift+M</source>
         <translation>Ctrl+Shift+M</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="489"/>
+        <location filename="../src/ui/MenuBar.cpp" line="496"/>
         <source>Rebase...</source>
         <translation>变基（Rebase）...</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="490"/>
+        <location filename="../src/ui/MenuBar.cpp" line="497"/>
         <source>Ctrl+Shift+R</source>
         <translation>Ctrl+Shift+R</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="502"/>
+        <location filename="../src/ui/MenuBar.cpp" line="509"/>
         <source>Squash...</source>
         <translation>聚合（Squash）...</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="503"/>
+        <location filename="../src/ui/MenuBar.cpp" line="510"/>
         <source>Ctrl+Shift+Q</source>
         <translation>Ctrl+Shift+Q</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="517"/>
+        <location filename="../src/ui/MenuBar.cpp" line="524"/>
         <source>Abort Merge</source>
         <translation>中止合并（Merge）</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="524"/>
+        <location filename="../src/ui/MenuBar.cpp" line="531"/>
         <source>Submodule</source>
         <translation>子模块</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="526"/>
+        <location filename="../src/ui/MenuBar.cpp" line="533"/>
         <source>Configure Submodules...</source>
         <translation>配置子模块...</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="534"/>
+        <location filename="../src/ui/MenuBar.cpp" line="541"/>
         <source>Update All</source>
         <translation>更新全部</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="535"/>
+        <location filename="../src/ui/MenuBar.cpp" line="542"/>
         <source>Ctrl+Shift+Alt+U</source>
         <translation>Ctrl+Shift+Alt+U</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="540"/>
+        <location filename="../src/ui/MenuBar.cpp" line="547"/>
         <source>Update...</source>
         <translation>更新...</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="541"/>
+        <location filename="../src/ui/MenuBar.cpp" line="548"/>
         <source>Ctrl+Shift+U</source>
         <translation>Ctrl+Shift+U</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="556"/>
+        <location filename="../src/ui/MenuBar.cpp" line="563"/>
         <source>Open</source>
         <translation>打开</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="575"/>
+        <location filename="../src/ui/MenuBar.cpp" line="582"/>
         <source>Stash</source>
         <translation>贮藏</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="577"/>
+        <location filename="../src/ui/MenuBar.cpp" line="584"/>
         <source>Show Stashes</source>
         <translation>显示贮藏区备份</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="585"/>
+        <location filename="../src/ui/MenuBar.cpp" line="592"/>
         <source>Stash...</source>
         <translation>备份未提交修改到贮藏区</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="586"/>
+        <location filename="../src/ui/MenuBar.cpp" line="593"/>
         <source>Ctrl+Shift+T</source>
         <translation>Ctrl+Shift+T</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="591"/>
+        <location filename="../src/ui/MenuBar.cpp" line="598"/>
         <source>Pop Stash</source>
         <translation>应用备份并从贮藏区删除</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="592"/>
+        <location filename="../src/ui/MenuBar.cpp" line="599"/>
         <source>Ctrl+Shift+Alt+T</source>
         <translation>Ctrl+Shift+Alt+T</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="598"/>
+        <location filename="../src/ui/MenuBar.cpp" line="605"/>
         <source>History</source>
         <translation>历史</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="600"/>
+        <location filename="../src/ui/MenuBar.cpp" line="607"/>
         <source>Back</source>
         <translation>退回</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="607"/>
+        <location filename="../src/ui/MenuBar.cpp" line="614"/>
         <source>Forward</source>
         <translation>前进</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="615"/>
+        <location filename="../src/ui/MenuBar.cpp" line="622"/>
         <source>Window</source>
         <translation>窗口</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="616"/>
+        <location filename="../src/ui/MenuBar.cpp" line="623"/>
         <source>Show Previous Tab</source>
         <translation>显示上一个标签页</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="625"/>
+        <location filename="../src/ui/MenuBar.cpp" line="632"/>
         <source>Show Next Tab</source>
         <translation>显示下一个标签页</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="636"/>
+        <location filename="../src/ui/MenuBar.cpp" line="643"/>
         <source>Show Repository Chooser...</source>
         <translation>显示仓库选择器...</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="637"/>
+        <location filename="../src/ui/MenuBar.cpp" line="644"/>
         <source>Ctrl+Shift+O</source>
         <translation>Ctrl+Shift+O</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="641"/>
+        <location filename="../src/ui/MenuBar.cpp" line="648"/>
         <source>Tools</source>
         <translation>工具</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="642"/>
+        <location filename="../src/ui/MenuBar.cpp" line="649"/>
         <source>Options...</source>
         <translation>选项...</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="649"/>
+        <location filename="../src/ui/MenuBar.cpp" line="656"/>
         <source>Help</source>
         <translation>帮助</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="651"/>
+        <location filename="../src/ui/MenuBar.cpp" line="658"/>
         <source>About %1</source>
         <translation>关于%1</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="657"/>
+        <location filename="../src/ui/MenuBar.cpp" line="664"/>
         <source>Check For Updates...</source>
         <translation>检查更新...</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="661"/>
+        <location filename="../src/ui/MenuBar.cpp" line="668"/>
         <source>Plugin Documentation...</source>
         <translation>插件文档...</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="669"/>
+        <location filename="../src/ui/MenuBar.cpp" line="676"/>
         <source>Debug</source>
         <translation>除错</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="670"/>
+        <location filename="../src/ui/MenuBar.cpp" line="677"/>
         <source>Abort</source>
         <translation>中止</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="683"/>
+        <location filename="../src/ui/MenuBar.cpp" line="690"/>
         <source>Log Indexer Progress</source>
         <translation>日志索引器进度</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="690"/>
+        <location filename="../src/ui/MenuBar.cpp" line="697"/>
         <source>Log Credential Helper</source>
         <translation>日志凭证助手</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="697"/>
+        <location filename="../src/ui/MenuBar.cpp" line="704"/>
         <source>Log Remote Connection</source>
         <translation>记录远程连接</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="706"/>
+        <location filename="../src/ui/MenuBar.cpp" line="713"/>
         <source>Load All Diffs</source>
         <translation>加载所有差异</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="720"/>
+        <location filename="../src/ui/MenuBar.cpp" line="727"/>
         <source>Walk Commits</source>
         <translation>遍历提交</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="854"/>
+        <location filename="../src/ui/MenuBar.cpp" line="861"/>
         <source>Hide Log</source>
         <translation>隐藏日志</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="855"/>
+        <location filename="../src/ui/MenuBar.cpp" line="862"/>
         <source>Show Diff View</source>
         <translation>显示差异视图</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="907"/>
+        <location filename="../src/ui/MenuBar.cpp" line="914"/>
         <source>Merge</source>
         <translation>合并</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="917"/>
+        <location filename="../src/ui/MenuBar.cpp" line="924"/>
         <source>Revert</source>
         <translation>还原</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="923"/>
+        <location filename="../src/ui/MenuBar.cpp" line="930"/>
         <source>Cherry-pick</source>
         <translation>拣选操作</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="929"/>
+        <location filename="../src/ui/MenuBar.cpp" line="936"/>
         <source>Rebase</source>
         <translation>变基</translation>
     </message>
     <message>
-        <location filename="../src/ui/MenuBar.cpp" line="935"/>
+        <location filename="../src/ui/MenuBar.cpp" line="942"/>
         <source>Abort %1</source>
         <translation>中止%1</translation>
     </message>
@@ -3498,58 +3521,58 @@ Examples
 <context>
     <name>RemoteCallbacks</name>
     <message>
-        <location filename="../src/ui/RemoteCallbacks.cpp" line="163"/>
+        <location filename="../src/ui/RemoteCallbacks.cpp" line="165"/>
         <source>remote: %1</source>
         <translation>远程：%1</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteCallbacks.cpp" line="222"/>
+        <location filename="../src/ui/RemoteCallbacks.cpp" line="224"/>
         <source>failed to execute pre-push hook: bash not found</source>
         <translation>无法执行pre-push钩子：未找到bash</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteCallbacks.cpp" line="256"/>
+        <location filename="../src/ui/RemoteCallbacks.cpp" line="258"/>
         <source>failed to execute pre-push hook: %1</source>
         <translation>无法执行pre-push钩子：%1</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteCallbacks.cpp" line="284"/>
+        <location filename="../src/ui/RemoteCallbacks.cpp" line="313"/>
         <source>HTTPS Credentials</source>
         <translation>HTTPS凭证</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteCallbacks.cpp" line="284"/>
+        <location filename="../src/ui/RemoteCallbacks.cpp" line="313"/>
         <source>SSH Passphrase</source>
         <translation>SSH密码</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteCallbacks.cpp" line="297"/>
+        <location filename="../src/ui/RemoteCallbacks.cpp" line="326"/>
         <source>Username:</source>
         <translation>用户名：</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteCallbacks.cpp" line="298"/>
+        <location filename="../src/ui/RemoteCallbacks.cpp" line="327"/>
         <source>Password:</source>
         <translation>密码：</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteCallbacks.cpp" line="298"/>
+        <location filename="../src/ui/RemoteCallbacks.cpp" line="327"/>
         <source>Passphrase:</source>
         <translation>密码短语：</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteCallbacks.cpp" line="313"/>
+        <location filename="../src/ui/RemoteCallbacks.cpp" line="342"/>
         <source>authentication canceled</source>
         <translation>身份验证已取消</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteCallbacks.cpp" line="412"/>
+        <location filename="../src/ui/RemoteCallbacks.cpp" line="441"/>
         <source>From %1</source>
         <translation>从%1</translation>
     </message>
     <message>
-        <location filename="../src/ui/RemoteCallbacks.cpp" line="412"/>
-        <location filename="../src/ui/RemoteCallbacks.cpp" line="455"/>
+        <location filename="../src/ui/RemoteCallbacks.cpp" line="441"/>
+        <location filename="../src/ui/RemoteCallbacks.cpp" line="484"/>
         <source>To %1</source>
         <translation>至%1</translation>
     </message>
@@ -3763,454 +3786,454 @@ Examples
 <context>
     <name>RepoView</name>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="178"/>
+        <location filename="../src/ui/RepoView.cpp" line="181"/>
         <source>Indexing...</source>
         <translation>索引...</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="184"/>
+        <location filename="../src/ui/RepoView.cpp" line="187"/>
         <source>Search</source>
         <translation>搜索</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="187"/>
+        <location filename="../src/ui/RepoView.cpp" line="190"/>
         <source>The indexer worker process crashed. If this problem persists please contact us at support@gitahead.com.</source>
         <translation>索引器工作进程崩溃。如果此问题仍然存在，请通过support@gitahead.com与我们联系。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="189"/>
+        <location filename="../src/ui/RepoView.cpp" line="192"/>
         <source>Indexer Crashed</source>
         <translation>索引器崩溃</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="313"/>
+        <location filename="../src/ui/RepoView.cpp" line="316"/>
         <source>Stage Directory?</source>
         <translation>您确定要暂存目录吗？</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="314"/>
+        <location filename="../src/ui/RepoView.cpp" line="317"/>
         <source>Are you sure you want to stage &apos;%1&apos;?</source>
         <translation>您确定要暂存&apos;%1&apos;吗？</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="315"/>
+        <location filename="../src/ui/RepoView.cpp" line="318"/>
         <source>This will result in the addition of %1 files.</source>
         <translation>这将导致添加%1个文件。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="316"/>
+        <location filename="../src/ui/RepoView.cpp" line="319"/>
         <source>more than 100</source>
         <translation>超过100</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="321"/>
+        <location filename="../src/ui/RepoView.cpp" line="324"/>
         <source>Stage Directory</source>
         <translation>暂存目录</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="323"/>
+        <location filename="../src/ui/RepoView.cpp" line="326"/>
         <source>Stop prompting to stage directories</source>
         <translation>停止提示暂存目录</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="339"/>
+        <location filename="../src/ui/RepoView.cpp" line="342"/>
         <source>Stage Large File?</source>
         <translation>暂存大文件？</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="340"/>
+        <location filename="../src/ui/RepoView.cpp" line="343"/>
         <source>Are you sure you want to stage &apos;%1&apos; with a size of %2?</source>
         <translation>您确定要暂存大小为%2的&apos;%1&apos;吗？</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="344"/>
+        <location filename="../src/ui/RepoView.cpp" line="347"/>
         <source>Stage</source>
         <translation>暂存</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="348"/>
+        <location filename="../src/ui/RepoView.cpp" line="351"/>
         <source>Track with LFS</source>
         <translation>使用LFS跟踪</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="350"/>
+        <location filename="../src/ui/RepoView.cpp" line="353"/>
         <source>This repository has LFS enabled. Do you want to track the file with LFS instead?</source>
         <translation>该仓库已启用LFS。您是否要使用LFS跟踪文件？</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="354"/>
+        <location filename="../src/ui/RepoView.cpp" line="357"/>
         <source>Stop prompting to stage large files</source>
         <translation>停止提示暂存大文件</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="401"/>
+        <location filename="../src/ui/RepoView.cpp" line="404"/>
         <source>Esc</source>
         <translation>退出</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="408"/>
+        <location filename="../src/ui/RepoView.cpp" line="411"/>
         <source>stage</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="415"/>
+        <location filename="../src/ui/RepoView.cpp" line="418"/>
         <source>Git LFS was not found on the PATH. &lt;a href=&apos;https://git-lfs.github.com&apos;&gt;Install Git LFS&lt;/a&gt; to use LFS integration.</source>
         <translation>在PATH上找不到Git LFS。 &lt;a href=&apos;https://git-lfs.github.com&apos;&gt;安装Git LFS &lt;/a&gt;以使用LFS集成。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="462"/>
+        <location filename="../src/ui/RepoView.cpp" line="465"/>
         <source>untracked file</source>
         <translation>未跟踪的文件</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="458"/>
+        <location filename="../src/ui/RepoView.cpp" line="461"/>
         <source>untracked files</source>
         <translation>未跟踪的文件</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="462"/>
+        <location filename="../src/ui/RepoView.cpp" line="465"/>
         <source>untracked directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="467"/>
+        <location filename="../src/ui/RepoView.cpp" line="470"/>
         <source>untracked directories/files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="475"/>
+        <location filename="../src/ui/RepoView.cpp" line="478"/>
         <source>Remove Untracked Files</source>
         <translation>删除未跟踪的文件</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="476"/>
+        <location filename="../src/ui/RepoView.cpp" line="479"/>
         <source>Remove %1 %2?</source>
         <translation>删除%1%2？</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="478"/>
-        <location filename="../src/ui/RepoView.cpp" line="1935"/>
+        <location filename="../src/ui/RepoView.cpp" line="481"/>
+        <location filename="../src/ui/RepoView.cpp" line="1949"/>
         <source>This action cannot be undone.</source>
         <translation>此操作无法撤消。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="481"/>
-        <location filename="../src/ui/RepoView.cpp" line="487"/>
+        <location filename="../src/ui/RepoView.cpp" line="484"/>
+        <location filename="../src/ui/RepoView.cpp" line="490"/>
         <source>Remove</source>
         <translation>删除</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="493"/>
+        <location filename="../src/ui/RepoView.cpp" line="496"/>
         <source>%1 failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="771"/>
+        <location filename="../src/ui/RepoView.cpp" line="774"/>
         <source>Pull Request</source>
         <translation>拉取请求</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="771"/>
+        <location filename="../src/ui/RepoView.cpp" line="774"/>
         <source>Create</source>
         <translation>新建</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="772"/>
+        <location filename="../src/ui/RepoView.cpp" line="775"/>
         <source>create pull request</source>
         <translation>新建拉取请求</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="787"/>
-        <location filename="../src/ui/RepoView.cpp" line="798"/>
-        <location filename="../src/ui/RepoView.cpp" line="821"/>
+        <location filename="../src/ui/RepoView.cpp" line="790"/>
+        <location filename="../src/ui/RepoView.cpp" line="801"/>
+        <location filename="../src/ui/RepoView.cpp" line="824"/>
         <source>Git LFS</source>
         <translation>Git LFS</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="787"/>
+        <location filename="../src/ui/RepoView.cpp" line="790"/>
         <source>Initialize</source>
         <translation>初始化</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="789"/>
+        <location filename="../src/ui/RepoView.cpp" line="792"/>
         <source>initialize</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="793"/>
+        <location filename="../src/ui/RepoView.cpp" line="796"/>
         <source>Git LFS initialized.</source>
         <translation>Git LFS已初始化。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="798"/>
+        <location filename="../src/ui/RepoView.cpp" line="801"/>
         <source>Deinitialize</source>
         <translation>取消初始化</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="800"/>
+        <location filename="../src/ui/RepoView.cpp" line="803"/>
         <source>deinitialize</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="804"/>
+        <location filename="../src/ui/RepoView.cpp" line="807"/>
         <source>Git LFS Deinitialized.</source>
         <translation>Git LFS已初始化。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="810"/>
+        <location filename="../src/ui/RepoView.cpp" line="813"/>
         <source>Lock</source>
         <translation>锁定</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="810"/>
+        <location filename="../src/ui/RepoView.cpp" line="813"/>
         <source>Unlock</source>
         <translation>解除锁定</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="814"/>
-        <location filename="../src/ui/RepoView.cpp" line="953"/>
+        <location filename="../src/ui/RepoView.cpp" line="817"/>
+        <location filename="../src/ui/RepoView.cpp" line="956"/>
         <source>Unable to %1 &apos;%2&apos; - %3</source>
         <translation>无法%1&apos;%2&apos;-%3</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="952"/>
+        <location filename="../src/ui/RepoView.cpp" line="955"/>
         <source>Unable to %1 - %2</source>
         <translation>无法%1-%2</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="998"/>
+        <location filename="../src/ui/RepoView.cpp" line="1001"/>
         <source>%1 remotes</source>
         <translation>%1个远程</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="999"/>
+        <location filename="../src/ui/RepoView.cpp" line="1002"/>
         <source>Fetch All</source>
         <translation>获取全部</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1035"/>
+        <location filename="../src/ui/RepoView.cpp" line="1038"/>
         <source>Fetch</source>
         <translation>获取</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1037"/>
-        <location filename="../src/ui/RepoView.cpp" line="1122"/>
-        <location filename="../src/ui/RepoView.cpp" line="1688"/>
+        <location filename="../src/ui/RepoView.cpp" line="1040"/>
+        <location filename="../src/ui/RepoView.cpp" line="1125"/>
+        <location filename="../src/ui/RepoView.cpp" line="1702"/>
         <source>&lt;i&gt;no remote&lt;/i&gt;</source>
         <translation>&lt;i&gt;没有远程&lt;/i&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1043"/>
+        <location filename="../src/ui/RepoView.cpp" line="1046"/>
         <source>Unable to fetch. No upstream is configured for the current branch, and there isn&apos;t a remote called &apos;origin&apos;.</source>
         <translation>无法获取。当前分支未配置上游，也没有名为“origin”的远程服务器。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1056"/>
-        <location filename="../src/ui/RepoView.cpp" line="2391"/>
+        <location filename="../src/ui/RepoView.cpp" line="1059"/>
+        <location filename="../src/ui/RepoView.cpp" line="2405"/>
         <source>Fetch canceled.</source>
         <translation>获取已取消。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1058"/>
+        <location filename="../src/ui/RepoView.cpp" line="1061"/>
         <source>fetch from</source>
         <translation>获取自</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1062"/>
-        <location filename="../src/ui/RepoView.cpp" line="1753"/>
-        <location filename="../src/ui/RepoView.cpp" line="1796"/>
+        <location filename="../src/ui/RepoView.cpp" line="1065"/>
+        <location filename="../src/ui/RepoView.cpp" line="1767"/>
+        <location filename="../src/ui/RepoView.cpp" line="1810"/>
         <source>Everything up-to-date.</source>
         <translation>一切都是最新的。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1121"/>
-        <location filename="../src/ui/RepoView.cpp" line="1227"/>
-        <location filename="../src/ui/RepoView.cpp" line="2247"/>
+        <location filename="../src/ui/RepoView.cpp" line="1124"/>
+        <location filename="../src/ui/RepoView.cpp" line="1230"/>
+        <location filename="../src/ui/RepoView.cpp" line="2261"/>
         <source>&lt;i&gt;no branch&lt;/i&gt;</source>
         <translation>&lt;i&gt;没有分支&lt;/i&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1123"/>
+        <location filename="../src/ui/RepoView.cpp" line="1126"/>
         <source>%1 from %2</source>
         <translation>来自%2的%1</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1124"/>
+        <location filename="../src/ui/RepoView.cpp" line="1127"/>
         <source>Pull</source>
         <translation>拉取</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1194"/>
+        <location filename="../src/ui/RepoView.cpp" line="1197"/>
         <source>&lt;i&gt;no upstream&lt;/i&gt;</source>
         <translation>&lt;i&gt;没有上游&lt;/i&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1217"/>
+        <location filename="../src/ui/RepoView.cpp" line="1220"/>
         <source>Merge</source>
         <translation>合并</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1218"/>
+        <location filename="../src/ui/RepoView.cpp" line="1221"/>
         <source>%1 into %2</source>
         <translation>%1到%2</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1220"/>
+        <location filename="../src/ui/RepoView.cpp" line="1223"/>
         <source>Fast-forward</source>
         <translation>快进</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1221"/>
+        <location filename="../src/ui/RepoView.cpp" line="1224"/>
         <source>%2 to %1</source>
         <translation>%2至%1</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1223"/>
+        <location filename="../src/ui/RepoView.cpp" line="1226"/>
         <source>Rebase</source>
         <translation>变基</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1224"/>
+        <location filename="../src/ui/RepoView.cpp" line="1227"/>
         <source>%2 on %1</source>
         <translation>%1上的%2</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1234"/>
+        <location filename="../src/ui/RepoView.cpp" line="1237"/>
         <source>The repository is empty.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1241"/>
-        <location filename="../src/ui/RepoView.cpp" line="1737"/>
+        <location filename="../src/ui/RepoView.cpp" line="1244"/>
+        <location filename="../src/ui/RepoView.cpp" line="1751"/>
         <source>The current branch &apos;%1&apos; has no upstream branch.</source>
         <translation>当前分支&apos;%1&apos;没有上游分支。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1247"/>
-        <location filename="../src/ui/RepoView.cpp" line="2360"/>
+        <location filename="../src/ui/RepoView.cpp" line="1250"/>
+        <location filename="../src/ui/RepoView.cpp" line="2374"/>
         <source>Already up-to-date.</source>
         <translation>已经是最新的。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1252"/>
+        <location filename="../src/ui/RepoView.cpp" line="1255"/>
         <source>Unable to fast-forward.</source>
         <translation>无法快进。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1290"/>
+        <location filename="../src/ui/RepoView.cpp" line="1293"/>
         <source>fast-forward</source>
         <translation>快进</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1303"/>
+        <location filename="../src/ui/RepoView.cpp" line="1306"/>
         <source>You may be able to reconcile your changes with the conflicting files by &lt;a href=&apos;action:stash&apos;&gt;stashing&lt;/a&gt; before you &lt;a href=&apos;%1&apos;&gt;fast-forward&lt;/a&gt;. Then &lt;a href=&apos;action:unstash&apos;&gt;unstash&lt;/a&gt; to restore your changes.</source>
         <translation>在&lt;a href=&apos;%1&apos;&gt;快进&lt;/a&gt;之前，您可以通过&lt;a href=&apos;action:stash&apos;&gt;备份未提交修改到贮藏区&lt;/a&gt;来协调更改与冲突的文件。然后用&lt;a href=&apos;action:unstash&apos;&gt;应用备份并从贮藏区删除&lt;/a&gt;来恢复您的更改。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1315"/>
+        <location filename="../src/ui/RepoView.cpp" line="1318"/>
         <source>If you want to create a new merge commit instead of fast-forwarding, you can &lt;a href=&apos;%1&apos;&gt;merge without fast-forwarding &lt;/a&gt; instead.</source>
         <translation>如果要创建新的合并提交而不是快进，则可用&lt;a href=&apos;%1&apos;&gt;合并而不快进&lt;/a&gt;代替。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1339"/>
-        <location filename="../src/ui/RepoView.cpp" line="1356"/>
-        <location filename="../src/ui/RepoView.cpp" line="1419"/>
-        <location filename="../src/ui/RepoView.cpp" line="1431"/>
+        <location filename="../src/ui/RepoView.cpp" line="1342"/>
+        <location filename="../src/ui/RepoView.cpp" line="1359"/>
+        <location filename="../src/ui/RepoView.cpp" line="1426"/>
+        <location filename="../src/ui/RepoView.cpp" line="1438"/>
         <source>merge</source>
         <translation>合并</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1346"/>
-        <location filename="../src/ui/RepoView.cpp" line="1535"/>
+        <location filename="../src/ui/RepoView.cpp" line="1349"/>
+        <location filename="../src/ui/RepoView.cpp" line="1542"/>
         <source>You may be able to rebase by &lt;a href=&apos;action:stash&apos;&gt;stashing&lt;/a&gt; before trying to &lt;a href=&apos;action:merge&apos;&gt;merge&lt;/a&gt;. Then &lt;a href=&apos;action:unstash&apos;&gt;unstash&lt;/a&gt; to restore your changes.</source>
         <translation>在尝试&lt;a href=&apos;action:mash&apos;&gt;合并&lt;/a&gt;之前，您可以通过&lt;a href=&apos;action:stash&apos;&gt;备份未提交修改到贮藏区&lt;/a&gt;进行调整。然后用&lt;a href=&apos;action:unstash&apos;&gt;应用备份并从贮藏区删除&lt;/a&gt;来恢复您的更改。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1419"/>
-        <location filename="../src/ui/RepoView.cpp" line="1450"/>
+        <location filename="../src/ui/RepoView.cpp" line="1426"/>
+        <location filename="../src/ui/RepoView.cpp" line="1457"/>
         <source>Abort</source>
         <translation>中止</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1420"/>
+        <location filename="../src/ui/RepoView.cpp" line="1427"/>
         <source>Some merged files have unstaged changes</source>
         <translation>某些合并的文件具有未暂存的更改</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1421"/>
+        <location filename="../src/ui/RepoView.cpp" line="1428"/>
         <source>abort merge</source>
         <translation>中止</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1435"/>
-        <location filename="../src/ui/RepoView.cpp" line="1561"/>
-        <location filename="../src/ui/RepoView.cpp" line="1566"/>
+        <location filename="../src/ui/RepoView.cpp" line="1442"/>
+        <location filename="../src/ui/RepoView.cpp" line="1568"/>
+        <location filename="../src/ui/RepoView.cpp" line="1573"/>
         <source>revert</source>
         <translation>还原</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1440"/>
-        <location filename="../src/ui/RepoView.cpp" line="1608"/>
-        <location filename="../src/ui/RepoView.cpp" line="1613"/>
+        <location filename="../src/ui/RepoView.cpp" line="1447"/>
+        <location filename="../src/ui/RepoView.cpp" line="1615"/>
+        <location filename="../src/ui/RepoView.cpp" line="1620"/>
         <source>cherry-pick</source>
         <translation>拣选操作</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1446"/>
-        <location filename="../src/ui/RepoView.cpp" line="1465"/>
-        <location filename="../src/ui/RepoView.cpp" line="1487"/>
+        <location filename="../src/ui/RepoView.cpp" line="1453"/>
+        <location filename="../src/ui/RepoView.cpp" line="1472"/>
+        <location filename="../src/ui/RepoView.cpp" line="1494"/>
         <source>rebase</source>
         <translation>变基</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1472"/>
+        <location filename="../src/ui/RepoView.cpp" line="1479"/>
         <source>You may be able to rebase by &lt;a href=&apos;action:stash&apos;&gt;stashing&lt;/a&gt; before trying to &lt;a href=&apos;action:rebase&apos;&gt;rebase&lt;/a&gt;. Then &lt;a href=&apos;action:unstash&apos;&gt;unstash&lt;/a&gt; to restore your changes.</source>
         <translation>在尝试&lt;a href=&apos;action:rebase&apos;&gt;变基&lt;/a&gt;之前，您可以通过&lt;a href=&apos;action:stash&apos;&gt;备份未提交修改到贮藏区&lt;/a&gt;进行调整。然后用&lt;a href=&apos;action:unstash&apos;&gt;应用备份并从贮藏区删除&lt;/a&gt;来恢复您的更改。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1493"/>
+        <location filename="../src/ui/RepoView.cpp" line="1500"/>
         <source>%1/%2</source>
         <translation>%1/%2</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1494"/>
+        <location filename="../src/ui/RepoView.cpp" line="1501"/>
         <source>%1 - %2</source>
         <translation>%1 - %2</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1495"/>
+        <location filename="../src/ui/RepoView.cpp" line="1502"/>
         <source>Apply</source>
         <translation>应用</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1501"/>
+        <location filename="../src/ui/RepoView.cpp" line="1508"/>
         <source>There was a merge conflict. The rebase has been aborted</source>
         <translation>发生合并冲突。变基已中止。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1507"/>
+        <location filename="../src/ui/RepoView.cpp" line="1514"/>
         <source>%1 - %2 &lt;i&gt;already applied&lt;/i&gt;</source>
         <translation>%1 - %2 &lt;i&gt;已应用&lt;/i&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1508"/>
+        <location filename="../src/ui/RepoView.cpp" line="1515"/>
         <source>%1 - %2 as %3</source>
         <translation>%1 - %2作为%3</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1528"/>
-        <location filename="../src/ui/RepoView.cpp" line="1548"/>
-        <location filename="../src/ui/RepoView.cpp" line="2683"/>
+        <location filename="../src/ui/RepoView.cpp" line="1535"/>
+        <location filename="../src/ui/RepoView.cpp" line="1555"/>
+        <location filename="../src/ui/RepoView.cpp" line="2697"/>
         <source>squash</source>
         <translation>聚合（Squash）</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1557"/>
+        <location filename="../src/ui/RepoView.cpp" line="1564"/>
         <source>Revert</source>
         <translation>还原</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1571"/>
+        <location filename="../src/ui/RepoView.cpp" line="1578"/>
         <source>Revert &quot;%1&quot;
 
 This reverts commit %2.</source>
@@ -4219,506 +4242,521 @@ This reverts commit %2.</source>
 这将还原提交%2。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1602"/>
+        <location filename="../src/ui/RepoView.cpp" line="1609"/>
         <source>&lt;i&gt;detached HEAD&lt;/i&gt;</source>
         <translation>&lt;i&gt;游离的头&lt;/i&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1603"/>
+        <location filename="../src/ui/RepoView.cpp" line="1610"/>
         <source>%1 on %2</source>
         <translation>%2上的%1</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1604"/>
+        <location filename="../src/ui/RepoView.cpp" line="1611"/>
         <source>Cherry-pick</source>
         <translation>拣选操作</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1646"/>
+        <location filename="../src/ui/RepoView.cpp" line="1660"/>
         <source>Force Push?</source>
         <translation>强制推送？</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1647"/>
+        <location filename="../src/ui/RepoView.cpp" line="1661"/>
         <source>Are you sure you want to force push?</source>
         <translation>您确定要强制推送吗？</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1653"/>
+        <location filename="../src/ui/RepoView.cpp" line="1667"/>
         <source>The remote will lose any commits that are reachable only from the overwritten reference. Dropped commits may be unexpectedly reintroduced by clones that already contain those commits locally.</source>
         <translation>远程将丢失所有只能从覆盖的引用访问的提交。已在本地包含那些提交的克隆可能会意外地重新引入已删除的提交。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1658"/>
+        <location filename="../src/ui/RepoView.cpp" line="1672"/>
         <source>Force Push</source>
         <translation>强制推送</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1685"/>
+        <location filename="../src/ui/RepoView.cpp" line="1699"/>
         <source>&lt;i&gt;no reference&lt;/i&gt;</source>
         <translation>&lt;i&gt;没有引用&lt;/i&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1696"/>
+        <location filename="../src/ui/RepoView.cpp" line="1710"/>
         <source>Push</source>
         <translation>推送</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1696"/>
+        <location filename="../src/ui/RepoView.cpp" line="1710"/>
         <source>Push (Force)</source>
         <translation>推送（强制）</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1697"/>
-        <location filename="../src/ui/RepoView.cpp" line="2303"/>
+        <location filename="../src/ui/RepoView.cpp" line="1711"/>
+        <location filename="../src/ui/RepoView.cpp" line="2317"/>
         <source>%1 to %2</source>
         <translation>%1至%2</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1701"/>
-        <location filename="../src/ui/RepoView.cpp" line="2248"/>
+        <location filename="../src/ui/RepoView.cpp" line="1715"/>
+        <location filename="../src/ui/RepoView.cpp" line="2262"/>
         <source>You are not currently on a branch.</source>
         <translation>您目前不在一个分支上。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1704"/>
+        <location filename="../src/ui/RepoView.cpp" line="1718"/>
         <source>Create a commit to add the default &apos;%1&apos; branch.</source>
         <translation>新建一个提交以添加默认的&apos;%1&apos;分支。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1708"/>
+        <location filename="../src/ui/RepoView.cpp" line="1722"/>
         <source>You can &lt;a href=&apos;action:checkout&apos;&gt;checkout&lt;/a&gt; a branch then &lt;a href=&apos;action:push&apos;&gt;push&lt;/a&gt; again, or &lt;a href=&apos;action:push-to&apos;&gt;push to an explicit branch&lt;/a&gt;.</source>
         <translation>您可以先&lt;a href=&apos;action:checkout&apos;&gt;检出&lt;/a&gt;分支，然后再次&lt;a href=&apos;action:push&apos;&gt;推送&lt;/a&gt;，或&lt;a href=&apos;action:push-to&apos;&gt;推送到显式分支&lt;/a&gt;。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1718"/>
+        <location filename="../src/ui/RepoView.cpp" line="1732"/>
         <source>The current branch &apos;%1&apos; has no default remote.</source>
         <translation>当前分支&apos;%1&apos;没有默认的远程分支。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1721"/>
+        <location filename="../src/ui/RepoView.cpp" line="1735"/>
         <source>You may want to &lt;a href=&apos;action:add-remote?name=origin&apos;&gt;add a remote named &apos;origin&apos;&lt;/a&gt;. Then &lt;a href=&apos;action:push?set-upstream=true&apos;&gt;push and set the current branch&apos;s upstream&lt;/a&gt; to begin tracking a remote branch called &apos;origin/%1&apos;.</source>
         <translation>您可能想要执行&lt;a href=&apos;action:add-remote?name=origin&apos;&gt;添加一个名为“origin”的远程仓库&lt;/a&gt;。然后&lt;a href=&apos;action:push?set-upstream=true&apos;&gt;推送并设置为当前分支的上游&lt;/a&gt;，以开始跟踪名为“origin/%1”的远程分支。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1726"/>
+        <location filename="../src/ui/RepoView.cpp" line="1740"/>
         <source>You can also &lt;a href=&apos;action:push-to&apos;&gt;push to an explicit URL&lt;/a&gt; if you don&apos;t want to track a remote branch.</source>
         <translation>如果您不想跟踪远程分支，也可以&lt;a href=&apos;action:push-to&apos;&gt;推送到显式URL &lt;/a&gt;。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1739"/>
+        <location filename="../src/ui/RepoView.cpp" line="1753"/>
         <source>To begin tracking a remote branch called &apos;%1&apos;, &lt;a href=&apos;action:push?set-upstream=true&apos;&gt;push and set the current branch&apos;s upstream&lt;/a&gt;.</source>
         <translation>要开始跟踪名为&apos;%1&apos;的远程分支，请&lt;a href=&apos;action:push?set-upstream=true&apos;&gt; 推送并设置当前分支的上游&lt;/a&gt;。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1743"/>
+        <location filename="../src/ui/RepoView.cpp" line="1757"/>
         <source>To push without setting up tracking information, &lt;a href=&apos;action:push?ref=%1&apos;&gt;push &apos;%2&apos;&lt;/a&gt; explicitly.</source>
         <translation>要在不设置跟踪信息的情况下进行推送，请显式地&lt;a href=&apos;action:push?ref=%1&apos;&gt;推送&apos;%2&apos;&lt;/a&gt;。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1764"/>
+        <location filename="../src/ui/RepoView.cpp" line="1778"/>
         <source>Push canceled.</source>
         <translation>推送已取消。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1768"/>
+        <location filename="../src/ui/RepoView.cpp" line="1782"/>
         <source>push to</source>
         <translation>推送到</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1772"/>
+        <location filename="../src/ui/RepoView.cpp" line="1786"/>
         <source>The tag update may cause the remote to lose commits.</source>
         <translation>标签更新可能会导致远程分支丢失提交。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1774"/>
+        <location filename="../src/ui/RepoView.cpp" line="1788"/>
         <source>If you want to risk the remote losing commits, you can &lt;a href=&apos;action:push?ref=%1&amp;to=%2&amp;force=true&apos;&gt;force push&lt;/a&gt;.</source>
         <translation>如果您想冒远程分支丢失提交的风险，可以&lt;a href=&apos;action:push?ref=%1&amp;to=%2&amp;force=true&apos;&gt;强制推送&lt;/a&gt;。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1783"/>
+        <location filename="../src/ui/RepoView.cpp" line="1797"/>
         <source>You may want to integrate remote commits first by &lt;a href=&apos;action:pull&apos;&gt;pulling&lt;/a&gt;. Then &lt;a href=&apos;action:push&apos;&gt;push&lt;/a&gt; again.</source>
         <translation>您可能想先通过&lt;a href=&apos;action:pull&apos;&gt; pulling &lt;/a&gt;集成远程分支上的提交。然后再次&lt;a href=&apos;action:push&apos;&gt; 推送 &lt;/a&gt;。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1787"/>
+        <location filename="../src/ui/RepoView.cpp" line="1801"/>
         <source>If you really want the remote to lose commits, you may be able to &lt;a href=&apos;action:push?force=true&apos;&gt;force push&lt;/a&gt;.</source>
         <translation>如果您确实希望远程分支丢失提交，则可以&lt;a href=&apos;action:push?force=true&apos;&gt;强制推送&lt;/a&gt;。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1834"/>
+        <location filename="../src/ui/RepoView.cpp" line="1848"/>
         <source>Commit?</source>
         <translation>提交？</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1835"/>
+        <location filename="../src/ui/RepoView.cpp" line="1849"/>
         <source>Are you sure you want to commit on a detached HEAD?</source>
         <translation>您确定要提交到游离的HEAD吗？</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1841"/>
+        <location filename="../src/ui/RepoView.cpp" line="1855"/>
         <source>&lt;p&gt;You are in a detached HEAD state. You can still commit, but the new commit will not be reachable from any branch. If you want to commit to an existing branch, checkout the branch first.&lt;/p&gt;</source>
         <translation>&lt;p&gt;您处于分离的HEAD状态。您仍然可以提交，但是新的提交将无法从任何分支访问。如果要提交到现有分支，请首先检出该分支。&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1846"/>
-        <location filename="../src/ui/RepoView.cpp" line="1856"/>
+        <location filename="../src/ui/RepoView.cpp" line="1860"/>
+        <location filename="../src/ui/RepoView.cpp" line="1870"/>
         <source>Commit</source>
         <translation>提交</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1855"/>
-        <location filename="../src/ui/RepoView.cpp" line="2048"/>
+        <location filename="../src/ui/RepoView.cpp" line="1869"/>
+        <location filename="../src/ui/RepoView.cpp" line="2062"/>
         <source>&lt;i&gt;no commit&lt;/i&gt;</source>
         <translation>&lt;i&gt;没有提交&lt;/i&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1861"/>
+        <location filename="../src/ui/RepoView.cpp" line="1875"/>
         <source>commit</source>
         <translation>提交</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1869"/>
+        <location filename="../src/ui/RepoView.cpp" line="1883"/>
         <source>This commit was signed with a generated user name and email.</source>
         <translation>该提交已使用生成的用户名和电子邮件进行了签名。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1871"/>
+        <location filename="../src/ui/RepoView.cpp" line="1885"/>
         <source>Consider setting the user name and email in &lt;a href=&apos;action:config?global=true&apos;&gt;global settings&lt;/a&gt;.</source>
         <translation>请考虑在&lt;a href=&apos;action:config?global=true&apos;&gt;全局设置&lt;/a&gt;中设置用户名和电子邮件。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1874"/>
+        <location filename="../src/ui/RepoView.cpp" line="1888"/>
         <source>If you want to limit the name and email settings to this repository, &lt;a href=&apos;action:config&apos;&gt;edit repository settings&lt;/a&gt; instead.</source>
         <translation>如果要限制此仓库的名称和电子邮件设置，请&lt;a href=&apos;action:config&apos;&gt;编辑仓库设置&lt;/a&gt;。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1877"/>
+        <location filename="../src/ui/RepoView.cpp" line="1891"/>
         <source>After settings have been updated, &lt;a href=&apos;action:amend&apos;&gt; amend this commit&lt;/a&gt; to record the new user name and email.</source>
         <translation>设置更新后，&lt;a href=&apos;action:amend&apos;&gt;修改此提交&lt;/a&gt;以记录新的用户名和电子邮件。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1932"/>
+        <location filename="../src/ui/RepoView.cpp" line="1946"/>
         <source>Discard %1 Files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1932"/>
+        <location filename="../src/ui/RepoView.cpp" line="1946"/>
         <source>All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1932"/>
+        <location filename="../src/ui/RepoView.cpp" line="1946"/>
         <source>Selected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1933"/>
+        <location filename="../src/ui/RepoView.cpp" line="1947"/>
         <source>Discard %1 %2?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1934"/>
-        <location filename="../src/ui/RepoView.cpp" line="1945"/>
-        <location filename="../src/ui/RepoView.cpp" line="1973"/>
+        <location filename="../src/ui/RepoView.cpp" line="1948"/>
+        <location filename="../src/ui/RepoView.cpp" line="1959"/>
+        <location filename="../src/ui/RepoView.cpp" line="1987"/>
         <source>file</source>
         <translation>文件</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1934"/>
-        <location filename="../src/ui/RepoView.cpp" line="1945"/>
-        <location filename="../src/ui/RepoView.cpp" line="1973"/>
+        <location filename="../src/ui/RepoView.cpp" line="1948"/>
+        <location filename="../src/ui/RepoView.cpp" line="1959"/>
+        <location filename="../src/ui/RepoView.cpp" line="1987"/>
         <source>files</source>
         <translation>多个文件</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1938"/>
-        <location filename="../src/ui/RepoView.cpp" line="1947"/>
+        <location filename="../src/ui/RepoView.cpp" line="1952"/>
+        <location filename="../src/ui/RepoView.cpp" line="1961"/>
         <source>Discard</source>
         <translation type="unfinished">丢弃</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1944"/>
+        <location filename="../src/ui/RepoView.cpp" line="1958"/>
         <source>all</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1946"/>
-        <location filename="../src/ui/RepoView.cpp" line="1974"/>
+        <location filename="../src/ui/RepoView.cpp" line="1960"/>
+        <location filename="../src/ui/RepoView.cpp" line="1988"/>
         <source>%1 - %2 %3</source>
         <translation>%1 - %2 %3</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="1975"/>
-        <location filename="../src/ui/RepoView.cpp" line="2055"/>
+        <location filename="../src/ui/RepoView.cpp" line="1989"/>
+        <location filename="../src/ui/RepoView.cpp" line="2069"/>
         <source>Checkout</source>
         <translation>检出</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2000"/>
+        <location filename="../src/ui/RepoView.cpp" line="2014"/>
         <source>Checkout Detached HEAD?</source>
         <translation>检出游离的HEAD？</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2003"/>
+        <location filename="../src/ui/RepoView.cpp" line="2017"/>
         <source>Checkout Detached HEAD</source>
         <translation>检出游离的HEAD</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2012"/>
+        <location filename="../src/ui/RepoView.cpp" line="2026"/>
         <source>Checking out remote branch &apos;%1&apos; will result in a detached HEAD state. Do you want to reset the existing local branch &apos;%2&apos; to this commit instead?</source>
         <translation>检出远程分支&apos;%1&apos;将导致游离的HEAD状态。您是否想将现有的本地分支&apos;%2&apos;重置为此提交？</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2017"/>
+        <location filename="../src/ui/RepoView.cpp" line="2031"/>
         <source>Reset Local Branch</source>
         <translation>重置本地分支</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2023"/>
+        <location filename="../src/ui/RepoView.cpp" line="2037"/>
         <source>Checking out remote branch &apos;%1&apos; will result in a detached HEAD state. Do you want to create a new local branch called &apos;%2&apos; to track it instead?</source>
         <translation>检出远程分支&apos;%1&apos;将导致游离的HEAD状态。您是否要新建一个名为&apos;%2&apos;的新本地分支来跟踪它？</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2027"/>
+        <location filename="../src/ui/RepoView.cpp" line="2041"/>
         <source>Create a local branch to start tracking remote changes and make new commits. Check out the detached HEAD to temporarily put your working directory into the state of the remote branch.</source>
         <translation>新建本地分支以开始跟踪远程更改并进行新的提交。检出游离的HEAD，以将您的工作目录暂时置于远程分支的状态。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2032"/>
+        <location filename="../src/ui/RepoView.cpp" line="2046"/>
         <source>Create Local Branch</source>
         <translation>新建本地分支</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2060"/>
+        <location filename="../src/ui/RepoView.cpp" line="2074"/>
         <source>checkout</source>
         <translation>检出</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2072"/>
+        <location filename="../src/ui/RepoView.cpp" line="2086"/>
         <source>You may be able to reconcile your changes with the conflicting files by &lt;a href=&apos;action:stash&apos;&gt;stashing&lt;/a&gt; before you &lt;a href=&apos;action:checkout?%1&apos;&gt;checkout &apos;%2&apos;&lt;/a&gt;. Then &lt;a href=&apos;action:unstash&apos;&gt;unstash&lt;/a&gt; to restore your changes.</source>
         <translation>在执行&lt;a href=&apos;action:checkout?%1&apos;&gt;检出&apos;%2&apos;&lt;/a&gt;之前，您可以通过&lt;a href=&apos;action:stash&apos;&gt;备份未提交修改到贮藏区&lt;/a&gt;使协调更改与冲突的文件。然后用&lt;a href=&apos;action:unstash&apos;&gt;应用备份并从贮藏区删除&lt;/a&gt;来恢复您的更改。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2104"/>
+        <location filename="../src/ui/RepoView.cpp" line="2118"/>
         <source>New Branch</source>
         <translation>新建分支</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2107"/>
+        <location filename="../src/ui/RepoView.cpp" line="2121"/>
         <source>create new branch</source>
         <translation>创建新的分支</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2140"/>
+        <location filename="../src/ui/RepoView.cpp" line="2154"/>
         <source>(no branch)</source>
         <translation>（无分支）</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2141"/>
+        <location filename="../src/ui/RepoView.cpp" line="2155"/>
         <source>WIP on %1: %2 %3</source>
         <translation>WIP在%1：%2%3</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2153"/>
+        <location filename="../src/ui/RepoView.cpp" line="2167"/>
         <source>&lt;i&gt;working directory&lt;/i&gt;</source>
         <translation>&lt;i&gt;工作目录&lt;/i&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2154"/>
+        <location filename="../src/ui/RepoView.cpp" line="2168"/>
         <source>Stash</source>
         <translation>贮藏</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2158"/>
+        <location filename="../src/ui/RepoView.cpp" line="2172"/>
         <source>stash</source>
         <translation>贮藏</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2172"/>
+        <location filename="../src/ui/RepoView.cpp" line="2186"/>
         <source>Apply Stash</source>
         <translation>应用备份</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2174"/>
+        <location filename="../src/ui/RepoView.cpp" line="2188"/>
         <source>apply stash</source>
         <translation>应用备份</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2187"/>
+        <location filename="../src/ui/RepoView.cpp" line="2201"/>
         <source>Drop Stash</source>
         <translation>从贮藏区删除备份</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2189"/>
+        <location filename="../src/ui/RepoView.cpp" line="2203"/>
         <source>drop stash</source>
         <translation>从贮藏区删除备份</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2198"/>
+        <location filename="../src/ui/RepoView.cpp" line="2212"/>
         <source>Pop Stash</source>
         <translation>应用备份并从贮藏区删除</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2200"/>
+        <location filename="../src/ui/RepoView.cpp" line="2214"/>
         <source>pop stash</source>
         <translation>应用备份并从贮藏区删除</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2221"/>
+        <location filename="../src/ui/RepoView.cpp" line="2235"/>
         <source>%1 as %2</source>
         <translation>%1作为%2</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2222"/>
+        <location filename="../src/ui/RepoView.cpp" line="2236"/>
         <source>Tag</source>
         <translation>标签</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2224"/>
+        <location filename="../src/ui/RepoView.cpp" line="2238"/>
         <source>tag</source>
         <translation>标签</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2246"/>
-        <location filename="../src/ui/RepoView.cpp" line="2281"/>
-        <location filename="../src/ui/RepoView.cpp" line="2302"/>
+        <location filename="../src/ui/RepoView.cpp" line="2260"/>
+        <location filename="../src/ui/RepoView.cpp" line="2295"/>
+        <location filename="../src/ui/RepoView.cpp" line="2316"/>
         <source>Amend</source>
         <translation>修改</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2246"/>
-        <location filename="../src/ui/RepoView.cpp" line="2281"/>
-        <location filename="../src/ui/RepoView.cpp" line="2302"/>
+        <location filename="../src/ui/RepoView.cpp" line="2260"/>
+        <location filename="../src/ui/RepoView.cpp" line="2295"/>
+        <location filename="../src/ui/RepoView.cpp" line="2316"/>
         <source>Reset</source>
         <translation>重置</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2253"/>
+        <location filename="../src/ui/RepoView.cpp" line="2267"/>
         <source>Amend?</source>
         <translation>修改？</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2253"/>
+        <location filename="../src/ui/RepoView.cpp" line="2267"/>
         <source>Reset?</source>
         <translation>重置？</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2255"/>
+        <location filename="../src/ui/RepoView.cpp" line="2269"/>
         <source>Are you sure you want to amend &apos;%1&apos;?</source>
         <translation>您确定要修改&apos;%1&apos;吗？</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2256"/>
+        <location filename="../src/ui/RepoView.cpp" line="2270"/>
         <source>Are you sure you want to reset &apos;%1&apos; to &apos;%2&apos;?</source>
         <translation>您确定要将“%1”重置为“%2”吗？</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2263"/>
+        <location filename="../src/ui/RepoView.cpp" line="2277"/>
         <source>&lt;p&gt;Some commits may become unreachable from the current branch.&lt;/p&gt;</source>
         <translation>&lt;p&gt;某些提交可能会从当前分支变为不可访问。&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2270"/>
+        <location filename="../src/ui/RepoView.cpp" line="2284"/>
         <source>&lt;p&gt;Resetting will cause you to lose uncommitted changes. Untracked and ignored files will not be affected.&lt;/p&gt;</source>
         <translation>&lt;p&gt;重置将导致您丢失未提交的更改。未跟踪和忽略的文件不会受到影响。&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2274"/>
+        <location filename="../src/ui/RepoView.cpp" line="2288"/>
         <source>&lt;p&gt;Your branch appears to be up-to-date with its upstream branch. Resetting may cause your branch history to diverge from the remote branch history.&lt;/p&gt;</source>
         <translation>&lt;p&gt;您的分支似乎是其上游分支的最新信息。重置可能会导致您的分支历史记录与远程分支历史记录有所不同。&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2307"/>
+        <location filename="../src/ui/RepoView.cpp" line="2321"/>
         <source>amend</source>
         <translation>修改</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2307"/>
+        <location filename="../src/ui/RepoView.cpp" line="2321"/>
         <source>reset</source>
         <translation>重置</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2356"/>
+        <location filename="../src/ui/RepoView.cpp" line="2370"/>
         <source>%1 of %2 submodules</source>
         <translation>%1个子模块（共%2个）</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2357"/>
-        <location filename="../src/ui/RepoView.cpp" line="2382"/>
+        <location filename="../src/ui/RepoView.cpp" line="2371"/>
+        <location filename="../src/ui/RepoView.cpp" line="2396"/>
         <source>Update</source>
         <translation>更新</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2394"/>
+        <location filename="../src/ui/RepoView.cpp" line="2408"/>
         <source>update submodule</source>
         <translation>更新子模块</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2435"/>
+        <location filename="../src/ui/RepoView.cpp" line="2449"/>
         <source>Invalid Submodule Repository</source>
         <translation>无效的子模块仓库</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2437"/>
+        <location filename="../src/ui/RepoView.cpp" line="2451"/>
         <source>The submodule &apos;%1&apos; doesn&apos;t have a valid repository. You may need to init and/or update the submodule to check out a repository.</source>
         <translation>子模块&apos;%1&apos;没有有效的仓库。您可能需要初始化和/或更新子模块以检出仓库。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2650"/>
+        <location filename="../src/ui/RepoView.cpp" line="2664"/>
         <source>There was a merge conflict.</source>
         <translation>发生合并冲突。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2654"/>
+        <location filename="../src/ui/RepoView.cpp" line="2668"/>
         <source>Resolve conflicts, then commit to conclude the %1. See &lt;a href=&apos;expand&apos;&gt;details&lt;/a&gt;.</source>
         <translation>解决冲突，然后提交以结束%1。请参见&lt;a href=&apos;expand&apos;&gt;详细信息&lt;/a&gt;。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2657"/>
+        <location filename="../src/ui/RepoView.cpp" line="2671"/>
         <source>Resolve conflicts in each conflicted (!) file in one of the following ways:</source>
         <translation>通过以下方式中任意一种来解决每个冲突（！）文件中的冲突：</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2660"/>
+        <location filename="../src/ui/RepoView.cpp" line="2674"/>
         <source>1. Click the &apos;Ours&apos; or &apos;Theirs&apos; button to choose the correct change. Then click the &apos;Save&apos; button to apply.</source>
         <translation>1.点击“我们的”或“他们的”按钮以选择正确的更改。然后点击“保存”按钮以应用。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2663"/>
+        <location filename="../src/ui/RepoView.cpp" line="2677"/>
         <source>2. Edit the file in the editor to make a different change. Remember to remove conflict markers.</source>
         <translation>2.在编辑器中编辑文件以进行其他更改。记住要删除冲突标记。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2666"/>
+        <location filename="../src/ui/RepoView.cpp" line="2680"/>
         <source>3. Use an external merge tool. Right-click on the files in the list and choose &apos;External Merge&apos;.</source>
         <translation>3.使用外部合并工具。右键单击列表中的文件，然后选择“外部合并”。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2669"/>
+        <location filename="../src/ui/RepoView.cpp" line="2683"/>
         <source>After all conflicts in the file are resolved, click the check box to mark it as resolved.</source>
         <translation>解决文件中的所有冲突后，单击复选框将其标记为已解决。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2672"/>
+        <location filename="../src/ui/RepoView.cpp" line="2686"/>
         <source>After all conflicted files are staged, commit to conclude the %1.</source>
         <translation>暂存所有有冲突的文件后，提交以结束%1。</translation>
     </message>
     <message>
-        <location filename="../src/ui/RepoView.cpp" line="2685"/>
+        <location filename="../src/ui/RepoView.cpp" line="2699"/>
         <source>You can &lt;a href=&apos;action:abort&apos;&gt;abort&lt;/a&gt; the %1 to return the repository to its previous state.</source>
         <translation>您可以&lt;a href=&apos;action:abort&apos;&gt;中止&lt;/a&gt;%1以便将仓库恢复到之前的状态。</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/RepoView.cpp" line="2710"/>
+        <source>Apply Patch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/RepoView.cpp" line="2712"/>
+        <source>apply patch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/RepoView.cpp" line="2724"/>
+        <source>The patch file is invalid</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Repository</name>
     <message>
-        <location filename="../src/git/Repository.cpp" line="1115"/>
+        <location filename="../src/git/Repository.cpp" line="1126"/>
         <source>Unknown error</source>
         <translation>未知错误</translation>
     </message>
     <message>
-        <location filename="../src/git/Repository.cpp" line="1198"/>
+        <location filename="../src/git/Repository.cpp" line="1209"/>
         <source>git-lfs not found</source>
         <translation>找不到git-lfs</translation>
     </message>
@@ -4799,6 +4837,75 @@ This reverts commit %2.</source>
     </message>
 </context>
 <context>
+    <name>SavePatchDialog</name>
+    <message>
+        <location filename="../src/dialogs/PatchDialog.cpp" line="82"/>
+        <source>Diff</source>
+        <translation type="unfinished">比较</translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/PatchDialog.cpp" line="83"/>
+        <source>Mailbox</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/PatchDialog.cpp" line="84"/>
+        <source>Single Mailbox</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/PatchDialog.cpp" line="111"/>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/PatchDialog.cpp" line="113"/>
+        <source>Choose Directory</source>
+        <translation type="unfinished">选择目录</translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/PatchDialog.cpp" line="147"/>
+        <source>Format:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/PatchDialog.cpp" line="148"/>
+        <source>Output Directory:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/PatchDialog.cpp" line="149"/>
+        <source>File Name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/PatchDialog.cpp" line="153"/>
+        <source>Save</source>
+        <translation type="unfinished">保存</translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/PatchDialog.cpp" line="193"/>
+        <location filename="../src/dialogs/PatchDialog.cpp" line="205"/>
+        <source>Save Patch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/PatchDialog.cpp" line="204"/>
+        <source>%1 commit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/PatchDialog.cpp" line="204"/>
+        <source>%1 commits</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/PatchDialog.cpp" line="230"/>
+        <source>Unable to save patch &apos;%1&apos; - %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>SearchField</name>
     <message>
         <location filename="../src/ui/SearchField.cpp" line="109"/>
@@ -4842,32 +4949,32 @@ This reverts commit %2.</source>
 <context>
     <name>Settings</name>
     <message>
-        <location filename="../src/conf/Settings.cpp" line="189"/>
+        <location filename="../src/conf/Settings.cpp" line="185"/>
         <source>Prompt to edit stash message before stashing</source>
         <translation>在执行贮存操作前提示编辑贮存消息</translation>
     </message>
     <message>
-        <location filename="../src/conf/Settings.cpp" line="192"/>
+        <location filename="../src/conf/Settings.cpp" line="188"/>
         <source>Prompt to edit commit message before merging</source>
         <translation>合并前提示编辑提交消息</translation>
     </message>
     <message>
-        <location filename="../src/conf/Settings.cpp" line="195"/>
+        <location filename="../src/conf/Settings.cpp" line="191"/>
         <source>Prompt to edit commit message before reverting</source>
         <translation>还原前提示编辑提交消息</translation>
     </message>
     <message>
-        <location filename="../src/conf/Settings.cpp" line="198"/>
+        <location filename="../src/conf/Settings.cpp" line="194"/>
         <source>Prompt to edit commit message before cherry-picking</source>
         <translation>在拣选操作之前提示编辑提交消息</translation>
     </message>
     <message>
-        <location filename="../src/conf/Settings.cpp" line="201"/>
+        <location filename="../src/conf/Settings.cpp" line="197"/>
         <source>Prompt to stage directories</source>
         <translation>提示暂存目录</translation>
     </message>
     <message>
-        <location filename="../src/conf/Settings.cpp" line="204"/>
+        <location filename="../src/conf/Settings.cpp" line="200"/>
         <source>Prompt to stage large files</source>
         <translation>提示暂存大文件</translation>
     </message>

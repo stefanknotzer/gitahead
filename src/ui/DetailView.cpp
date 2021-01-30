@@ -740,9 +740,8 @@ private:
     mSpellList.clear();
 
     while (!cursor.atEnd()) {
-      cursor.movePosition(
-	    QTextCursor::EndOfWord,
-        QTextCursor::KeepAnchor, 1);
+      cursor.movePosition(QTextCursor::EndOfWord,
+                          QTextCursor::KeepAnchor, 1);
       QString word = wordAt(cursor);
       if (!word.isEmpty() && !mSpellChecker->spell(word)) {
         // Highlight the unknown or ignored word.
@@ -752,9 +751,8 @@ private:
 
         mSpellList << es;
       }
-      cursor.movePosition(
-	    QTextCursor::NextWord,
-        QTextCursor::MoveAnchor, 1);
+      cursor.movePosition(QTextCursor::NextWord,
+                          QTextCursor::MoveAnchor, 1);
     }
     setSelections();
   }
@@ -1093,10 +1091,9 @@ public:
       if (!mMessage->setupSpellCheck(
             path, mUserDict, mSpellError, mSpellIgnore) &&
           mDictName != "none") {
-        QMessageBox mb(
-		  QMessageBox::Critical,
-          tr("Spell Check Language"),
-          tr("The dictionary '%1' is invalid").arg(action->text()));
+        QMessageBox mb(QMessageBox::Critical,
+                       tr("Spell Check Language"),
+                       tr("The dictionary '%1' is invalid").arg(action->text()));
         mb.setInformativeText(tr("Spell checking is disabled."));
         mb.setDetailedText(tr("The choosen dictionary '%1.dic' is not a "
                               "valid hunspell dictionary.").arg(mDictName));

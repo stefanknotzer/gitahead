@@ -28,6 +28,7 @@
 #include "dialogs/DeleteBranchDialog.h"
 #include "dialogs/DeleteTagDialog.h"
 #include "dialogs/NewBranchDialog.h"
+#include "dialogs/PatchDialog.h"
 #include "dialogs/RemoteDialog.h"
 #include "dialogs/SettingsDialog.h"
 #include "dialogs/TagDialog.h"
@@ -47,6 +48,8 @@
 #include <QCheckBox>
 #include <QCloseEvent>
 #include <QDesktopServices>
+#include <QFile>
+#include <QFileInfo>
 #include <QMessageBox>
 #include <QtNetwork>
 #include <QPushButton>
@@ -1402,13 +1405,17 @@ void RepoView::mergeAbort(LogEntry *parent)
   if (!commit.isValid())
     return;
 
+  bool ignoreWhitespace = Settings::instance()->isWhitespaceIgnored();
+
   QSet<QString> paths;
-  git::Diff index = mRepo.diffTreeToIndex(commit.tree());
+  git::Diff index =
+    mRepo.diffTreeToIndex(commit.tree(), git::Index(), ignoreWhitespace);
   for (int i = 0; i < index.count(); ++i)
     paths.insert(index.name(i));
 
   QStringList conflicts;
-  git::Diff workdir = mRepo.diffIndexToWorkdir();
+  git::Diff workdir =
+    mRepo.diffIndexToWorkdir(git::Index(), nullptr, ignoreWhitespace);
   for (int i = 0; i < workdir.count(); ++i) {
     QString name = workdir.name(i);
     if (workdir.status(i) != GIT_DELTA_CONFLICTED && paths.contains(name))
@@ -1635,6 +1642,13 @@ void RepoView::cherryPick(const git::Commit &commit)
 
   // Automatically commit with the default message.
   this->commit(msg, git::AnnotatedCommit(), parent);
+}
+
+void RepoView::promptToApplyPatch()
+{
+  QString path = ApplyPatchDialog::getOpenFileName(this);
+  if (!path.isEmpty())
+    applyPatch(path);
 }
 
 void RepoView::promptToForcePush(
@@ -2689,6 +2703,32 @@ bool RepoView::checkForConflicts(LogEntry *parent, const QString &action)
 
   refresh();
   return true;
+}
+
+void RepoView::applyPatch(const QString &path)
+{
+  LogEntry *entry = addLogEntry(path, tr("Apply Patch"));
+  auto error = [this, entry, &path](const QString &message) {
+    this->error(entry, tr("apply patch"), QFileInfo(path).fileName(), message);
+  };
+
+  QFile file(path);
+  if (!file.open(QFile::ReadOnly)) {
+    error(file.errorString());
+    return;
+  }
+
+  QByteArray buffer = file.readAll();
+  git::Diff diff = git::Diff::fromBuffer(buffer);
+  if (!diff.isValid()) {
+    error(tr("The patch file is invalid"));
+    return;
+  }
+
+  if (!mRepo.applyDiff(diff)) {
+    error(git::Repository::lastError());
+    return;
+  }
 }
 
 #include "RepoView.moc"
