@@ -10,6 +10,7 @@
 #include "FileContextMenu.h"
 #include "RepoView.h"
 #include "conf/Settings.h"
+#include "dialogs/PatchDialog.h"
 #include "dialogs/SettingsDialog.h"
 #include "git/Index.h"
 #include "git/Patch.h"
@@ -243,15 +244,37 @@ FileContextMenu::FileContextMenu(
           break;
         }
       }
-    }
 
+      // Save Diff
+      QAction *save = addAction(tr("Save Diff"), [view, files, diff] {
+        SavePatchDialog *dialog = new SavePatchDialog(diff.toBuffer(files), files, view);
+        dialog->open();
+      });
+      save->setEnabled(false);
+      foreach (const QString &file, files) {
+        int index = diff.indexOf(file);
+        if (index < 0)
+          continue;
+
+        if (diff.status(index) != GIT_DELTA_UNTRACKED) {
+          save->setEnabled(true);
+          break;
+        }
+      }
+    }
   } else {
+    // Save Diff
+    QAction *save = addAction(tr("Save Diff"), [view, files, diff] {
+      SavePatchDialog *dialog = new SavePatchDialog(diff.toBuffer(files), files, view);
+      dialog->open();
+    });
+    save->setEnabled(!files.isEmpty());
+
     // Checkout
     QAction *checkout = addAction(tr("Checkout"), [view, files] {
       view->checkout(view->commits().first(), files);
       view->setViewMode(RepoView::Diff);
     });
-
     checkout->setEnabled(!view->repo().isBare());
 
     git::Commit commit = commits.first();

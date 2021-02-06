@@ -392,7 +392,7 @@
     </message>
     <message>
         <location filename="../src/dialogs/PatchDialog.cpp" line="69"/>
-        <source>Git Diff (*.diff *.patch);;All files (*)</source>
+        <source>Git Diff (*.diff *.patch);;All files (*.*)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -849,162 +849,172 @@
 <context>
     <name>CommitList</name>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1560"/>
+        <location filename="../src/ui/CommitList.cpp" line="1567"/>
         <source>Remove Untracked Files</source>
         <translatorcomment>Remover arquivos não rastreados</translatorcomment>
         <translation>Remover arquivos não rastreados</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1581"/>
+        <location filename="../src/ui/CommitList.cpp" line="1588"/>
         <source>Apply</source>
         <translatorcomment>Apply, deixa na lista de stash para possível reutilização posterior.</translatorcomment>
         <translation>Aplique</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1585"/>
+        <location filename="../src/ui/CommitList.cpp" line="1592"/>
         <source>Pop</source>
         <translatorcomment>Joga fora o stash (mais alto, por padrão) depois de aplicá-lo.</translatorcomment>
         <translation>Pop</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1589"/>
+        <location filename="../src/ui/CommitList.cpp" line="1596"/>
         <source>Drop</source>
         <translatorcomment>Remove um único estado escondido da lista de stash depois de aplica-lo, stash do topo da árvore de trabalho.</translatorcomment>
         <translation>Drop</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1607"/>
+        <location filename="../src/ui/CommitList.cpp" line="1614"/>
         <source>Unstar</source>
         <translatorcomment>Unstar, remove estrela do repositório selecionado.</translatorcomment>
         <translation>Desmarcar Estrela</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1607"/>
+        <location filename="../src/ui/CommitList.cpp" line="1614"/>
         <source>Star</source>
         <translatorcomment>Star, marca com estrela o repositório selecionado.</translatorcomment>
         <translation>Marcar com Estrela</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1623"/>
+        <location filename="../src/ui/CommitList.cpp" line="1630"/>
         <source>Add Tag...</source>
         <translatorcomment>Adiciona uma Tag.</translatorcomment>
         <translation>Add Tag...</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1555"/>
-        <location filename="../src/ui/CommitList.cpp" line="1627"/>
+        <location filename="../src/ui/CommitList.cpp" line="1562"/>
+        <location filename="../src/ui/CommitList.cpp" line="1634"/>
         <source>New Branch...</source>
         <translatorcomment>Cria um novo Branch.</translatorcomment>
         <translation>Novo Branch...</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1566"/>
+        <location filename="../src/ui/CommitList.cpp" line="1555"/>
+        <source>Save Diff...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/CommitList.cpp" line="1556"/>
+        <source>uncommited</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/CommitList.cpp" line="1573"/>
         <source>Discard All Changes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1613"/>
+        <location filename="../src/ui/CommitList.cpp" line="1620"/>
         <source>Save Patch...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1638"/>
+        <location filename="../src/ui/CommitList.cpp" line="1645"/>
         <source>Delete Tag %1</source>
         <translatorcomment>Deleta a Tag específicada.</translatorcomment>
         <translation>Deletar Tag %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1648"/>
+        <location filename="../src/ui/CommitList.cpp" line="1655"/>
         <source>Delete Branch %1</source>
         <translatorcomment>Remove o Branch especificado.</translatorcomment>
         <translation>Deletar Branch %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1656"/>
+        <location filename="../src/ui/CommitList.cpp" line="1663"/>
         <source>Merge...</source>
         <translatorcomment>Mescla o Branch atual no Branch específicado, cria sempre um commit referente a mesclagem.</translatorcomment>
         <translation>Merge...</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1671"/>
+        <location filename="../src/ui/CommitList.cpp" line="1678"/>
         <source>Rebase...</source>
         <translatorcomment>Isso move toda a ramificação de recurso para começar na ponta da ramificação específicada, mas em vez de usar um commit de mesclagem, o rebase reescreve o histórico do projeto criando commits totalmente novos para cada commit na ramificação original, diferenciando-se do (Merge) que gera um commit da mesclagem.</translatorcomment>
         <translation>Rebase...</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1686"/>
+        <location filename="../src/ui/CommitList.cpp" line="1693"/>
         <source>Squash...</source>
         <translatorcomment>Efetua um merge com o parâmetro --squash...</translatorcomment>
         <translation>Merge --squash...</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1703"/>
+        <location filename="../src/ui/CommitList.cpp" line="1710"/>
         <source>Revert</source>
         <translatorcomment>Revert, a operação de reversão vai pegar o commit especificado, inverter as alterações dele e criar um &quot;commit de reversão&quot; novo. Os indicadores de referência são então atualizados para apontar para o commit de reversão novo, tornando o commit na ponta do branch.</translatorcomment>
         <translation>Reverter</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1707"/>
+        <location filename="../src/ui/CommitList.cpp" line="1714"/>
         <source>Cherry-pick</source>
         <translatorcomment>(Cherry-pick) Anexa o commit selecionado no branch atual.</translatorcomment>
         <translation>(Cherry-pick) Coletar-commit</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1716"/>
-        <location filename="../src/ui/CommitList.cpp" line="1732"/>
-        <location filename="../src/ui/CommitList.cpp" line="1766"/>
+        <location filename="../src/ui/CommitList.cpp" line="1723"/>
+        <location filename="../src/ui/CommitList.cpp" line="1739"/>
+        <location filename="../src/ui/CommitList.cpp" line="1773"/>
         <source>Checkout %1</source>
         <translatorcomment>Verifica o branch pai e atualiza o branch local.</translatorcomment>
         <translation>Checkout %1</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1723"/>
-        <location filename="../src/ui/CommitList.cpp" line="1752"/>
-        <location filename="../src/ui/CommitList.cpp" line="1773"/>
+        <location filename="../src/ui/CommitList.cpp" line="1730"/>
+        <location filename="../src/ui/CommitList.cpp" line="1759"/>
+        <location filename="../src/ui/CommitList.cpp" line="1780"/>
         <source>HEAD is invalid</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1726"/>
-        <location filename="../src/ui/CommitList.cpp" line="1755"/>
-        <location filename="../src/ui/CommitList.cpp" line="1776"/>
+        <location filename="../src/ui/CommitList.cpp" line="1733"/>
+        <location filename="../src/ui/CommitList.cpp" line="1762"/>
+        <location filename="../src/ui/CommitList.cpp" line="1783"/>
         <source>Local branch is already checked out</source>
         <translatorcomment>O Branch local já foi verificado na saída.</translatorcomment>
         <translation>O Branch local já está verificado na saída</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1729"/>
-        <location filename="../src/ui/CommitList.cpp" line="1760"/>
-        <location filename="../src/ui/CommitList.cpp" line="1779"/>
+        <location filename="../src/ui/CommitList.cpp" line="1736"/>
+        <location filename="../src/ui/CommitList.cpp" line="1767"/>
+        <location filename="../src/ui/CommitList.cpp" line="1786"/>
         <source>This is a bare repository</source>
         <translatorcomment>Este é um repositório vazio.</translatorcomment>
         <translation>Este é um repositório vazio</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1757"/>
+        <location filename="../src/ui/CommitList.cpp" line="1764"/>
         <source>Checkout %1 and Reset local branch %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1784"/>
+        <location filename="../src/ui/CommitList.cpp" line="1791"/>
         <source>Reset</source>
         <translatorcomment>Reset é um comando poderoso usado para desfazer alterações locais no estado de um repositório Git. O git reset opera nas &quot;três árvores do Git&quot;. </translatorcomment>
         <translation>Resetar</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1785"/>
+        <location filename="../src/ui/CommitList.cpp" line="1792"/>
         <source>Soft</source>
         <translatorcomment>Atualiza os indicadores de ref e a redefinição para aí.</translatorcomment>
         <translation>Soft</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1786"/>
+        <location filename="../src/ui/CommitList.cpp" line="1793"/>
         <source>Mixed</source>
         <translatorcomment>Os indicadores de ref são atualizados. O Índice de staging é redefinido para o estado da confirmação especificada.</translatorcomment>
         <translation>Mixed</translation>
     </message>
     <message>
-        <location filename="../src/ui/CommitList.cpp" line="1787"/>
+        <location filename="../src/ui/CommitList.cpp" line="1794"/>
         <source>Hard</source>
         <translatorcomment>Os indicadores de ref do Histórico de confirmações são atualizados para a confirmação especificada. Então, o Índice de staging e o Diretório de trabalho são redefinidos para corresponder à confirmação especificada.</translatorcomment>
         <translation>Hard</translation>
@@ -1673,198 +1683,204 @@
 <context>
     <name>FileContextMenu</name>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="32"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="33"/>
         <source>Revision Not Found</source>
         <translatorcomment>Revisão não foi encontrada.</translatorcomment>
         <translation>Revisão não encontrada</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="33"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="34"/>
         <source>The selected file doesn&apos;t have a %1 revision.</source>
         <translatorcomment>O arquivo selecionado não possui revisão.</translatorcomment>
         <translation>O arquivo selecionado %1 não possui uma revisão.</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="88"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="89"/>
         <source>Bash Not Found</source>
         <translatorcomment>O Bash não foi encontrado.</translatorcomment>
         <translation>Bash não encontrado</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="89"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="90"/>
         <source>Bash was not found on your PATH.</source>
         <translatorcomment>O Bash não foi encontrado no seu PATH.</translatorcomment>
         <translation>O Bash não foi encontrado no seu PATH.</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="91"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="92"/>
         <source>Bash is required to execute external tools.</source>
         <translatorcomment>O Bash é necessário para executar ferramentas externas.</translatorcomment>
         <translation>O Bash é necessário para executar ferramentas externas.</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="118"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="119"/>
         <source>Added</source>
         <translation type="unfinished">Adicionado</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="119"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="120"/>
         <source>Deleted</source>
         <translation type="unfinished">Deletado</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="120"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="121"/>
         <source>Modified</source>
         <translation type="unfinished">Modificado</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="121"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="122"/>
         <source>Untracked</source>
         <translation type="unfinished">Não rastreado</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="122"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="123"/>
         <source>Resolved</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="129"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="130"/>
         <source>Stage</source>
         <translatorcomment>Stage área.</translatorcomment>
         <translation>Stage</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="133"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="134"/>
         <source>Stage All %1 Files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="144"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="145"/>
         <source>Unstage</source>
         <translatorcomment>Unstage.</translatorcomment>
         <translation>Unstage</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="148"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="149"/>
         <source>Unstage All %1 Files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="222"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="223"/>
         <source>Discard Changes</source>
         <translatorcomment>Descartar mudanças.</translatorcomment>
         <translation>Descartar mudanças</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="217"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="218"/>
         <source>Remove Untracked Files</source>
         <translatorcomment>Remove arquivos não rastreados.</translatorcomment>
         <translation>Remover arquivos não rastreados</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="228"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="229"/>
         <source>Ignore</source>
         <translatorcomment>Ignora.</translatorcomment>
         <translation>Ignorar</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="250"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="249"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="267"/>
+        <source>Save Diff</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/FileContextMenu.cpp" line="274"/>
         <source>Checkout</source>
         <translatorcomment>Checkout</translatorcomment>
         <translation>Checkout</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="278"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="301"/>
         <source>Unlock</source>
         <translatorcomment>Desbloqueia.</translatorcomment>
         <translation>Desbloquear</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="278"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="301"/>
         <source>Lock</source>
         <translatorcomment>Bloqueia.</translatorcomment>
         <translation>Bloquear</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="293"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="316"/>
         <source>Copy File Name</source>
         <translatorcomment>Copia nome do arquivo.</translatorcomment>
         <translation>Copiar nome do arquivo</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="309"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="332"/>
         <source>Filter History</source>
         <translatorcomment>Filtra o histórico.</translatorcomment>
         <translation>Filtrar histórico</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="314"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="337"/>
         <source>Navigate to</source>
         <translatorcomment>Navega entre revisões.</translatorcomment>
         <translation>Navegar para</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="315"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="338"/>
         <source>Next Revision</source>
         <translatorcomment>Vai para a próxima revisão.</translatorcomment>
         <translation>Próxima revisão</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="320"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="343"/>
         <source>next</source>
         <translatorcomment>Próxima revisão.</translatorcomment>
         <translation>próxima</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="324"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="347"/>
         <source>Previous Revision</source>
         <translatorcomment>Vai para a revisão anterior.</translatorcomment>
         <translation>Revisão anterior</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="329"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="352"/>
         <source>previous</source>
         <translatorcomment>Revisão anterior.</translatorcomment>
         <translation>anterior</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="339"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="362"/>
         <source>Unset Executable</source>
         <translatorcomment>Desativa executável.</translatorcomment>
         <translation>Desativar executável</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="339"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="362"/>
         <source>Set Executable</source>
         <translatorcomment>Define executável</translatorcomment>
         <translation>Definir executável</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="368"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="391"/>
         <source>edit</source>
         <translatorcomment>Edita.</translatorcomment>
         <translation>editar</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="372"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="395"/>
         <source>diff</source>
         <translatorcomment>Compara fontes de dados.</translatorcomment>
         <translation>diff</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="376"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="399"/>
         <source>merge</source>
         <translatorcomment>Mescla ramificações.</translatorcomment>
         <translation>merge</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="380"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="403"/>
         <source>External Tool Not Found</source>
         <translatorcomment>Não foi encontrada a ferramenta externa.</translatorcomment>
         <translation>Ferramenta externa não encontrada</translation>
     </message>
     <message>
-        <location filename="../src/ui/FileContextMenu.cpp" line="381"/>
+        <location filename="../src/ui/FileContextMenu.cpp" line="404"/>
         <source>Failed to execute external %1 tool.</source>
         <translatorcomment>Houve falha na execução da ferramenta externa.</translatorcomment>
         <translation>Falha ao executar a ferramenta %1 externa.</translation>
@@ -5329,68 +5345,83 @@ This reverts commit %2.</source>
 <context>
     <name>SavePatchDialog</name>
     <message>
-        <location filename="../src/dialogs/PatchDialog.cpp" line="82"/>
+        <location filename="../src/dialogs/PatchDialog.cpp" line="75"/>
+        <source>Save Patch File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/PatchDialog.cpp" line="75"/>
+        <source>Save Diff File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/PatchDialog.cpp" line="80"/>
         <source>Diff</source>
         <translation type="unfinished">Diff</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/PatchDialog.cpp" line="83"/>
+        <location filename="../src/dialogs/PatchDialog.cpp" line="81"/>
         <source>Mailbox</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/PatchDialog.cpp" line="84"/>
+        <location filename="../src/dialogs/PatchDialog.cpp" line="82"/>
         <source>Single Mailbox</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/PatchDialog.cpp" line="111"/>
+        <location filename="../src/dialogs/PatchDialog.cpp" line="110"/>
         <source>...</source>
         <translation type="unfinished">...</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/PatchDialog.cpp" line="113"/>
+        <location filename="../src/dialogs/PatchDialog.cpp" line="112"/>
         <source>Choose Directory</source>
         <translation type="unfinished">Escolha o diretório</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/PatchDialog.cpp" line="147"/>
+        <location filename="../src/dialogs/PatchDialog.cpp" line="146"/>
         <source>Format:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../src/dialogs/PatchDialog.cpp" line="147"/>
+        <source>Directory:</source>
+        <translation type="unfinished">Diretório:</translation>
+    </message>
+    <message>
         <location filename="../src/dialogs/PatchDialog.cpp" line="148"/>
-        <source>Output Directory:</source>
-        <translation type="unfinished"></translation>
+        <source>File:</source>
+        <translation type="unfinished">Arquivo:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/PatchDialog.cpp" line="149"/>
-        <source>File Name:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/PatchDialog.cpp" line="153"/>
+        <location filename="../src/dialogs/PatchDialog.cpp" line="152"/>
         <source>Save</source>
         <translation type="unfinished">Salvar</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/PatchDialog.cpp" line="193"/>
-        <location filename="../src/dialogs/PatchDialog.cpp" line="205"/>
+        <location filename="../src/dialogs/PatchDialog.cpp" line="223"/>
+        <location filename="../src/dialogs/PatchDialog.cpp" line="235"/>
         <source>Save Patch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/PatchDialog.cpp" line="204"/>
+        <location filename="../src/dialogs/PatchDialog.cpp" line="223"/>
+        <source>Save Diff</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/PatchDialog.cpp" line="234"/>
         <source>%1 commit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/PatchDialog.cpp" line="204"/>
+        <location filename="../src/dialogs/PatchDialog.cpp" line="234"/>
         <source>%1 commits</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/PatchDialog.cpp" line="230"/>
+        <location filename="../src/dialogs/PatchDialog.cpp" line="260"/>
         <source>Unable to save patch &apos;%1&apos; - %2</source>
         <translation type="unfinished"></translation>
     </message>

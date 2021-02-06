@@ -258,6 +258,46 @@ QByteArray Diff::toBuffer(git_diff_format_t format) const
   return text;
 }
 
+QByteArray Diff::toBuffer(
+  const QStringList &files,
+  git_diff_format_t format) const
+{
+  git_buf buf = GIT_BUF_INIT_CONST(nullptr, 0);
+  if (git_diff_to_buf(&buf, d->diff, format))
+    return QByteArray();
+
+  QByteArray text(buf.ptr, buf.size);
+  git_buf_dispose(&buf);
+
+  if (!files.isEmpty()) {
+    QString diff(text);
+    QStringList lines(diff.split('\n'));
+
+    for (int i = 0; i < lines.count(); i++) {
+      if (lines.at(i).startsWith("diff --git")) {
+        bool keep = false;
+        for (int f = 0; f < files.count(); f++) {
+          if (lines.at(i).endsWith(files.at(f))) {
+            keep = true;
+            break;
+          }
+        }
+        if (!keep) {
+          while (i < lines.count()) {
+            lines.removeAt(i);
+            if ((i >= lines.count()) || lines.at(i).startsWith("diff --git"))
+              break;
+          }
+          i--;
+        }
+      }
+    }
+    text.clear();
+    text.append(lines.join('\n'));
+  }
+  return text;
+}
+
 Diff Diff::fromBuffer(const QByteArray &text)
 {
   git_diff *diff = nullptr;

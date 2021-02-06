@@ -40,7 +40,13 @@ class SavePatchDialog : public QDialog
   Q_OBJECT
 
 public:
-  SavePatchDialog(QWidget *parent, const QList<git::Commit> &commits);
+  SavePatchDialog(
+    const QList<git::Commit> &commits,
+    QWidget *parent);
+  SavePatchDialog(
+    const QByteArray &buffer,
+    const QStringList &files,
+    QWidget *parent);
 
 private:
   enum class Format {
@@ -49,6 +55,7 @@ private:
     SingleMailbox
   };
 
+  void setupUI(bool patch);
   void save() const;
   void savePatch() const;
   void saveMailbox() const;
@@ -68,6 +75,8 @@ private:
 
   Format mFormat;
   QList<git::Commit> mCommits;
+  QStringList mFiles;
+  QByteArray mBuffer;
 
   QLineEdit *mDir, *mFile;
   QLabel *mFileExt;

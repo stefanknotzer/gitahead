@@ -1552,6 +1552,13 @@ void CommitList::contextMenuEvent(QContextMenuEvent *event)
       }
     }
 
+    QAction *save = menu.addAction(tr("Save Diff..."), [this] {
+        SavePatchDialog *dialog = new SavePatchDialog(status().toBuffer(), { tr("uncommited") }, this);
+       dialog->open();
+    });
+    save->setEnabled(status().isValid() && !status().toBuffer().isEmpty());
+    menu.addSeparator();
+
     menu.addAction(tr("New Branch..."), [view] {
       view->promptToCreateBranch(view->repo().head().target());
     });
@@ -1593,7 +1600,7 @@ void CommitList::contextMenuEvent(QContextMenuEvent *event)
   } else {
     // multiple selection
     bool anyStarred = false;
-	bool allValid = true;
+    bool allValid = true;
     foreach (const QModelIndex &index, selectionModel()->selectedIndexes()) {
       QVariant variant = index.data(CommitRole);
       if (!variant.isValid()) {
@@ -1610,11 +1617,11 @@ void CommitList::contextMenuEvent(QContextMenuEvent *event)
           index.data(CommitRole).value<git::Commit>().setStarred(!anyStarred);
     });
 
-    QAction *savePatch = menu.addAction(tr("Save Patch..."), [this] {
-       SavePatchDialog *dialog = new SavePatchDialog(this, selectedCommits());
+    QAction *save = menu.addAction(tr("Save Patch..."), [this] {
+       SavePatchDialog *dialog = new SavePatchDialog(selectedCommits(), this);
        dialog->open();
     });
-    savePatch->setEnabled(allValid);
+    save->setEnabled(allValid);
 
     // single selection
     if (selectionModel()->selectedIndexes().size() <= 1) {

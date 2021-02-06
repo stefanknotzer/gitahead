@@ -66,15 +66,13 @@ QString ApplyPatchDialog::getOpenFileName(QWidget *parent)
 
 QString ApplyPatchDialog::filter()
 {
-  return tr("Git Diff (*.diff *.patch);;All files (*)");
+  return tr("Git Diff (*.diff *.patch);;All files (*.*)");
 }
 
-SavePatchDialog::SavePatchDialog(QWidget *parent, const QList<git::Commit> &commits)
-  : QDialog(parent), mCommits(commits)
+void SavePatchDialog::setupUI(bool patch)
 {
-  Q_ASSERT(!mCommits.isEmpty());
-
   setAttribute(Qt::WA_DeleteOnClose);
+  setWindowTitle(patch ? tr("Save Patch File") : tr("Save Diff File"));
 
   // Format.
   QFrame *formatFrame = new QFrame(this);
@@ -82,6 +80,7 @@ SavePatchDialog::SavePatchDialog(QWidget *parent, const QList<git::Commit> &comm
   QRadioButton *diff = new QRadioButton(tr("Diff"), formatFrame);
   QRadioButton *mbox = new QRadioButton(tr("Mailbox"), formatFrame);
   QRadioButton *singleMailbox = new QRadioButton(tr("Single Mailbox"), formatFrame);
+
   connect(diff, &QRadioButton::toggled, [this](bool checked) {
     if (checked)
       selectFormat(Format::Diff);
@@ -145,8 +144,8 @@ SavePatchDialog::SavePatchDialog(QWidget *parent, const QList<git::Commit> &comm
   QFormLayout *form = new QFormLayout;
   form->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
   form->addRow(tr("Format:"), formatFrame);
-  form->addRow(tr("Output Directory:"), dirFrame);
-  form->addRow(tr("File Name:"), fileFrame);
+  form->addRow(tr("Directory:"), dirFrame);
+  form->addRow(tr("File:"), fileFrame);
 
   QDialogButtonBox *buttons = new QDialogButtonBox(this);
   buttons->addButton(QDialogButtonBox::Cancel);
@@ -165,13 +164,44 @@ SavePatchDialog::SavePatchDialog(QWidget *parent, const QList<git::Commit> &comm
     fileListModel->appendRow(new QStandardItem(mailboxFileName(num, commit)));
   });
 
-  Format format = static_cast<Format>(Settings::instance()->value(kFormatKey).toInt());
-  switch (format) {
-    case Format::Diff: diff->setChecked(true); break;
-    case Format::Mailbox: mbox->setChecked(true); break;
-    case Format::SingleMailbox: singleMailbox->setChecked(true); break;
+  if (patch) {
+    Format format = static_cast<Format>(Settings::instance()->value(kFormatKey).toInt());
+    switch (format) {
+      case Format::Diff: diff->setChecked(true); break;
+      case Format::Mailbox: mbox->setChecked(true); break;
+      case Format::SingleMailbox: singleMailbox->setChecked(true); break;
+    }
+  } else {
+    diff->setChecked(true);
+    mbox->setVisible(false);
+    singleMailbox->setVisible(false);
+  }
+
+  // Single file selection
+  if (mFiles.count() == 1) {
+    QFileInfo info(mFiles.first());
+    mFile->setText(info.fileName());
   }
   updateSaveButton();
+}
+
+SavePatchDialog::SavePatchDialog(const QList<git::Commit> &commits, QWidget *parent)
+  : QDialog(parent), mCommits(commits)
+{
+  Q_ASSERT(!mCommits.isEmpty());
+
+  mBuffer.clear();
+  mFiles.clear();
+  setupUI(true);
+}
+
+SavePatchDialog::SavePatchDialog(const QByteArray &buffer, const QStringList &files, QWidget *parent)
+  : QDialog(parent), mFiles(files), mBuffer(buffer)
+{
+  Q_ASSERT(!buffer.isEmpty());
+
+  mCommits.clear();
+  setupUI(false);
 }
 
 void SavePatchDialog::save() const
@@ -190,9 +220,9 @@ void SavePatchDialog::savePatch() const
   RepoView *view = RepoView::parentView(this);
 
   QString path = outputFilePath();
-  LogEntry *entry = view->addLogEntry(path, tr("Save Patch"));
+  LogEntry *entry = view->addLogEntry(path, mBuffer.isEmpty() ? tr("Save Patch") : tr("Save Diff"));
 
-  QByteArray buffer = generatePatch();
+  QByteArray buffer = mBuffer.isEmpty() ? generatePatch() : mBuffer;
   saveFile(entry, path, buffer);
 }
 
@@ -239,7 +269,36 @@ QByteArray SavePatchDialog::generatePatch() const
   if (mFormat == Format::Diff) {
     const git::Commit &newCommit = mCommits.first();
     const git::Commit &oldCommit = mCommits.size() > 1 ? mCommits.last() : git::Commit();
-    return newCommit.diff(oldCommit).toBuffer();
+    QByteArray buffer = newCommit.diff(oldCommit).toBuffer();
+
+    /* File selection filter */
+    if (!mFiles.isEmpty()) {
+      QString diff(buffer);
+      QStringList lines(diff.split('\n'));
+
+      for (int i = 0; i < lines.count(); i++) {
+        if (lines.at(i).startsWith("diff --git")) {
+          bool keep = false;
+          for (int f = 0; f < mFiles.count(); f++) {
+            if (lines.at(i).endsWith(mFiles.at(f))) {
+              keep = true;
+              break;
+            }
+          }
+          if (!keep) {
+            while (i < lines.count()) {
+              lines.removeAt(i);
+              if ((i >= lines.count()) || lines.at(i).startsWith("diff --git"))
+                break;
+            }
+            i--;
+          }
+        }
+      }
+      buffer.clear();
+      buffer.append(lines.join('\n'));
+    }
+    return buffer;
   } else {
     QByteArray buffer;
     walkCommits([this, &buffer](int num, const git::Commit &commit) mutable {
@@ -284,7 +343,14 @@ QString SavePatchDialog::fileExtension() const
 
 QString SavePatchDialog::outputFilePath() const
 {
-  return QDir(mDir->text()).absoluteFilePath(mFile->text()) + fileExtension();
+  QString filePath = QDir(mDir->text()).absoluteFilePath(mFile->text()) + fileExtension();
+  QFileInfo info(filePath);
+  QDir dir(info.path());
+
+  if (!dir.exists())
+    dir.mkpath(dir.absolutePath());
+
+  return filePath;
 }
 
 void SavePatchDialog::walkCommits(
