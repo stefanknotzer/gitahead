@@ -18,7 +18,7 @@
 #define TEST_MAIN(TestClass) \
 int main(int argc, char *argv[]) \
 { \
-  Application app(argc, argv); \
+  Application app(argc, argv, false, "Default"); \
   TestClass test; \
   QTEST_SET_MAIN_SOURCE_PATH \
   return QTest::qExec(&test, app.arguments()); \

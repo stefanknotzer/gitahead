@@ -659,7 +659,8 @@ public:
       tr("Fetch LFS objects from all references for the past"), this);
     bool fetchRecentEnabled = map.value("FetchRecentAlways").contains("true");
     fetchRecentAlways->setChecked(fetchRecentEnabled);
-    connect(fetchRecentAlways, &QCheckBox::toggled, [repo](bool checked) {
+    connect(fetchRecentAlways, &QCheckBox::toggled,
+	[repo](bool checked) {
       repo.config().setValue("lfs.fetchrecentalways", checked);
     });
 

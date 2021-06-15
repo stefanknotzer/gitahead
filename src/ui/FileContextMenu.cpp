@@ -275,6 +275,7 @@ FileContextMenu::FileContextMenu(
       view->checkout(view->commits().first(), files);
       view->setViewMode(RepoView::Diff);
     });
+
     checkout->setEnabled(!view->repo().isBare());
 
     git::Commit commit = commits.first();

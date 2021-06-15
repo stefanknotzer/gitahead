@@ -109,7 +109,11 @@ QString userAgentSystem()
 
 } // anon. namespace
 
-Application::Application(int &argc, char **argv, bool haltOnParseError)
+Application::Application(
+  int &argc,
+  char **argv,
+  bool haltOnParseError,
+  const QString &defaultTheme)
   : QApplication(argc, argv)
 {
   Q_INIT_RESOURCE(resources);
@@ -154,7 +158,8 @@ Application::Application(int &argc, char **argv, bool haltOnParseError)
   mPathspec = parser.value("filter");
 
   // Initialize theme.
-  mTheme.reset(Theme::create(parser.value("theme")));
+  QString theme = parser.value("theme");
+  mTheme.reset(Theme::create(!theme.isEmpty() ? theme : defaultTheme));
   setStyle(mTheme->style());
   setStyleSheet(mTheme->styleSheet());
 
@@ -307,7 +312,7 @@ bool Application::restoreWindows()
       return true;
     }
 
-    //sk/build: return false;
+    return false;
   }
 
   // Save on exit.

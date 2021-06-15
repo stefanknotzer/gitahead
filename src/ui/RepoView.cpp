@@ -993,7 +993,7 @@ void RepoView::fetchAll()
     return;
 
   if (remotes.size() == 1) {
-    fetch();
+    fetch(remotes.at(0));
     return;
   }
 
@@ -1082,6 +1082,15 @@ QFuture<git::Result> RepoView::fetch(
     RemoteCallbacks::Receive, entry, url, remote.name(), mWatcher, mRepo);
   connect(mCallbacks, &RemoteCallbacks::referenceUpdated,
           this, &RepoView::notifyReferenceUpdated);
+  connect(mCallbacks, &RemoteCallbacks::credentialsCanceled, [this] {
+    git::Config config = mRepo.appConfig();
+    bool defaultValue = Settings::instance()->value("global/autofetch/enable").toBool();
+    if (config.value<bool>("autofetch.enable", defaultValue)) {
+      // Disable autofetch; don't prompt for credentials again.
+      config.setValue("autofetch.enable", false);
+      mFetchTimer.stop();
+    }
+  });
 
   entry->setBusy(true);
   mWatcher->setFuture(QtConcurrent::run([this, remote, tags, submodules, prune] {
@@ -1527,32 +1536,35 @@ void RepoView::squash(
   const git::AnnotatedCommit &upstream,
   LogEntry *parent)
 {
-    git::Branch head = mRepo.head();
-    Q_ASSERT(head.isValid());
+  git::Branch head = mRepo.head();
+  Q_ASSERT(head.isValid());
 
-    // Try to merge.
-    if (!mRepo.merge(upstream)) {
-      LogEntry *err = error(parent, tr("squash"), head.name());
+  // Try to merge.
+  if (!mRepo.merge(upstream)) {
+    LogEntry *err = error(parent, tr("squash"), head.name());
 
-      // Add stash hint if the failure was because of uncommitted changes.
-      QString msg = git::Repository::lastError();
-      int kind = git::Repository::lastErrorKind();
-      if (kind == GIT_ERROR_MERGE && msg.contains("overwritten by merge")) {
-        QString text =
-          tr("You may be able to rebase by <a href='action:stash'>stashing</a> "
-             "before trying to <a href='action:merge'>merge</a>. Then "
-             "<a href='action:unstash'>unstash</a> to restore your changes.");
-        err->addEntry(LogEntry::Hint, text);
-      }
-
-      return;
+    // Add stash hint if the failure was because of uncommitted changes.
+    QString msg = git::Repository::lastError();
+    int kind = git::Repository::lastErrorKind();
+    if (kind == GIT_ERROR_MERGE && msg.contains("overwritten by merge")) {
+      QString text =
+        tr("You may be able to rebase by <a href='action:stash'>stashing</a> "
+           "before trying to <a href='action:merge'>merge</a>. Then "
+           "<a href='action:unstash'>unstash</a> to restore your changes.");
+      err->addEntry(LogEntry::Hint, text);
     }
 
-    // Make squash effect.
-    mRepo.cleanupState();
+    return;
+  }
 
-    // Check for conflicts.
-    checkForConflicts(parent, tr("squash"));
+  // Make squash effect.
+  mRepo.cleanupState();
+
+  // Check for conflicts.
+  checkForConflicts(parent, tr("squash"));
+
+  refresh();
+  selectHead();
 }
 
 void RepoView::revert(const git::Commit &commit)
@@ -2030,7 +2042,16 @@ void RepoView::checkout(
     QPushButton *resetButton =
       dialog->addButton(tr("Reset Local Branch"), QMessageBox::AcceptRole);
     connect(resetButton, &QPushButton::clicked, [this, ref, local] {
-      createBranch(local, ref.target(), ref, true, true);
+      git::Branch head = mRepo.head();
+      if (head.isValid() && head.name() == local) {
+        // The local branch is currently checked out and cannot be replaced.
+        // We'll just reset it instead.
+        if (reset(ref.target(), GIT_RESET_HARD))
+          head.setUpstream(ref);
+      } else {
+        // Replace local branch.
+        createBranch(local, ref.target(), ref, true, true);
+      }
     });
   } else {
     dialog->setText(
@@ -2305,7 +2326,7 @@ void RepoView::promptToReset(
   dialog->open();
 }
 
-void RepoView::reset(
+bool RepoView::reset(
   const git::Commit &commit,
   git_reset_t type,
   const git::Commit &commitToAmend)
@@ -2317,8 +2338,12 @@ void RepoView::reset(
   QString text = tr("%1 to %2").arg(head.name(), commit.link());
   LogEntry *entry = addLogEntry(text, title);
 
-  if (!commit.reset(type))
+  if (!commit.reset(type)) {
     error(entry, commitToAmend ? tr("amend") : tr("reset"), head.name());
+    return false;
+  }
+
+  return true;
 }
 
 void RepoView::updateSubmodules(
